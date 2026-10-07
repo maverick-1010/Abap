@@ -643,6 +643,8 @@ CLASS lcl_app DEFINITION FINAL.
       check_defaults,
       apply_defaults         IMPORTING is_row  TYPE ty_row
                              CHANGING  cs_bapi TYPE ty_bapi,
+      apply_current_date     IMPORTING is_row  TYPE ty_row
+                             CHANGING  cs_bapi TYPE ty_bapi,
       derive_values,
       inherit_org_keys,
       check_columns,
@@ -3152,6 +3154,31 @@ CLASS lcl_app IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+  METHOD apply_current_date.
+    "Valid-from dates of the material status (MSTDV client level, VMSTD sales
+    "view): blank in the template (and not set by the reference / default table)
+    "-> current date. Create only; only if the field belongs to the variant.
+    CONSTANTS lc_date_fields TYPE string VALUE ` VMSTD MSTDV `.
+    CHECK lcl_screen=>get_operation( ) = gc_op-create.
+
+    SPLIT condense( lc_date_fields ) AT space INTO TABLE DATA(lt_fields).
+    LOOP AT lt_fields INTO DATA(lv_name).
+      DATA(lv_field) = CONV fieldname( lv_name ).
+      CHECK line_exists( mo_config->mt_fcat[ KEY k_field COMPONENTS temp_field_name = lv_field ] ).
+      CHECK NOT line_exists( mt_cell[   row = is_row-row field = lv_field ] ).
+      CHECK NOT line_exists( mt_copied[ row = is_row-row field = lv_field ] ).
+
+      DATA(lv_date) = CONV string( sy-datum ).                "YYYYMMDD
+      INSERT VALUE #( row = is_row-row field = lv_field value = lv_date ) INTO TABLE mt_cell.
+      mo_log->add( iv_type = 'S' is_row = is_row iv_field = lv_field
+                   iv_text = |Current date { lv_date } set for blank field { lv_field }| ).
+
+      LOOP AT mo_config->mt_fcat INTO DATA(ls_fcat) USING KEY k_field WHERE temp_field_name = lv_field.
+        validate_row( EXPORTING is_row = is_row is_fcat = ls_fcat CHANGING cs_bapi = cs_bapi ).
+      ENDLOOP.
+    ENDLOOP.
+  ENDMETHOD.
+
   METHOD derive_values.
     "PRDHA derived from PRODH_LVL1..n if not given directly
     DATA lv_prdha TYPE string.
@@ -3307,6 +3334,7 @@ CLASS lcl_app IMPLEMENTATION.
 
       "Defaults for fields neither in the template nor copied from the reference
       apply_defaults( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
+      apply_current_date( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
 
       "Mandatory fields without value in this row - the cell loop above only
       "sees filled cells. Columns missing in the template: see CHECK_COLUMNS
