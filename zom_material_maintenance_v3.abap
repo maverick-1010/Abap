@@ -3098,9 +3098,10 @@ CLASS lcl_app IMPLEMENTATION.
     "type / business profile / variant view gets the default value. The
     "value is added like a template value, i.e. it passes the normal
     "conversion, validation and mapping to the BAPI field.
-    "Not for Update (a blank cell means 'unchanged' there). Control columns
-    "and the key fields (MATNR, WERKS, VKORG, VTWEG) are never defaulted.
-    CHECK lcl_screen=>get_operation( ) <> gc_op-update.
+    "Only for Create (a blank cell means 'unchanged' for Update, and Extend
+    "does not change existing data). Control columns and the key fields
+    "(MATNR, WERKS, VKORG, VTWEG) are never defaulted.
+    CHECK lcl_screen=>get_operation( ) = gc_op-create.
     CHECK mo_config->mt_deflt IS NOT INITIAL.
 
     DATA(lt_ctrl) = lcl_config=>control_columns( ).
