@@ -3465,6 +3465,10 @@ CLASS lcl_app IMPLEMENTATION.
     "                              (BEST -> PURCH, others -> BASIC)
     "  tax classifications (SALES) - per country
     "EANs are never copied (must be unique per material)
+    FIELD-SYMBOLS: <ls_line> TYPE any,
+                   <lv_src>  TYPE any,
+                   <lv_tgt>  TYPE any,
+                   <lt_tab>  TYPE STANDARD TABLE.
     DATA: lv_copied   TYPE abap_bool,
           lt_text_new LIKE cs_bapi-materiallongtext,
           lt_params   TYPE SORTED TABLE OF fieldname WITH UNIQUE KEY table_line.
@@ -3486,13 +3490,35 @@ CLASS lcl_app IMPLEMENTATION.
       ENDLOOP.
     ENDIF.
 
-    "Units of measure - ratios refer to the base unit of the reference
+    "Units of measure - ratios refer to the base unit of the reference.
+    "Gross weight, volume and dimensions are unit data (MARM), not client
+    "data: a unit given in the template (e.g. base unit line from MEINS)
+    "keeps its values, its empty fields are filled from the reference
     IF lv_basic = abap_true AND
        ( cs_bapi-clientdata-base_uom IS INITIAL OR
          cs_bapi-clientdata-base_uom = is_ref-clientdata-base_uom ).
       LOOP AT is_ref-unitsofmeasure INTO DATA(ls_marm).
-        CHECK NOT line_exists( cs_bapi-unitsofmeasure[ alt_unit = ls_marm-alt_unit ] ).
-        APPEND ls_marm TO cs_bapi-unitsofmeasure.
+        "template line of this unit (no unit in the template line = base unit)
+        READ TABLE cs_bapi-unitsofmeasure ASSIGNING <ls_line>
+             WITH KEY alt_unit = ls_marm-alt_unit.
+        IF sy-subrc <> 0 AND ls_marm-alt_unit = is_ref-clientdata-base_uom.
+          READ TABLE cs_bapi-unitsofmeasure ASSIGNING <ls_line>
+               WITH KEY alt_unit = space.
+        ENDIF.
+        IF sy-subrc <> 0.
+          APPEND ls_marm TO cs_bapi-unitsofmeasure.
+        ELSE.
+          DO.
+            ASSIGN COMPONENT sy-index OF STRUCTURE ls_marm TO <lv_src>.
+            IF sy-subrc <> 0.
+              EXIT.
+            ENDIF.
+            ASSIGN COMPONENT sy-index OF STRUCTURE <ls_line> TO <lv_tgt>.
+            IF sy-subrc = 0 AND <lv_tgt> IS INITIAL AND <lv_src> IS NOT INITIAL.
+              <lv_tgt> = <lv_src>.                         "template value wins
+            ENDIF.
+          ENDDO.
+        ENDIF.
         INSERT CONV fieldname( 'UNITSOFMEASURE' ) INTO TABLE lt_params.
       ENDLOOP.
     ELSEIF lv_basic = abap_true AND is_ref-unitsofmeasure IS NOT INITIAL.
@@ -3530,16 +3556,23 @@ CLASS lcl_app IMPLEMENTATION.
 
     CHECK lt_params IS NOT INITIAL.
 
-    "Fields whose target table received reference lines count as given
+    "Fields whose target now has a value from the reference count as given
     "(mandatory check) and their view is created
     LOOP AT mo_config->mt_fcat INTO DATA(ls_fcat).
       CHECK line_exists( it_views[ table_line = ls_fcat-view ] ).
       CHECK NOT line_exists( mt_cell[ row = is_row-row field = ls_fcat-temp_field_name ] ).
       CLEAR lv_copied.
       LOOP AT ls_fcat-targets INTO DATA(ls_target) WHERE table = abap_true.
-        IF line_exists( lt_params[ table_line = ls_target-param ] ).
-          lv_copied = abap_true.
-        ENDIF.
+        CHECK line_exists( lt_params[ table_line = ls_target-param ] ).
+        ASSIGN COMPONENT ls_target-param OF STRUCTURE cs_bapi TO <lt_tab>.
+        CHECK sy-subrc = 0.
+        LOOP AT <lt_tab> ASSIGNING <ls_line>.
+          ASSIGN COMPONENT ls_target-comp OF STRUCTURE <ls_line> TO <lv_tgt>.
+          IF sy-subrc = 0 AND <lv_tgt> IS NOT INITIAL.
+            lv_copied = abap_true.
+            EXIT.
+          ENDIF.
+        ENDLOOP.
       ENDLOOP.
       CHECK lv_copied = abap_true.
       INSERT VALUE #( row = is_row-row field = ls_fcat-temp_field_name ) INTO TABLE mt_copied.
