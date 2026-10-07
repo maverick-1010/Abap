@@ -3,7 +3,7 @@
 *&---------------------------------------------------------------------*
 *&
 *&---------------------------------------------------------------------*
-REPORT zom_material_maintenance_v2.
+REPORT zom_material_maintenance_v4.
 
 *&---------------------------------------------------------------------*
 *& Report ZMM_MATERIAL_MAINTENANCE
@@ -117,6 +117,9 @@ TYPES:
   tt_fcat TYPE STANDARD TABLE OF ty_fcat WITH EMPTY KEY
           WITH NON-UNIQUE SORTED KEY k_field COMPONENTS temp_field_name,
   tt_cond TYPE STANDARD TABLE OF ztmm_cond_mand WITH EMPTY KEY,
+  "Default values per template field (ZTMM_DEFLT_DATA)
+  tt_deflt TYPE STANDARD TABLE OF ztmm_deflt_data WITH EMPTY KEY
+           WITH NON-UNIQUE SORTED KEY k_field COMPONENTS temp_field_name,
 
   "Template content (only non-empty cells)
   BEGIN OF ty_cell,
@@ -480,7 +483,8 @@ CLASS lcl_config DEFINITION FINAL.
   PUBLIC SECTION.
     DATA: mv_variant TYPE z_de_var_view READ-ONLY,
           mt_fcat    TYPE tt_fcat      READ-ONLY,
-          mt_cond    TYPE tt_cond      READ-ONLY.
+          mt_cond    TYPE tt_cond      READ-ONLY,
+          mt_deflt   TYPE tt_deflt     READ-ONLY.
 
     CLASS-METHODS:
       view_tables     RETURNING VALUE(rt_tab)  TYPE tt_viewtab,
@@ -496,6 +500,7 @@ CLASS lcl_config DEFINITION FINAL.
       get_variant    RAISING lcx_error,
       get_fields     RAISING lcx_error,
       get_cond_rules,
+      get_defaults,
       parse_targets  IMPORTING is_fcat TYPE ty_fcat RETURNING VALUE(rt_target) TYPE tt_target.
 ENDCLASS.
 
@@ -635,6 +640,9 @@ CLASS lcl_app DEFINITION FINAL.
 
     METHODS:
       load_template          RAISING lcx_error,
+      check_defaults,
+      apply_defaults         IMPORTING is_row  TYPE ty_row
+                             CHANGING  cs_bapi TYPE ty_bapi,
       derive_values,
       inherit_org_keys,
       check_columns,
@@ -1554,6 +1562,7 @@ CLASS lcl_config IMPLEMENTATION.
     get_variant( ).        "5.2
     get_fields( ).         "5.3 / 5.4
     get_cond_rules( ).
+    get_defaults( ).       "default values
   ENDMETHOD.
 
   METHOD get_variant.
@@ -1625,6 +1634,22 @@ CLASS lcl_config IMPLEMENTATION.
         EXPORTING
           iv_text = |No field configuration found for variant { mv_variant } and the selected views|.
     ENDIF.
+  ENDMETHOD.
+
+  METHOD get_defaults.
+    "Default values of the template fields for the screen selection
+    "(material type, business profile) and the active variant view
+    CLEAR mt_deflt.
+    SELECT * FROM ztmm_deflt_data
+      INTO TABLE @mt_deflt
+      WHERE mtart        = @p_mtart
+        AND bus_prof     = @p_busprf
+        AND variant_view = @mv_variant.
+    LOOP AT mt_deflt ASSIGNING FIELD-SYMBOL(<ls_def>).
+      <ls_def>-temp_field_name = to_upper( lcl_mapper=>trim( <ls_def>-temp_field_name ) ).
+    ENDLOOP.
+    mo_log->add( iv_type = 'S'
+                 iv_text = |{ lines( mt_deflt ) } default value(s) read from ZTMM_DEFLT_DATA| ).
   ENDMETHOD.
 
   METHOD get_cond_rules.
@@ -2971,6 +2996,7 @@ CLASS lcl_app IMPLEMENTATION.
     TRY.
         mo_config->load( ).          "5.2 variant, 5.3/5.4 view tables
         load_template( ).            "5.1 read template
+        check_defaults( ).           "ZTMM_DEFLT_DATA entries usable?
         derive_values( ).
         inherit_org_keys( ).         "empty WERKS / VKORG / VTWEG from REF_*
         check_columns( ).
@@ -3068,6 +3094,64 @@ CLASS lcl_app IMPLEMENTATION.
     mo_log->add( iv_type = 'S' iv_text = |Template { lv_file }: { lines( mt_row ) } data row(s) read| ).
   ENDMETHOD.
 
+  METHOD check_defaults.
+    "Default values (ZTMM_DEFLT_DATA) are used for Create only. An entry that
+    "can not be applied is reported once as an error: field is a control
+    "column / key field, or is not a field of the active variant / selected views.
+    CHECK lcl_screen=>get_operation( ) = gc_op-create.
+
+    DATA(lt_ctrl) = lcl_config=>control_columns( ).
+    LOOP AT mo_config->mt_deflt INTO DATA(ls_def).
+      DATA(lv_field) = CONV fieldname( ls_def-temp_field_name ).
+      CHECK lv_field IS NOT INITIAL AND ls_def-def_field_value IS NOT INITIAL.
+      IF lv_field = gc_col-matnr OR lv_field = gc_col-werks OR
+         lv_field = gc_col-vkorg OR lv_field = gc_col-vtweg OR
+         line_exists( lt_ctrl[ table_line = lv_field ] ).
+        mo_log->add( iv_type = 'E' iv_field = lv_field
+                     iv_text = |Default for { lv_field } in ZTMM_DEFLT_DATA not possible - control / key field| ).
+      ELSEIF NOT line_exists( mo_config->mt_fcat[ KEY k_field COMPONENTS temp_field_name = lv_field ] ).
+        mo_log->add( iv_type = 'E' iv_field = lv_field
+                     iv_text = |Default for { lv_field } in ZTMM_DEFLT_DATA: field is not part of variant | &&
+                               |{ mo_config->mv_variant } / selected views| ).
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD apply_defaults.
+    "Default values (ZTMM_DEFLT_DATA) - priority per field:
+    "  1. template value  2. value copied from the reference material
+    "  3. default value (this method, runs after the reference copy)
+    "The field need not be a column of the template. The default is handled
+    "like a template value (conversion, validation, mapping to the BAPI).
+    "Create only; several entries for one field: the first one is used.
+    CHECK lcl_screen=>get_operation( ) = gc_op-create.
+    CHECK mo_config->mt_deflt IS NOT INITIAL.
+
+    DATA(lt_ctrl) = lcl_config=>control_columns( ).
+
+    LOOP AT mo_config->mt_deflt INTO DATA(ls_def).
+      DATA(lv_field) = CONV fieldname( ls_def-temp_field_name ).
+      DATA(lv_value) = lcl_mapper=>trim( ls_def-def_field_value ).
+      CHECK lv_field IS NOT INITIAL AND lv_value IS NOT INITIAL.
+      "entries that can not be used are reported in CHECK_DEFAULTS
+      CHECK lv_field <> gc_col-matnr AND lv_field <> gc_col-werks AND
+            lv_field <> gc_col-vkorg AND lv_field <> gc_col-vtweg.
+      CHECK NOT line_exists( lt_ctrl[ table_line = lv_field ] ).
+      CHECK line_exists( mo_config->mt_fcat[ KEY k_field COMPONENTS temp_field_name = lv_field ] ).
+
+      CHECK NOT line_exists( mt_cell[   row = is_row-row field = lv_field ] ).   "template value
+      CHECK NOT line_exists( mt_copied[ row = is_row-row field = lv_field ] ).   "reference value
+
+      INSERT VALUE #( row = is_row-row field = lv_field value = lv_value ) INTO TABLE mt_cell.
+      mo_log->add( iv_type = 'S' is_row = is_row iv_field = lv_field
+                   iv_text = |Value { lv_value } for { lv_field } taken from default table ZTMM_DEFLT_DATA| ).
+
+      LOOP AT mo_config->mt_fcat INTO DATA(ls_fcat) USING KEY k_field WHERE temp_field_name = lv_field.
+        validate_row( EXPORTING is_row = is_row is_fcat = ls_fcat CHANGING cs_bapi = cs_bapi ).
+      ENDLOOP.
+    ENDLOOP.
+  ENDMETHOD.
+
   METHOD derive_values.
     "PRDHA derived from PRODH_LVL1..n if not given directly
     DATA lv_prdha TYPE string.
@@ -3154,6 +3238,8 @@ CLASS lcl_app IMPLEMENTATION.
     "Mandatory fields that are no column of the template
     LOOP AT mo_config->mt_fcat INTO DATA(ls_fcat) WHERE mandatory = abap_true.
       CHECK NOT line_exists( mt_header[ table_line = ls_fcat-temp_field_name ] ).
+      "a default value (ZTMM_DEFLT_DATA) fills the field in every row
+      CHECK NOT line_exists( mo_config->mt_deflt[ KEY k_field COMPONENTS temp_field_name = ls_fcat-temp_field_name ] ).
       mo_log->add( iv_type = 'E' iv_view = ls_fcat-view iv_field = ls_fcat-temp_field_name
                    iv_fdesc = ls_fcat-description
                    iv_text = 'Mandatory field is not a column of the template' ).
@@ -3218,6 +3304,9 @@ CLASS lcl_app IMPLEMENTATION.
                                        is_ref   = ls_ref
                                        it_views = lt_ref_views
                              CHANGING  cs_bapi  = ls_bapi ).
+
+      "Defaults for fields neither in the template nor copied from the reference
+      apply_defaults( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
 
       "Mandatory fields without value in this row - the cell loop above only
       "sees filled cells. Columns missing in the template: see CHECK_COLUMNS
@@ -4117,4 +4206,4 @@ AT SELECTION-SCREEN.
   lcl_screen=>pai( ).
 
 START-OF-SELECTION.
-  NEW lcl_app( )->run( ).
+  NEW lcl_app( )->run( ).
