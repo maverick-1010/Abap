@@ -445,6 +445,10 @@ CLASS lcl_mapper DEFINITION FINAL.
                                      iv_key   TYPE string
                            EXPORTING er_line  TYPE REF TO data
                            CHANGING  cs_bapi  TYPE ty_bapi.
+    CLASS-METHODS extend_func IMPORTING iv_param       TYPE fieldname
+                                        iv_matnr       TYPE matnr
+                                        is_line        TYPE any
+                              RETURNING VALUE(rv_func) TYPE bapifn.
 ENDCLASS.
 
 *----------------------------------------------------------------------*
@@ -1184,12 +1188,12 @@ CLASS lcl_mapper IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD set_material_all.
-    "Material number in every line of every TABLES parameter
+    "Material number + function in every line of every TABLES parameter
+    "Create: INS / Update: UPD / Extend: INS for new org. levels, else UPD
     FIELD-SYMBOLS: <lt_tab>  TYPE STANDARD TABLE,
                    <ls_line> TYPE any.
 
-    DATA(lv_func) = COND #( WHEN r_create = abap_true THEN 'INS'
-                      WHEN r_update = abap_true THEN 'UPD' ).
+    DATA(lv_opid) = lcl_screen=>get_operation( ).
 
     DATA(lo_call) = CAST cl_abap_structdescr( cl_abap_typedescr=>describe_by_data( cs_call ) ).
     LOOP AT lo_call->components INTO DATA(ls_comp) WHERE type_kind = cl_abap_typedescr=>typekind_table.
@@ -1199,10 +1203,80 @@ CLASS lcl_mapper IMPLEMENTATION.
       LOOP AT <lt_tab> ASSIGNING <ls_line>.
         set_matnr( EXPORTING iv_matnr = iv_matnr CHANGING cs_line = <ls_line> ).
 
-        set_func( EXPORTING iv_function =  lv_func CHANGING cs_line = <ls_line> ).
-
+        DATA(lv_func) = SWITCH bapifn( lv_opid
+                          WHEN gc_op-create THEN 'INS'
+                          WHEN gc_op-update THEN 'UPD'
+                          ELSE extend_func( iv_param = CONV #( ls_comp-name )
+                                            iv_matnr = iv_matnr
+                                            is_line  = <ls_line> ) ).
+        set_func( EXPORTING iv_function = lv_func CHANGING cs_line = <ls_line> ).
       ENDLOOP.
     ENDLOOP.
+  ENDMETHOD.
+
+  METHOD extend_func.
+    "Extend: org. level not yet maintained for the material -> INS,
+    "existing data (client level, existing org. levels) -> UPD
+    FIELD-SYMBOLS: <lv_k1> TYPE any,
+                   <lv_k2> TYPE any.
+    DATA lv_dummy TYPE matnr.
+
+    rv_func = 'UPD'.
+
+    CASE iv_param.
+      WHEN 'PLANTDATA' OR 'FORECASTPARAMETERS' OR 'PLANNINGDATA'.
+        ASSIGN COMPONENT 'PLANT' OF STRUCTURE is_line TO <lv_k1>.
+        CHECK sy-subrc = 0.
+        SELECT SINGLE matnr FROM marc INTO @lv_dummy
+          WHERE matnr = @iv_matnr AND werks = @<lv_k1>.
+
+      WHEN 'STORAGELOCATIONDATA'.
+        ASSIGN COMPONENT 'PLANT'    OF STRUCTURE is_line TO <lv_k1>.
+        ASSIGN COMPONENT 'STGE_LOC' OF STRUCTURE is_line TO <lv_k2>.
+        CHECK <lv_k1> IS ASSIGNED AND <lv_k2> IS ASSIGNED.
+        SELECT SINGLE matnr FROM mard INTO @lv_dummy
+          WHERE matnr = @iv_matnr AND werks = @<lv_k1> AND lgort = @<lv_k2>.
+
+      WHEN 'VALUATIONDATA'.
+        ASSIGN COMPONENT 'VAL_AREA' OF STRUCTURE is_line TO <lv_k1>.
+        ASSIGN COMPONENT 'VAL_TYPE' OF STRUCTURE is_line TO <lv_k2>.
+        CHECK <lv_k1> IS ASSIGNED AND <lv_k2> IS ASSIGNED.
+        SELECT SINGLE matnr FROM mbew INTO @lv_dummy
+          WHERE matnr = @iv_matnr AND bwkey = @<lv_k1> AND bwtar = @<lv_k2>.
+
+      WHEN 'SALESDATA'.
+        ASSIGN COMPONENT 'SALES_ORG'  OF STRUCTURE is_line TO <lv_k1>.
+        ASSIGN COMPONENT 'DISTR_CHAN' OF STRUCTURE is_line TO <lv_k2>.
+        CHECK <lv_k1> IS ASSIGNED AND <lv_k2> IS ASSIGNED.
+        SELECT SINGLE matnr FROM mvke INTO @lv_dummy
+          WHERE matnr = @iv_matnr AND vkorg = @<lv_k1> AND vtweg = @<lv_k2>.
+
+      WHEN 'WAREHOUSENUMBERDATA'.
+        ASSIGN COMPONENT 'WHSE_NO' OF STRUCTURE is_line TO <lv_k1>.
+        CHECK sy-subrc = 0.
+        SELECT SINGLE matnr FROM mlgn INTO @lv_dummy
+          WHERE matnr = @iv_matnr AND lgnum = @<lv_k1>.
+
+      WHEN 'STORAGETYPEDATA'.
+        ASSIGN COMPONENT 'WHSE_NO'   OF STRUCTURE is_line TO <lv_k1>.
+        ASSIGN COMPONENT 'STGE_TYPE' OF STRUCTURE is_line TO <lv_k2>.
+        CHECK <lv_k1> IS ASSIGNED AND <lv_k2> IS ASSIGNED.
+        SELECT SINGLE matnr FROM mlgt INTO @lv_dummy
+          WHERE matnr = @iv_matnr AND lgnum = @<lv_k1> AND lgtyp = @<lv_k2>.
+
+      WHEN 'TAXCLASSIFICATIONS'.
+        ASSIGN COMPONENT 'DEPCOUNTRY' OF STRUCTURE is_line TO <lv_k1>.
+        CHECK sy-subrc = 0.
+        SELECT SINGLE matnr FROM mlan INTO @lv_dummy
+          WHERE matnr = @iv_matnr AND aland = @<lv_k1>.
+
+      WHEN OTHERS.
+        RETURN.                                       "client-level data
+    ENDCASE.
+
+    IF sy-subrc <> 0.
+      rv_func = 'INS'.                                "new org. level
+    ENDIF.
   ENDMETHOD.
 
   METHOD build_x_tables.
@@ -2999,6 +3073,8 @@ CLASS lcl_app IMPLEMENTATION.
 *    ENDLOOP.
     DATA: lt_comp TYPE string_table.
     SPLIT lv_fixed_comp AT space INTO TABLE lt_comp.
+    CONSTANTS lc_org_params TYPE string VALUE
+      ` PLANTDATA FORECASTPARAMETERS PLANNINGDATA STORAGELOCATIONDATA VALUATIONDATA WAREHOUSENUMBERDATA SALESDATA STORAGETYPEDATA TAXCLASSIFICATIONS `.
 
     LOOP AT mt_row INTO DATA(ls_row).
       DATA(ls_bapi) = VALUE ty_bapi( row = ls_row-row matkey = ls_row-matkey ).
@@ -3025,6 +3101,37 @@ CLASS lcl_app IMPLEMENTATION.
           ENDIF.
         ENDLOOP.
 
+      ENDLOOP.
+
+      "Mandatory fields without value in this row - the cell loop above only
+      "sees filled cells. Columns missing in the template: see CHECK_COLUMNS
+      LOOP AT mo_config->mt_fcat INTO DATA(ls_mand) WHERE mandatory = abap_true.
+        CHECK line_exists( mt_header[ table_line = ls_mand-temp_field_name ] ).
+        CHECK is_available( iv_row = ls_row-row iv_field = ls_mand-temp_field_name ) = abap_false.
+
+        "Client-level field (no org. level target): one row of the material
+        "is enough (BUILD_CALL merges client data); not sent at all by Extend
+        DATA(lv_org_level) = abap_false.
+        LOOP AT ls_mand-targets INTO DATA(ls_tgt).
+          IF lc_org_params CS | { ls_tgt-param } |.
+            lv_org_level = abap_true.
+          ENDIF.
+        ENDLOOP.
+        IF lv_org_level = abap_false.
+          CHECK lcl_screen=>get_operation( ) <> gc_op-extend.
+          DATA(lv_in_other_row) = abap_false.
+          LOOP AT mt_row INTO DATA(ls_other) WHERE matkey = ls_row-matkey.
+            IF is_available( iv_row = ls_other-row iv_field = ls_mand-temp_field_name ) = abap_true.
+              lv_in_other_row = abap_true.
+              EXIT.
+            ENDIF.
+          ENDLOOP.
+          CHECK lv_in_other_row = abap_false.
+        ENDIF.
+
+        mo_log->add( iv_type = 'E' is_row = ls_row iv_view = ls_mand-view
+                     iv_field = ls_mand-temp_field_name iv_fdesc = ls_mand-description
+                     iv_text = |{ ls_mand-temp_field_name } ({ ls_mand-description }) is mandatory| ).
       ENDLOOP.
 
       check_existence( is_row = ls_row is_bapi = ls_bapi ).
@@ -3288,7 +3395,7 @@ CLASS lcl_app IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    SELECT SINGLE matnr FROM mara INTO @lv_dummy WHERE matnr = @lv_matnr.
+    SELECT SINGLE mtart, mbrsh FROM mara INTO @DATA(ls_mara) WHERE matnr = @lv_matnr.
     DATA(lv_exists) = COND abap_bool( WHEN sy-subrc = 0 THEN abap_true ELSE abap_false ).
     DATA(lv_opid)   = lcl_screen=>get_operation( ).
 
@@ -3303,6 +3410,25 @@ CLASS lcl_app IMPLEMENTATION.
       mo_log->add( iv_type = 'E' is_row = is_row iv_field = gc_col-matnr
                    iv_text = 'Material does not exist - use Create' ).
       RETURN.
+    ENDIF.
+
+    "HEADDATA is sent with type / sector of the selection screen
+    IF ls_mara-mtart <> p_mtart.
+      mo_log->add( iv_type = 'E' is_row = is_row iv_field = gc_col-mtart
+                   iv_text = |Material has type { ls_mara-mtart } - selection is { p_mtart }| ).
+    ENDIF.
+    IF ls_mara-mbrsh <> p_indsec.
+      mo_log->add( iv_type = 'E' is_row = is_row iv_field = gc_col-mbrsh
+                   iv_text = |Material has industry sector { ls_mara-mbrsh } - selection is { p_indsec }| ).
+    ENDIF.
+
+    "Extend maintains org. levels only - client-level data is not sent
+    IF lv_opid = gc_op-extend AND
+       ( is_bapi-clientdata          IS NOT INITIAL OR is_bapi-materialdescription IS NOT INITIAL OR
+         is_bapi-unitsofmeasure      IS NOT INITIAL OR is_bapi-internationalartnos IS NOT INITIAL OR
+         is_bapi-materiallongtext    IS NOT INITIAL ).
+      mo_log->add( iv_type = 'W' is_row = is_row
+                   iv_text = 'Basic data / descriptions / units / texts are not changed by Extend - use Update' ).
     ENDIF.
 
     "Org. levels of this row - already maintained for the material?
@@ -3494,6 +3620,14 @@ CLASS lcl_app IMPLEMENTATION.
     APPEND LINES OF lt_single2 TO lt_single.
     SPLIT lc_tables AT space INTO TABLE lt_tables.
 
+    "Extend: org. levels only - client-level data of the existing material
+    "is left untouched (tax classifications are needed for new countries)
+    DATA(lv_extend) = xsdbool( lcl_screen=>get_operation( ) = gc_op-extend ).
+    IF lv_extend = abap_true.
+      DELETE lt_single WHERE table_line = `CLIENTDATA`.
+      DELETE lt_tables WHERE table_line <> `TAXCLASSIFICATIONS`.
+    ENDIF.
+
     LOOP AT mt_bapi INTO DATA(ls_rb) WHERE matkey = iv_matkey.
 
       "Org. key defaults from the plant of the row
@@ -3565,7 +3699,7 @@ CLASS lcl_app IMPLEMENTATION.
     ls_head-matl_type  = p_mtart.
     ls_head-ind_sector = p_indsec.
 *    ls_head-basic_view    = COND #( WHEN abap   = abap_true AND line_exists( lt_views[ table_line = gc_view-basic  ] ) THEN abap_true ).
-    ls_head-basic_view    = abap_true.
+    ls_head-basic_view    = xsdbool( lv_extend = abap_false ).
     ls_head-purchase_view = COND #( WHEN p_purch  = abap_true AND line_exists( lt_views[ table_line = gc_view-purch  ] ) THEN abap_true ).
     ls_head-mrp_view      = COND #( WHEN p_mrp   = abap_true AND line_exists( lt_views[ table_line = gc_view-mrp    ] ) THEN abap_true ).
     ls_head-storage_view  = COND #( WHEN p_plntst = abap_true AND line_exists( lt_views[ table_line = gc_view-plntst ] ) THEN abap_true ).
