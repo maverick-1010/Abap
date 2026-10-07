@@ -640,7 +640,9 @@ CLASS lcl_app DEFINITION FINAL.
 
     METHODS:
       load_template          RAISING lcx_error,
-      apply_defaults,
+      check_defaults,
+      apply_defaults         IMPORTING is_row  TYPE ty_row
+                             CHANGING  cs_bapi TYPE ty_bapi,
       derive_values,
       inherit_org_keys,
       check_columns,
@@ -2994,7 +2996,7 @@ CLASS lcl_app IMPLEMENTATION.
     TRY.
         mo_config->load( ).          "5.2 variant, 5.3/5.4 view tables
         load_template( ).            "5.1 read template
-        apply_defaults( ).           "ZTMM_DEFLT_DATA for blank template fields
+        check_defaults( ).           "ZTMM_DEFLT_DATA entries usable?
         derive_values( ).
         inherit_org_keys( ).         "empty WERKS / VKORG / VTWEG from REF_*
         check_columns( ).
@@ -3092,36 +3094,60 @@ CLASS lcl_app IMPLEMENTATION.
     mo_log->add( iv_type = 'S' iv_text = |Template { lv_file }: { lines( mt_row ) } data row(s) read| ).
   ENDMETHOD.
 
+  METHOD check_defaults.
+    "Default values (ZTMM_DEFLT_DATA) are used for Create only. An entry that
+    "can not be applied is reported once as an error: field is a control
+    "column / key field, or is not a field of the active variant / selected views.
+    CHECK lcl_screen=>get_operation( ) = gc_op-create.
+
+    DATA(lt_ctrl) = lcl_config=>control_columns( ).
+    LOOP AT mo_config->mt_deflt INTO DATA(ls_def).
+      DATA(lv_field) = CONV fieldname( ls_def-temp_field_name ).
+      CHECK lv_field IS NOT INITIAL AND ls_def-def_field_value IS NOT INITIAL.
+      IF lv_field = gc_col-matnr OR lv_field = gc_col-werks OR
+         lv_field = gc_col-vkorg OR lv_field = gc_col-vtweg OR
+         line_exists( lt_ctrl[ table_line = lv_field ] ).
+        mo_log->add( iv_type = 'E' iv_field = lv_field
+                     iv_text = |Default for { lv_field } in ZTMM_DEFLT_DATA not possible - control / key field| ).
+      ELSEIF NOT line_exists( mo_config->mt_fcat[ KEY k_field COMPONENTS temp_field_name = lv_field ] ).
+        mo_log->add( iv_type = 'E' iv_field = lv_field
+                     iv_text = |Default for { lv_field } in ZTMM_DEFLT_DATA: field is not part of variant | &&
+                               |{ mo_config->mv_variant } / selected views| ).
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
   METHOD apply_defaults.
-    "Default values (ZTMM_DEFLT_DATA): a template field that is blank (no
-    "value in the template) and maintained there for the selected material
-    "type / business profile / variant view gets the default value. The
-    "value is added like a template value, i.e. it passes the normal
-    "conversion, validation and mapping to the BAPI field.
-    "Only for Create (a blank cell means 'unchanged' for Update, and Extend
-    "does not change existing data). Control columns and the key fields
-    "(MATNR, WERKS, VKORG, VTWEG) are never defaulted.
+    "Default values (ZTMM_DEFLT_DATA) - priority per field:
+    "  1. template value  2. value copied from the reference material
+    "  3. default value (this method, runs after the reference copy)
+    "The field need not be a column of the template. The default is handled
+    "like a template value (conversion, validation, mapping to the BAPI).
+    "Create only; several entries for one field: the first one is used.
     CHECK lcl_screen=>get_operation( ) = gc_op-create.
     CHECK mo_config->mt_deflt IS NOT INITIAL.
 
     DATA(lt_ctrl) = lcl_config=>control_columns( ).
-    DATA lv_value TYPE string.
 
     LOOP AT mo_config->mt_deflt INTO DATA(ls_def).
       DATA(lv_field) = CONV fieldname( ls_def-temp_field_name ).
-      lv_value = lcl_mapper=>trim( ls_def-def_field_value ).
+      DATA(lv_value) = lcl_mapper=>trim( ls_def-def_field_value ).
       CHECK lv_field IS NOT INITIAL AND lv_value IS NOT INITIAL.
+      "entries that can not be used are reported in CHECK_DEFAULTS
       CHECK lv_field <> gc_col-matnr AND lv_field <> gc_col-werks AND
             lv_field <> gc_col-vkorg AND lv_field <> gc_col-vtweg.
       CHECK NOT line_exists( lt_ctrl[ table_line = lv_field ] ).
-      "only fields of the selected views of the active variant
       CHECK line_exists( mo_config->mt_fcat[ KEY k_field COMPONENTS temp_field_name = lv_field ] ).
 
-      LOOP AT mt_row INTO DATA(ls_row).
-        CHECK NOT line_exists( mt_cell[ row = ls_row-row field = lv_field ] ).
-        INSERT VALUE #( row = ls_row-row field = lv_field value = lv_value ) INTO TABLE mt_cell.
-        mo_log->add( iv_type = 'S' is_row = ls_row iv_field = lv_field
-                     iv_text = |Default value { lv_value } set for blank field { lv_field }| ).
+      CHECK NOT line_exists( mt_cell[   row = is_row-row field = lv_field ] ).   "template value
+      CHECK NOT line_exists( mt_copied[ row = is_row-row field = lv_field ] ).   "reference value
+
+      INSERT VALUE #( row = is_row-row field = lv_field value = lv_value ) INTO TABLE mt_cell.
+      mo_log->add( iv_type = 'S' is_row = is_row iv_field = lv_field
+                   iv_text = |Value { lv_value } for { lv_field } taken from default table ZTMM_DEFLT_DATA| ).
+
+      LOOP AT mo_config->mt_fcat INTO DATA(ls_fcat) USING KEY k_field WHERE temp_field_name = lv_field.
+        validate_row( EXPORTING is_row = is_row is_fcat = ls_fcat CHANGING cs_bapi = cs_bapi ).
       ENDLOOP.
     ENDLOOP.
   ENDMETHOD.
@@ -3278,6 +3304,9 @@ CLASS lcl_app IMPLEMENTATION.
                                        is_ref   = ls_ref
                                        it_views = lt_ref_views
                              CHANGING  cs_bapi  = ls_bapi ).
+
+      "Defaults for fields neither in the template nor copied from the reference
+      apply_defaults( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
 
       "Mandatory fields without value in this row - the cell loop above only
       "sees filled cells. Columns missing in the template: see CHECK_COLUMNS
