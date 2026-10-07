@@ -3482,7 +3482,7 @@ CLASS lcl_app IMPLEMENTATION.
         CHECK NOT ( ls_makt-langu = sy-langu AND
                     line_exists( cs_bapi-materialdescription[ langu = space ] ) ).  "template line, default language
         APPEND ls_makt TO cs_bapi-materialdescription.
-        INSERT `MATERIALDESCRIPTION` INTO TABLE lt_params.
+        INSERT CONV fieldname( 'MATERIALDESCRIPTION' ) INTO TABLE lt_params.
       ENDLOOP.
     ENDIF.
 
@@ -3493,7 +3493,7 @@ CLASS lcl_app IMPLEMENTATION.
       LOOP AT is_ref-unitsofmeasure INTO DATA(ls_marm).
         CHECK NOT line_exists( cs_bapi-unitsofmeasure[ alt_unit = ls_marm-alt_unit ] ).
         APPEND ls_marm TO cs_bapi-unitsofmeasure.
-        INSERT `UNITSOFMEASURE` INTO TABLE lt_params.
+        INSERT CONV fieldname( 'UNITSOFMEASURE' ) INTO TABLE lt_params.
       ENDLOOP.
     ELSEIF lv_basic = abap_true AND is_ref-unitsofmeasure IS NOT INITIAL.
       mo_log->add( iv_type = 'W' is_row = is_row iv_view = gc_view-basic
@@ -3516,7 +3516,7 @@ CLASS lcl_app IMPLEMENTATION.
     ENDLOOP.
     IF lt_text_new IS NOT INITIAL.
       APPEND LINES OF lt_text_new TO cs_bapi-materiallongtext.
-      INSERT `MATERIALLONGTEXT` INTO TABLE lt_params.
+      INSERT CONV fieldname( 'MATERIALLONGTEXT' ) INTO TABLE lt_params.
     ENDIF.
 
     "Tax classifications
@@ -3524,7 +3524,7 @@ CLASS lcl_app IMPLEMENTATION.
       LOOP AT is_ref-taxclassifications INTO DATA(ls_mlan).
         CHECK NOT line_exists( cs_bapi-taxclassifications[ depcountry = ls_mlan-depcountry ] ).
         APPEND ls_mlan TO cs_bapi-taxclassifications.
-        INSERT `TAXCLASSIFICATIONS` INTO TABLE lt_params.
+        INSERT CONV fieldname( 'TAXCLASSIFICATIONS' ) INTO TABLE lt_params.
       ENDLOOP.
     ENDIF.
 
