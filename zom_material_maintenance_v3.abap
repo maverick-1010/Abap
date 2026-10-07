@@ -636,6 +636,7 @@ CLASS lcl_app DEFINITION FINAL.
     METHODS:
       load_template          RAISING lcx_error,
       derive_values,
+      inherit_org_keys,
       check_columns,
       validate_and_map,
       check_row_control      IMPORTING is_row  TYPE ty_row,
@@ -2971,6 +2972,7 @@ CLASS lcl_app IMPLEMENTATION.
         mo_config->load( ).          "5.2 variant, 5.3/5.4 view tables
         load_template( ).            "5.1 read template
         derive_values( ).
+        inherit_org_keys( ).         "empty WERKS / VKORG / VTWEG from REF_*
         check_columns( ).
         validate_and_map( ).         "5.5 validation + mapping to BAPI
       CATCH lcx_error INTO DATA(lx_error).
@@ -3080,6 +3082,60 @@ CLASS lcl_app IMPLEMENTATION.
       INSERT VALUE #( row = ls_row-row field = gc_col-prdha value = lv_prdha ) INTO TABLE mt_cell.
       mo_log->add( iv_type = 'S' is_row = ls_row iv_field = gc_col-prdha
                    iv_text = |Product hierarchy { lv_prdha } derived from PRODH_LVL1-{ gc_prodh_levels }| ).
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD inherit_org_keys.
+    "Reference material: plant / sales area not given in the template are
+    "taken from REF_WERKS / REF_VKORG / REF_VTWEG - the new material is then
+    "created in the org. levels of the reference. Only for views that are
+    "copied (no COPY_* flag = all views). The value is handled exactly like
+    "a template value (mapping, existence checks, log).
+    LOOP AT mt_row ASSIGNING FIELD-SYMBOL(<ls_row>).
+      CHECK get_value( iv_row = <ls_row>-row iv_field = gc_col-ref_matnr ) IS NOT INITIAL.
+
+      DATA(lv_purch) = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_purch ).
+      DATA(lv_mrp)   = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_mrp ).
+      DATA(lv_acct)  = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_acct ).
+      DATA(lv_sales) = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_sales ).
+      DATA(lv_basic) = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_basic ).
+      DATA(lv_no_flag) = xsdbool( lv_purch = abap_false AND lv_mrp   = abap_false AND
+                                  lv_acct  = abap_false AND lv_sales = abap_false AND
+                                  lv_basic = abap_false ).
+
+      "Plant (plant-level views: purchasing, MRP, plant/storage, accounting)
+      IF <ls_row>-werks IS INITIAL AND
+         ( lv_no_flag = abap_true OR lv_purch = abap_true OR lv_mrp = abap_true OR lv_acct = abap_true ).
+        DATA(lv_werks) = to_upper( get_value( iv_row = <ls_row>-row iv_field = gc_col-ref_werks ) ).
+        IF lv_werks IS NOT INITIAL.
+          INSERT VALUE #( row = <ls_row>-row field = gc_col-werks value = lv_werks ) INTO TABLE mt_cell.
+          <ls_row>-werks = lv_werks.
+          mo_log->add( iv_type = 'S' is_row = <ls_row> iv_field = gc_col-werks
+                       iv_text = |Plant { lv_werks } taken from REF_WERKS| ).
+        ENDIF.
+      ENDIF.
+
+      "Sales area (sales view)
+      IF lv_no_flag = abap_true OR lv_sales = abap_true.
+        IF <ls_row>-vkorg IS INITIAL.
+          DATA(lv_vkorg) = to_upper( get_value( iv_row = <ls_row>-row iv_field = gc_col-ref_vkorg ) ).
+          IF lv_vkorg IS NOT INITIAL.
+            INSERT VALUE #( row = <ls_row>-row field = gc_col-vkorg value = lv_vkorg ) INTO TABLE mt_cell.
+            <ls_row>-vkorg = lv_vkorg.
+            mo_log->add( iv_type = 'S' is_row = <ls_row> iv_field = gc_col-vkorg
+                         iv_text = |Sales organization { lv_vkorg } taken from REF_VKORG| ).
+          ENDIF.
+        ENDIF.
+        IF <ls_row>-vtweg IS INITIAL.
+          DATA(lv_vtweg) = to_upper( get_value( iv_row = <ls_row>-row iv_field = gc_col-ref_vtweg ) ).
+          IF lv_vtweg IS NOT INITIAL.
+            INSERT VALUE #( row = <ls_row>-row field = gc_col-vtweg value = lv_vtweg ) INTO TABLE mt_cell.
+            <ls_row>-vtweg = lv_vtweg.
+            mo_log->add( iv_type = 'S' is_row = <ls_row> iv_field = gc_col-vtweg
+                         iv_text = |Distribution channel { lv_vtweg } taken from REF_VTWEG| ).
+          ENDIF.
+        ENDIF.
+      ENDIF.
     ENDLOOP.
   ENDMETHOD.
 
