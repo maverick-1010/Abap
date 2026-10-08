@@ -69,6 +69,7 @@ CONSTANTS:
   gc_prodh_levels   TYPE i         VALUE 5,          "PRODH_LVL1..5 -> PRDHA
   gc_objtab_mara    TYPE tabelle   VALUE 'MARA',     "classification object table
   gc_def_classtype  TYPE klassenart VALUE '001',     "default class type
+  gc_max_longtext   TYPE i         VALUE 132,       "max. length of a material long text
   "Conditional mandatory: check CONDMAT_FIELD only if SOURCE_FIELD is filled
   gc_cond_if_source TYPE abap_bool VALUE abap_true,
   "Test run + Create without MATNR: draw internal number to simulate?
@@ -1046,8 +1047,7 @@ CLASS lcl_mapper IMPLEMENTATION.
     DATA: lv_suffix TYPE string,
           lv_key    TYPE string,
           lr_line   TYPE REF TO data,
-          lv_value  TYPE string,
-          lv_rest   TYPE string.
+          lv_value  TYPE string.
 
     CLEAR ev_error.
     lv_value = iv_value.
@@ -1093,26 +1093,16 @@ CLASS lcl_mapper IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    "Long texts longer than one line (132 char) -> continuation lines
+    "Material long text: one text line only (132 characters)
     IF is_target-param = 'MATERIALLONGTEXT' AND is_target-comp = 'TEXT_LINE' AND
-       strlen( lv_value ) > 132.
-      lv_rest  = substring( val = lv_value off = 132 ).
-      lv_value = substring( val = lv_value len = 132 ).
+       strlen( lv_value ) > gc_max_longtext.
+      ev_error = |Long text has { strlen( lv_value ) } characters - maximum is { gc_max_longtext }|.
+      RETURN.
     ENDIF.
 
     move_value( EXPORTING iv_value  = lv_value
                 IMPORTING ev_error  = ev_error
                 CHANGING  cv_target = <lv_tgt> ).
-
-    IF lv_rest IS NOT INITIAL AND ev_error IS INITIAL.
-      DATA(ls_text) = CONV bapie1mltxrt( <ls_tgt> ).
-      WHILE lv_rest IS NOT INITIAL.
-        ls_text-text_line = lv_rest.
-        APPEND ls_text TO cs_bapi-materiallongtext.
-        lv_rest = COND #( WHEN strlen( lv_rest ) > 132
-                          THEN substring( val = lv_rest off = 132 ) ELSE `` ).
-      ENDWHILE.
-    ENDIF.
   ENDMETHOD.
 
   METHOD move_value.
