@@ -4092,6 +4092,10 @@ CLASS lcl_app IMPLEMENTATION.
       mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
                    iv_text = |Characteristic value '{ ls_char-value_char }' without characteristic name| ).
     ENDLOOP.
+    LOOP AT cs_bapi-allocvalueschar INTO ls_char WHERE charact IS NOT INITIAL AND value_char IS INITIAL.
+      mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
+                   iv_text = |Characteristic { ls_char-charact } without value| ).
+    ENDLOOP.
     IF line_exists( cs_bapi-allocvaluesnum[ charact = space ] ) OR
        line_exists( cs_bapi-allocvaluescurr[ charact = space ] ).
       mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
@@ -4118,6 +4122,84 @@ CLASS lcl_app IMPLEMENTATION.
                              |{ cs_bapi-classkey-classtype }) does not exist| ).
       RETURN.
     ENDIF.
+
+    "--- 3. template columns CHAR_NAME_n / CHAR_VALUE_n are mapped to the
+    "    character table whatever the characteristic is: move the lines of
+    "    numeric / date / time characteristics to ALLOCVALUESNUM and of
+    "    currency characteristics to ALLOCVALUESCURR (format from CABN)
+    FIELD-SYMBOLS <lv_rel> TYPE any.
+    DATA: lt_char_keep LIKE cs_bapi-allocvalueschar,
+          ls_new_num   TYPE bapi1003_alloc_values_num,
+          ls_new_curr  TYPE bapi1003_alloc_values_curr,
+          lv_conv_err  TYPE string,
+          lv_date      TYPE d,
+          lv_text      TYPE string.
+
+    LOOP AT cs_bapi-allocvalueschar INTO ls_char.
+      READ TABLE ls_info-chars INTO DATA(ls_def) WITH TABLE KEY atnam = CONV atnam( ls_char-charact ).
+      DATA(lv_known) = xsdbool( sy-subrc = 0 ).
+      IF lv_known = abap_false OR ls_char-charact IS INITIAL OR ls_char-value_char IS INITIAL
+         OR ls_def-atfor = 'CHAR'.
+        IF lv_known = abap_true AND ls_def-atfor = 'CHAR' AND ls_def-atkle = abap_false.
+          ls_char-value_char = to_upper( ls_char-value_char ).    "not case sensitive
+        ENDIF.
+        APPEND ls_char TO lt_char_keep.
+        CONTINUE.
+      ENDIF.
+
+      lv_text = condense( CONV string( ls_char-value_char ) ).
+      CLEAR: lv_conv_err, ls_new_num, ls_new_curr.
+      CASE ls_def-atfor.
+        WHEN 'NUM'.
+          ls_new_num-charact = ls_char-charact.
+          lcl_mapper=>move_value( EXPORTING iv_value  = lv_text
+                                  IMPORTING ev_error  = lv_conv_err
+                                  CHANGING  cv_target = ls_new_num-value_from ).
+        WHEN 'CURR'.
+          ls_new_curr-charact = ls_char-charact.
+          lcl_mapper=>move_value( EXPORTING iv_value  = lv_text
+                                  IMPORTING ev_error  = lv_conv_err
+                                  CHANGING  cv_target = ls_new_curr-value_from ).
+        WHEN 'DATE'.
+          ls_new_num-charact = ls_char-charact.
+          lcl_mapper=>move_value( EXPORTING iv_value  = lv_text
+                                  IMPORTING ev_error  = lv_conv_err
+                                  CHANGING  cv_target = lv_date ).
+          IF lv_conv_err IS INITIAL.
+            ls_new_num-value_from = CONV f( |{ lv_date }| ).      "YYYYMMDD
+          ENDIF.
+        WHEN 'TIME'.
+          ls_new_num-charact = ls_char-charact.
+          REPLACE ALL OCCURRENCES OF ':' IN lv_text WITH ''.
+          IF lv_text CO '0123456789' AND strlen( lv_text ) <= 6.
+            ls_new_num-value_from = CONV f( lv_text ).             "HHMMSS
+          ELSE.
+            lv_conv_err = |Value '{ ls_char-value_char }' is not a valid time|.
+          ENDIF.
+      ENDCASE.
+
+      IF lv_conv_err IS NOT INITIAL.
+        mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class iv_field = ls_char-charact
+                     iv_text = |Characteristic { ls_char-charact } ({ ls_def-atfor }): { lv_conv_err }| ).
+        APPEND ls_char TO lt_char_keep.
+        CONTINUE.
+      ENDIF.
+
+      IF ls_def-atfor = 'CURR'.
+        ASSIGN COMPONENT 'VALUE_RELATION' OF STRUCTURE ls_new_curr TO <lv_rel>.
+        IF sy-subrc = 0.
+          <lv_rel> = '1'.                                        "equal
+        ENDIF.
+        APPEND ls_new_curr TO cs_bapi-allocvaluescurr.
+      ELSE.
+        ASSIGN COMPONENT 'VALUE_RELATION' OF STRUCTURE ls_new_num TO <lv_rel>.
+        IF sy-subrc = 0.
+          <lv_rel> = '1'.                                        "equal
+        ENDIF.
+        APPEND ls_new_num TO cs_bapi-allocvaluesnum.
+      ENDIF.
+    ENDLOOP.
+    cs_bapi-allocvalueschar = lt_char_keep.
 
     LOOP AT cs_bapi-allocvalueschar INTO ls_char WHERE charact IS NOT INITIAL.
       check_characteristic( is_row = is_row is_info = ls_info iv_param = 'ALLOCVALUESCHAR'
