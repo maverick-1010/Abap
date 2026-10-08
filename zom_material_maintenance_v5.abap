@@ -69,8 +69,6 @@ CONSTANTS:
   gc_prodh_levels   TYPE i         VALUE 5,          "PRODH_LVL1..5 -> PRDHA
   gc_objtab_mara    TYPE tabelle   VALUE 'MARA',     "classification object table
   gc_def_classtype  TYPE klassenart VALUE '001',     "default class type
-  "Template value that removes a characteristic value (Update)
-  gc_del_marker     TYPE string    VALUE '<DEL>',
   "Conditional mandatory: check CONDMAT_FIELD only if SOURCE_FIELD is filled
   gc_cond_if_source TYPE abap_bool VALUE abap_true,
   "Test run + Create without MATNR: draw internal number to simulate?
@@ -222,8 +220,6 @@ TYPES:
     matkey              TYPE string,
     views               TYPE tt_views,           "views with data in this row
     line_keys           TYPE tt_linekey,
-    class_del           TYPE tt_linekey,         "lines with <DEL> marker
-    class_delete        TYPE tt_atnam,           "characteristics to be removed
   END OF ty_bapi,
   tt_bapi TYPE STANDARD TABLE OF ty_bapi WITH EMPTY KEY
           WITH NON-UNIQUE SORTED KEY k_mat COMPONENTS matkey,
@@ -380,9 +376,7 @@ SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE TEXT-004.
                p_plntst AS CHECKBOX DEFAULT 'X',
                p_purch  AS CHECKBOX DEFAULT 'X',
                p_sales  AS CHECKBOX DEFAULT 'X',
-               p_val    AS CHECKBOX DEFAULT 'X',
-               p_clonly AS CHECKBOX,                "classification only (Update)
-               p_clapp  AS CHECKBOX.                "add values to multi-value characteristics
+               p_val    AS CHECKBOX DEFAULT 'X'.
 SELECTION-SCREEN END OF BLOCK b3.
 
 SELECTION-SCREEN BEGIN OF BLOCK b4 WITH FRAME TITLE TEXT-005.
@@ -444,10 +438,9 @@ CLASS lcl_mapper DEFINITION FINAL.
                     EXPORTING ev_param  TYPE fieldname
                               ev_table  TYPE abap_bool,
       target_exists IMPORTING is_target TYPE ty_target RETURNING VALUE(rv_exists) TYPE abap_bool,
-      map_value     IMPORTING is_target   TYPE ty_target
-                              iv_field    TYPE fieldname
-                              iv_value    TYPE string
-                              iv_no_value TYPE abap_bool DEFAULT abap_false
+      map_value     IMPORTING is_target TYPE ty_target
+                              iv_field  TYPE fieldname
+                              iv_value  TYPE string
                     EXPORTING ev_error  TYPE string
                     CHANGING  cs_bapi   TYPE ty_bapi,
       move_value    IMPORTING iv_value  TYPE string
@@ -1091,15 +1084,6 @@ CLASS lcl_mapper IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
 
-    "--- line only, no value (<DEL> marker of a characteristic): the line is
-    "    remembered and resolved in LCL_APP->CHECK_CLASSIFICATION
-    IF iv_no_value = abap_true.
-      IF is_target-table = abap_true.
-        APPEND VALUE #( param = is_target-param key = lv_key ) TO cs_bapi-class_del.
-      ENDIF.
-      RETURN.
-    ENDIF.
-
     "--- target field
     ASSIGN COMPONENT is_target-comp OF STRUCTURE <ls_tgt> TO <lv_tgt>.
     IF sy-subrc <> 0.
@@ -1701,15 +1685,14 @@ ENDCLASS.
 CLASS lcl_config IMPLEMENTATION.
 
   METHOD view_tables.
-    "View table per selection-screen checkbox ('classification only': CLASS only)
-    DATA(lv_all) = xsdbool( p_clonly = abap_false ).
-    rt_tab = VALUE #( ( view = gc_view-basic  tabname = 'ZTMM_BASIC_DATA'  active = lv_all )
+    "View table per selection-screen checkbox
+    rt_tab = VALUE #( ( view = gc_view-basic  tabname = 'ZTMM_BASIC_DATA'  active = abap_true   )
                       ( view = gc_view-class  tabname = 'ZTMM_CLASS_DATA'  active = p_class )
-                      ( view = gc_view-purch  tabname = 'ZTMM_PURCH_DATA'  active = xsdbool( p_purch  = abap_true AND lv_all = abap_true ) )
-                      ( view = gc_view-mrp    tabname = 'ZTMM_MRP_DATA'    active = xsdbool( p_mrp    = abap_true AND lv_all = abap_true ) )
-                      ( view = gc_view-plntst tabname = 'ZTMM_PLNTST_DATA' active = xsdbool( p_plntst = abap_true AND lv_all = abap_true ) )
-                      ( view = gc_view-sales  tabname = 'ZTMM_SALES_DATA'  active = xsdbool( p_sales  = abap_true AND lv_all = abap_true ) )
-                      ( view = gc_view-val    tabname = 'ZTMM_VAL_DATA'    active = xsdbool( p_val    = abap_true AND lv_all = abap_true ) ) ).
+                      ( view = gc_view-purch  tabname = 'ZTMM_PURCH_DATA'  active = p_purch )
+                      ( view = gc_view-mrp    tabname = 'ZTMM_MRP_DATA'    active = p_mrp )
+                      ( view = gc_view-plntst tabname = 'ZTMM_PLNTST_DATA' active = p_plntst )
+                      ( view = gc_view-sales  tabname = 'ZTMM_SALES_DATA'  active = p_sales )
+                      ( view = gc_view-val    tabname = 'ZTMM_VAL_DATA'    active = p_val ) ).
   ENDMETHOD.
 
   METHOD control_columns.
@@ -2275,61 +2258,19 @@ CLASS lcl_material_bapi IMPLEMENTATION.
     DATA(lv_exists) = COND abap_bool( WHEN line_exists( lt_return[ type = 'E' ] )
                                       THEN abap_false ELSE abap_true ).
 
-    "Characteristics removed in the template (<DEL>)
-    LOOP AT is_class-class_delete INTO DATA(lv_del).
-      DELETE lt_char WHERE charact = lv_del.
-      DELETE lt_num  WHERE charact = lv_del.
-      DELETE lt_curr WHERE charact = lv_del.
-    ENDLOOP.
-    IF lv_exists = abap_false AND is_class-allocvalueschar IS INITIAL AND
-       is_class-allocvaluesnum IS INITIAL AND is_class-allocvaluescurr IS INITIAL AND
-       is_class-class_delete IS NOT INITIAL.
-      mo_log->add( iv_type = 'W' is_row = is_row iv_matnr = iv_matnr iv_view = gc_view-class
-                   iv_text = |Class { lv_class } not assigned - { gc_del_marker } ignored| ).
-      rv_ok = abap_true.
-      RETURN.
-    ENDIF.
-
-    "Template values replace the existing values of the characteristic.
-    "Multi-value characteristic + 'add values' on the screen: the template
-    "values are added to the existing ones
-    DATA(ls_info) = lcl_class_info=>get( iv_class = lv_class iv_klart = lv_ctype ).
-    DATA(lt_add)  = VALUE tt_atnam( ).
-    IF p_clapp = abap_true.
-      LOOP AT ls_info-chars INTO DATA(ls_ch) WHERE atein = abap_false.
-        INSERT ls_ch-atnam INTO TABLE lt_add.
-      ENDLOOP.
-    ENDIF.
-
+    "Template values overwrite existing values of the same characteristic
     LOOP AT is_class-allocvalueschar INTO DATA(ls_char).
-      CHECK NOT line_exists( lt_add[ table_line = ls_char-charact ] ).
       DELETE lt_char WHERE charact = ls_char-charact.
     ENDLOOP.
+    APPEND LINES OF is_class-allocvalueschar TO lt_char.
     LOOP AT is_class-allocvaluesnum INTO DATA(ls_num).
-      CHECK NOT line_exists( lt_add[ table_line = ls_num-charact ] ).
       DELETE lt_num WHERE charact = ls_num-charact.
     ENDLOOP.
+    APPEND LINES OF is_class-allocvaluesnum TO lt_num.
     LOOP AT is_class-allocvaluescurr INTO DATA(ls_curr).
-      CHECK NOT line_exists( lt_add[ table_line = ls_curr-charact ] ).
       DELETE lt_curr WHERE charact = ls_curr-charact.
     ENDLOOP.
-
-    LOOP AT is_class-allocvalueschar INTO ls_char.
-      CHECK NOT line_exists( lt_char[ charact = ls_char-charact value_char = ls_char-value_char ] ).
-      APPEND ls_char TO lt_char.
-    ENDLOOP.
-    LOOP AT is_class-allocvaluesnum INTO ls_num.
-      CHECK NOT line_exists( lt_num[ charact    = ls_num-charact
-                                     value_from = ls_num-value_from
-                                     value_to   = ls_num-value_to ] ).
-      APPEND ls_num TO lt_num.
-    ENDLOOP.
-    LOOP AT is_class-allocvaluescurr INTO ls_curr.
-      CHECK NOT line_exists( lt_curr[ charact    = ls_curr-charact
-                                      value_from = ls_curr-value_from
-                                      value_to   = ls_curr-value_to ] ).
-      APPEND ls_curr TO lt_curr.
-    ENDLOOP.
+    APPEND LINES OF is_class-allocvaluescurr TO lt_curr.
 
     CLEAR lt_return.
     IF lv_exists = abap_true.
@@ -3065,12 +3006,6 @@ CLASS lcl_screen IMPLEMENTATION.
        p_mrp IS INITIAL AND p_plntst IS INITIAL AND p_val IS INITIAL AND p_class IS INITIAL.
       MESSAGE 'Select at least one view'(e02) TYPE 'E'.
     ENDIF.
-    IF p_clonly = abap_true AND r_update = abap_false.
-      MESSAGE 'Classification only is possible with Update'(e05) TYPE 'E'.
-    ENDIF.
-    IF p_clonly = abap_true AND p_class = abap_false.
-      MESSAGE 'Classification only needs the classification view'(e06) TYPE 'E'.
-    ENDIF.
     DATA(lv_file) = COND string( WHEN r_local = abap_true THEN p_file1 ELSE p_file2 ).
     IF lv_file IS INITIAL.
       MESSAGE 'Enter the template file path'(e03) TYPE 'E'.
@@ -3615,7 +3550,7 @@ CLASS lcl_app IMPLEMENTATION.
       apply_defaults( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
       apply_current_date( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
 
-      "Classification: <DEL> markers, class master, single values
+      "Classification: values, class master, single values
       check_classification( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
 
       "Mandatory fields without value in this row - the cell loop above only
@@ -4133,13 +4068,9 @@ CLASS lcl_app IMPLEMENTATION.
   METHOD check_classification.
     "Classification of one row - runs after template, reference and default
     "values are mapped:
-    "  1. <DEL> markers -> characteristics to be removed (CLASS_DELETE)
-    "  2. values without characteristic name / without class
-    "  3. class, characteristics and values against the class master,
+    "  1. values without characteristic name / without class
+    "  2. class, characteristics and values against the class master,
     "     single-value characteristics with one value only
-    FIELD-SYMBOLS: <lt_tab>  TYPE STANDARD TABLE,
-                   <ls_line> TYPE any,
-                   <lv_char> TYPE any.
     DATA lt_used TYPE STANDARD TABLE OF atnam WITH EMPTY KEY.
 
     CHECK p_class = abap_true.
@@ -4156,46 +4087,7 @@ CLASS lcl_app IMPLEMENTATION.
       <ls_uu>-charact = to_upper( <ls_uu>-charact ).
     ENDLOOP.
 
-    "--- 1. <DEL> markers
-    LOOP AT cs_bapi-class_del INTO DATA(ls_del).
-      READ TABLE cs_bapi-line_keys INTO DATA(ls_lk) WITH KEY param = ls_del-param key = ls_del-key.
-      CHECK sy-subrc = 0.
-      ASSIGN COMPONENT ls_del-param OF STRUCTURE cs_bapi TO <lt_tab>.
-      CHECK sy-subrc = 0.
-      READ TABLE <lt_tab> ASSIGNING <ls_line> INDEX ls_lk-idx.
-      CHECK sy-subrc = 0.
-      ASSIGN COMPONENT 'CHARACT' OF STRUCTURE <ls_line> TO <lv_char>.
-      IF sy-subrc <> 0 OR <lv_char> IS INITIAL.
-        mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
-                     iv_text = |{ gc_del_marker } without characteristic name| ).
-        CONTINUE.
-      ENDIF.
-      INSERT CONV atnam( <lv_char> ) INTO TABLE cs_bapi-class_delete.
-    ENDLOOP.
-    LOOP AT cs_bapi-class_delete INTO DATA(lv_del).
-      "lines of the characteristic: the <DEL> line itself + values
-      DATA(lv_lines) = REDUCE i( INIT n = 0 FOR ls_x1 IN cs_bapi-allocvalueschar
-                                 WHERE ( charact = lv_del ) NEXT n = n + 1 )
-                     + REDUCE i( INIT n = 0 FOR ls_x2 IN cs_bapi-allocvaluesnum
-                                 WHERE ( charact = lv_del ) NEXT n = n + 1 )
-                     + REDUCE i( INIT n = 0 FOR ls_x3 IN cs_bapi-allocvaluescurr
-                                 WHERE ( charact = lv_del ) NEXT n = n + 1 ).
-      IF lv_lines > 1.
-        mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
-                     iv_text = |Characteristic { lv_del }: value and { gc_del_marker } in the same row| ).
-      ENDIF.
-      DELETE cs_bapi-allocvalueschar WHERE charact = lv_del.
-      DELETE cs_bapi-allocvaluesnum  WHERE charact = lv_del.
-      DELETE cs_bapi-allocvaluescurr WHERE charact = lv_del.
-    ENDLOOP.
-    CLEAR cs_bapi-class_del.                         "line indexes no longer valid
-    IF cs_bapi-class_delete IS NOT INITIAL AND lcl_screen=>get_operation( ) = gc_op-create.
-      mo_log->add( iv_type = 'W' is_row = is_row iv_view = gc_view-class
-                   iv_text = |{ gc_del_marker } ignored - a new material has no characteristic values| ).
-      CLEAR cs_bapi-class_delete.
-    ENDIF.
-
-    "--- 2. values without characteristic name / without class
+    "--- 1. values without characteristic name / without class
     LOOP AT cs_bapi-allocvalueschar INTO DATA(ls_char) WHERE charact IS INITIAL.
       mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
                    iv_text = |Characteristic value '{ ls_char-value_char }' without characteristic name| ).
@@ -4207,7 +4099,7 @@ CLASS lcl_app IMPLEMENTATION.
     ENDIF.
     IF cs_bapi-classkey-classnum IS INITIAL.
       IF cs_bapi-allocvalueschar IS NOT INITIAL OR cs_bapi-allocvaluesnum IS NOT INITIAL OR
-         cs_bapi-allocvaluescurr IS NOT INITIAL OR cs_bapi-class_delete  IS NOT INITIAL.
+         cs_bapi-allocvaluescurr IS NOT INITIAL.
         mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
                      iv_text = 'Characteristic values given, but no class' ).
       ENDIF.
@@ -4217,7 +4109,7 @@ CLASS lcl_app IMPLEMENTATION.
       cs_bapi-classkey-classtype = gc_def_classtype.
     ENDIF.
 
-    "--- 3. class master
+    "--- 2. class master
     DATA(ls_info) = lcl_class_info=>get( iv_class = cs_bapi-classkey-classnum
                                          iv_klart = cs_bapi-classkey-classtype ).
     IF ls_info-exists = abap_false.
@@ -4241,9 +4133,6 @@ CLASS lcl_app IMPLEMENTATION.
       check_characteristic( is_row = is_row is_info = ls_info iv_param = 'ALLOCVALUESCURR'
                             iv_atnam = ls_curr-charact ).
       APPEND ls_curr-charact TO lt_used.
-    ENDLOOP.
-    LOOP AT cs_bapi-class_delete INTO lv_del.
-      check_characteristic( is_row = is_row is_info = ls_info iv_param = `` iv_atnam = lv_del ).
     ENDLOOP.
 
     "single-value characteristics: one value per row
@@ -4300,7 +4189,7 @@ CLASS lcl_app IMPLEMENTATION.
   METHOD check_class_conflicts.
     "The rows of one material are merged into one classification: a
     "single-value characteristic must not get different values in different
-    "rows, and <DEL> in one row must not meet a value in another row
+    "rows
     TYPES: BEGIN OF lty_val,
              matkey   TYPE string,
              classnum TYPE bapi1003_key-classnum,
@@ -4335,11 +4224,6 @@ CLASS lcl_app IMPLEMENTATION.
         ls_val-value = |{ ls_u-value_from }/{ ls_u-value_to }|.
         APPEND ls_val TO lt_val.
       ENDLOOP.
-      LOOP AT <ls_b>-class_delete INTO DATA(lv_d).
-        ls_val-atnam = lv_d.
-        ls_val-value = gc_del_marker.
-        APPEND ls_val TO lt_val.
-      ENDLOOP.
     ENDLOOP.
 
     LOOP AT lt_val INTO DATA(ls_v)
@@ -4357,19 +4241,14 @@ CLASS lcl_app IMPLEMENTATION.
       ENDLOOP.
       CHECK lines( lt_values ) > 1 AND lines( lt_rows ) > 1.    "same row: CHECK_CLASSIFICATION
 
-      DATA(lv_del)    = xsdbool( line_exists( lt_values[ table_line = gc_del_marker ] ) ).
-      DATA(ls_info)   = lcl_class_info=>get( iv_class = lg_val-classnum iv_klart = lg_val-klart ).
-      DATA(lv_single) = xsdbool( line_exists( ls_info-chars[ atnam = lg_val-atnam atein = abap_true ] ) ).
-      CHECK lv_del = abap_true OR lv_single = abap_true.
+      DATA(ls_info) = lcl_class_info=>get( iv_class = lg_val-classnum iv_klart = lg_val-klart ).
+      CHECK line_exists( ls_info-chars[ atnam = lg_val-atnam atein = abap_true ] ).
 
       LOOP AT lt_rows INTO DATA(lv_row).
         READ TABLE mt_row INTO DATA(ls_row) WITH KEY k_row COMPONENTS row = lv_row.
         mo_log->add( iv_type = 'E' is_row = ls_row iv_view = gc_view-class
-                     iv_text = COND string(
-                       WHEN lv_del = abap_true
-                       THEN |Characteristic { lg_val-atnam }: { gc_del_marker } and a value in rows of the same material|
-                       ELSE |Characteristic { lg_val-atnam } allows one value only - rows of the material give | &&
-                            |{ concat_lines_of( table = lt_values sep = `, ` ) }| ) ).
+                     iv_text = |Characteristic { lg_val-atnam } allows one value only - rows of the material give | &&
+                               |{ concat_lines_of( table = lt_values sep = `, ` ) }| ).
       ENDLOOP.
     ENDLOOP.
   ENDMETHOD.
@@ -4379,7 +4258,7 @@ CLASS lcl_app IMPLEMENTATION.
     "  - class: taken from the reference if the template has none (a
     "    reference with several classes of the type needs the class given)
     "  - values: only characteristics not given in the template (template
-    "    values and <DEL> win); inherited values are not copied
+    "    values win); inherited values are not copied
     "Runs before the default values (ZTMM_DEFLT_DATA) are applied.
     FIELD-SYMBOLS <lv_inh> TYPE any.
     DATA: lv_refmat TYPE matnr,
@@ -4421,7 +4300,7 @@ CLASS lcl_app IMPLEMENTATION.
       APPEND 'CLASSKEY' TO et_params.
     ENDIF.
 
-    "characteristics given in the template (value or <DEL> line)
+    "characteristics given in the template
     LOOP AT cs_bapi-allocvalueschar INTO DATA(ls_char).
       INSERT CONV atnam( to_upper( ls_char-charact ) ) INTO TABLE lt_given.
     ENDLOOP.
@@ -4484,29 +4363,13 @@ CLASS lcl_app IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD map_field.
-    "Pass the template value to every BAPI target maintained for the field.
-    "<DEL> (characteristic values only): the line is created without value
-    "and the characteristic is removed (CHECK_CLASSIFICATION / CLASSIFY)
-    DATA(lv_del) = xsdbool( to_upper( iv_value ) = gc_del_marker ).
+    "Pass the template value to every BAPI target maintained for the field
     LOOP AT is_fcat-targets INTO DATA(ls_target).
-      DATA(lv_no_value) = abap_false.
-      IF lv_del = abap_true.
-        IF ( ls_target-param = 'ALLOCVALUESCHAR' OR ls_target-param = 'ALLOCVALUESNUM' OR
-             ls_target-param = 'ALLOCVALUESCURR' ) AND ls_target-comp <> 'CHARACT'.
-          lv_no_value = abap_true.
-        ELSE.
-          mo_log->add( iv_type = 'E' is_row = is_row iv_view = is_fcat-view
-                       iv_field = is_fcat-temp_field_name iv_fdesc = is_fcat-description
-                       iv_text = |{ gc_del_marker } is only possible for characteristic values| ).
-          CONTINUE.
-        ENDIF.
-      ENDIF.
-      lcl_mapper=>map_value( EXPORTING is_target   = ls_target
-                                       iv_field    = is_fcat-temp_field_name
-                                       iv_value    = iv_value
-                                       iv_no_value = lv_no_value
-                             IMPORTING ev_error    = DATA(lv_error)
-                             CHANGING  cs_bapi     = cs_bapi ).
+      lcl_mapper=>map_value( EXPORTING is_target = ls_target
+                                       iv_field  = is_fcat-temp_field_name
+                                       iv_value  = iv_value
+                             IMPORTING ev_error  = DATA(lv_error)
+                             CHANGING  cs_bapi   = cs_bapi ).
       IF lv_error IS NOT INITIAL.
         mo_log->add( iv_type = 'E' is_row = is_row iv_view = is_fcat-view
                      iv_field = is_fcat-temp_field_name iv_fdesc = is_fcat-description
@@ -4677,10 +4540,8 @@ CLASS lcl_app IMPLEMENTATION.
 
       "--- One BAPI_MATERIAL_SAVEREPLICA call per template row:
       "    basic data of the material + org. levels of this row only
-      "    ('classification only': no material data is sent)
       DATA(lv_mat_ok) = abap_true.
       LOOP AT mt_row INTO DATA(ls_mrow) USING KEY k_mat WHERE matkey = lv_matkey.
-        CHECK p_clonly = abap_false.
         IF mo_bapi->save_material( is_call  = build_call( iv_matkey = lv_matkey
                                                           iv_matnr  = lv_matnr
                                                           iv_row    = ls_mrow-row )
@@ -4696,7 +4557,7 @@ CLASS lcl_app IMPLEMENTATION.
       ENDLOOP.
 
       "material data really saved in this run (for the message below)
-      DATA(lv_saved) = xsdbool( p_test = abap_false AND p_clonly = abap_false AND lv_mat_ok = abap_true ).
+      DATA(lv_saved) = xsdbool( p_test = abap_false AND lv_mat_ok = abap_true ).
 
       "--- Classification: merged per class over all rows of the material
       "    (conflicting values were rejected in CHECK_CLASS_CONFLICTS)
@@ -4719,9 +4580,6 @@ CLASS lcl_app IMPLEMENTATION.
         LOOP AT <ls_rb>-allocvaluescurr INTO DATA(ls_vcurr).
           lcl_mapper=>append_unique( EXPORTING is_line = ls_vcurr CHANGING ct_tab = <ls_class>-allocvaluescurr ).
         ENDLOOP.
-        LOOP AT <ls_rb>-class_delete INTO DATA(lv_vdel).
-          INSERT lv_vdel INTO TABLE <ls_class>-class_delete.
-        ENDLOOP.
       ENDLOOP.
 
       "only once the material exists (after posting / for update + extend)
@@ -4739,7 +4597,7 @@ CLASS lcl_app IMPLEMENTATION.
             IF lv_saved = abap_true.
               mo_log->add( iv_type = 'E' is_row = ls_crow iv_view = gc_view-class iv_matnr = lv_matnr
                            iv_text = |Material saved without classification { <ls_class>-classkey-classnum } - | &&
-                                     |correct the class data and run Update with 'Classification only'| ).
+                                     |correct the class data and classify it with Update| ).
             ENDIF.
           ENDIF.
         ENDLOOP.
