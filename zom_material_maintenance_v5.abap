@@ -689,6 +689,8 @@ CLASS lcl_app DEFINITION FINAL.
                              CHANGING  cs_bapi TYPE ty_bapi,
       apply_current_date     IMPORTING is_row  TYPE ty_row
                              CHANGING  cs_bapi TYPE ty_bapi,
+      collect_characteristics IMPORTING is_row  TYPE ty_row
+                              CHANGING  cs_bapi TYPE ty_bapi,
       check_classification   IMPORTING is_row  TYPE ty_row
                              CHANGING  cs_bapi TYPE ty_bapi,
       check_characteristic   IMPORTING is_row   TYPE ty_row
@@ -3540,6 +3542,10 @@ CLASS lcl_app IMPLEMENTATION.
 
       ENDLOOP.
 
+      "Characteristics from the template columns CHAR_NAME_n / CHAR_VALUE_n
+      "(independent of ZTMM_CLASS_DATA)
+      collect_characteristics( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
+
       "Table data of the reference for keys not given in the template
       copy_reference_tables( EXPORTING is_row   = ls_row
                                        is_ref   = ls_ref
@@ -4063,6 +4069,71 @@ CLASS lcl_app IMPLEMENTATION.
     "Classification consistency: CHECK_CLASSIFICATION (once all values of
     "the row are mapped - the class may come from a later column, the
     "reference material or the default table)
+  ENDMETHOD.
+
+  METHOD collect_characteristics.
+    "Template columns CHAR_NAME_n / CHAR_VALUE_n (n = 1, 2, ... any number):
+    "pair n = characteristic name + its value. The columns need no entry in
+    "ZTMM_CLASS_DATA (only CLASS_TYPE / CLASS_NAME do). The lines are added
+    "as text lines; CHECK_CLASSIFICATION reads the format of the
+    "characteristic in SAP (CABN) and moves numeric / date / time /
+    "currency values to the matching BAPI table.
+    "Columns that ARE maintained in ZTMM_CLASS_DATA are mapped there.
+    TYPES: BEGIN OF lty_pair,
+             n     TYPE i,
+             name  TYPE string,
+             value TYPE string,
+           END OF lty_pair.
+    DATA: lt_pair  TYPE SORTED TABLE OF lty_pair WITH UNIQUE KEY n,
+          ls_probe TYPE bapi1003_alloc_values_char.
+
+    CHECK p_class = abap_true.
+    DESCRIBE FIELD ls_probe-value_char LENGTH DATA(lv_max) IN CHARACTER MODE.
+
+    LOOP AT mt_cell INTO DATA(ls_cell) WHERE row = is_row-row.
+      DATA(lv_kind) = COND string( WHEN ls_cell-field CP 'CHAR_NAME_*'  THEN `N`
+                                   WHEN ls_cell-field CP 'CHAR_VALUE_*' THEN `V` ).
+      CHECK lv_kind IS NOT INITIAL.
+      CHECK NOT line_exists( mo_config->mt_fcat[ KEY k_field COMPONENTS temp_field_name = ls_cell-field ] ).
+      DATA(lv_num) = substring_after( val = CONV string( ls_cell-field ) sub = `_` occ = 2 ).
+      CHECK lv_num IS NOT INITIAL AND lv_num CO '0123456789'.
+      DATA(lv_n) = CONV i( lv_num ).
+
+      ASSIGN lt_pair[ n = lv_n ] TO FIELD-SYMBOL(<ls_pair>).
+      IF sy-subrc <> 0.
+        INSERT VALUE #( n = lv_n ) INTO TABLE lt_pair ASSIGNING <ls_pair>.
+      ENDIF.
+      IF lv_kind = `N`.
+        <ls_pair>-name = to_upper( lcl_mapper=>trim( ls_cell-value ) ).
+      ELSE.
+        <ls_pair>-value = lcl_mapper=>trim( ls_cell-value ).
+      ENDIF.
+    ENDLOOP.
+
+    LOOP AT lt_pair ASSIGNING <ls_pair>.
+      IF <ls_pair>-name IS INITIAL.
+        mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
+                     iv_field = |CHAR_VALUE_{ <ls_pair>-n }|
+                     iv_text = |Characteristic value '{ <ls_pair>-value }' without characteristic name | &&
+                               |(CHAR_NAME_{ <ls_pair>-n })| ).
+        CONTINUE.
+      ENDIF.
+      IF <ls_pair>-value IS INITIAL.
+        mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
+                     iv_field = |CHAR_NAME_{ <ls_pair>-n }|
+                     iv_text = |Characteristic { <ls_pair>-name } without value (CHAR_VALUE_{ <ls_pair>-n })| ).
+        CONTINUE.
+      ENDIF.
+      IF strlen( <ls_pair>-value ) > lv_max.
+        mo_log->add( iv_type = 'E' is_row = is_row iv_view = gc_view-class
+                     iv_field = |CHAR_VALUE_{ <ls_pair>-n }|
+                     iv_text = |Value of { <ls_pair>-name } is longer than { lv_max } characters| ).
+        CONTINUE.
+      ENDIF.
+      APPEND VALUE #( charact = <ls_pair>-name value_char = <ls_pair>-value )
+        TO cs_bapi-allocvalueschar.
+      INSERT gc_view-class INTO TABLE cs_bapi-views.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD check_classification.
