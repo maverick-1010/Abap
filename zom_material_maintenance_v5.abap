@@ -688,6 +688,8 @@ CLASS lcl_app DEFINITION FINAL.
       check_defaults,
       apply_defaults         IMPORTING is_row  TYPE ty_row
                              CHANGING  cs_bapi TYPE ty_bapi,
+      is_yyyymmdd            IMPORTING iv_value     TYPE string
+                             RETURNING VALUE(rv_ok) TYPE abap_bool,
       apply_current_date     IMPORTING is_row  TYPE ty_row
                              CHANGING  cs_bapi TYPE ty_bapi,
       collect_characteristics IMPORTING is_row  TYPE ty_row
@@ -3361,8 +3363,12 @@ CLASS lcl_app IMPLEMENTATION.
 
   METHOD apply_current_date.
     "Valid-from dates of the material status (MSTDV client level, VMSTD sales
-    "view): blank in the template (and not set by the reference / default table)
-    "-> current date. Create only; only if the field belongs to the variant.
+    "view) - Create only; only if the field belongs to the variant.
+    "  1. value from the template  2. value from the reference material
+    "  3. value from ZTMM_DEFLT_DATA (APPLY_DEFAULTS, runs before)
+    "  4. nothing found -> current date
+    "A value from the template / default table must be a valid date in the
+    "format YYYYMMDD, otherwise an error is logged.
     CONSTANTS lc_date_fields TYPE string VALUE ` VMSTD MSTDV `.
     CHECK lcl_screen=>get_operation( ) = gc_op-create.
 
@@ -3370,8 +3376,19 @@ CLASS lcl_app IMPLEMENTATION.
     LOOP AT lt_fields INTO DATA(lv_name).
       DATA(lv_field) = CONV fieldname( lv_name ).
       CHECK line_exists( mo_config->mt_fcat[ KEY k_field COMPONENTS temp_field_name = lv_field ] ).
-      CHECK NOT line_exists( mt_cell[   row = is_row-row field = lv_field ] ).
       CHECK NOT line_exists( mt_copied[ row = is_row-row field = lv_field ] ).
+
+      ASSIGN mt_cell[ row = is_row-row field = lv_field ] TO FIELD-SYMBOL(<ls_cell>).
+      IF sy-subrc = 0.
+        "template / default table value: format check only
+        DATA(lv_given) = lcl_mapper=>trim( <ls_cell>-value ).
+        CHECK lv_given IS NOT INITIAL.
+        IF NOT is_yyyymmdd( lv_given ).
+          mo_log->add( iv_type = 'E' is_row = is_row iv_field = lv_field
+                       iv_text = |{ lv_field }: '{ lv_given }' is not a valid date - format must be YYYYMMDD| ).
+        ENDIF.
+        CONTINUE.
+      ENDIF.
 
       DATA(lv_date) = CONV string( sy-datum ).                "YYYYMMDD
       INSERT VALUE #( row = is_row-row field = lv_field value = lv_date ) INTO TABLE mt_cell.
@@ -3382,6 +3399,21 @@ CLASS lcl_app IMPLEMENTATION.
         validate_row( EXPORTING is_row = is_row is_fcat = ls_fcat CHANGING cs_bapi = cs_bapi ).
       ENDLOOP.
     ENDLOOP.
+  ENDMETHOD.
+
+  METHOD is_yyyymmdd.
+    "8 digits and a real calendar date (e.g. 20250230 is rejected)
+    DATA lv_date TYPE d.
+    rv_ok = abap_false.
+    CHECK strlen( iv_value ) = 8 AND iv_value CO '0123456789'.
+    lv_date = iv_value.
+    CALL FUNCTION 'DATE_CHECK_PLAUSIBILITY'
+      EXPORTING
+        date                      = lv_date
+      EXCEPTIONS
+        plausibility_check_failed = 1
+        OTHERS                    = 2.
+    rv_ok = xsdbool( sy-subrc = 0 ).
   ENDMETHOD.
 
   METHOD derive_values.
@@ -3932,7 +3964,7 @@ CLASS lcl_app IMPLEMENTATION.
             ( lv_text_view = gc_view-purch AND lv_purch = abap_true ).
       "text ID given in the template (no ID = basic data text, see BUILD_CALL)
       CHECK NOT line_exists( cs_bapi-materiallongtext[ text_id = ls_text-text_id ] ).
-      CHECK NOT ( ls_text-text_id = 'GRUN' AND
+      CHECK NOT ( ls_text-text_id = 'BEST' AND
                   line_exists( cs_bapi-materiallongtext[ text_id = space ] ) ).
       CLEAR ls_text-text_name.                          "set to the new material in BUILD_CALL
       APPEND ls_text TO lt_text_new.
@@ -4852,7 +4884,7 @@ CLASS lcl_app IMPLEMENTATION.
     LOOP AT rs_call-materiallongtext ASSIGNING FIELD-SYMBOL(<ls_text>).
       lcl_mapper=>set_default( EXPORTING iv_comp = 'APPLOBJECT' iv_value = 'MATERIAL' CHANGING cs_line = <ls_text> ).
       lcl_mapper=>set_default( EXPORTING iv_comp = 'TEXT_NAME'  iv_value = iv_matnr   CHANGING cs_line = <ls_text> ).
-      lcl_mapper=>set_default( EXPORTING iv_comp = 'TEXT_ID'    iv_value = 'GRUN'     CHANGING cs_line = <ls_text> ).
+      lcl_mapper=>set_default( EXPORTING iv_comp = 'TEXT_ID'    iv_value = 'BEST'     CHANGING cs_line = <ls_text> ).
       lcl_mapper=>set_default( EXPORTING iv_comp = 'LANGU'      iv_value = sy-langu   CHANGING cs_line = <ls_text> ).
     ENDLOOP.
 
@@ -4915,4 +4947,4 @@ AT SELECTION-SCREEN.
   lcl_screen=>pai( ).
 
 START-OF-SELECTION.
-  NEW lcl_app( )->run( ).
+  NEW lcl_app( )->run( ).
