@@ -2549,9 +2549,9 @@ CLASS lcl_output IMPLEMENTATION.
 
         lo_send->set_document( lo_doc ).
         DATA(lv_rcpt) = ``.
-        LOOP AT s_email WHERE sign = 'I' AND option = 'EQ' AND low IS NOT INITIAL.
-          lo_send->add_recipient( cl_cam_address_bcs=>create_internet_address( s_email-low ) ).
-          lv_rcpt = COND #( WHEN lv_rcpt IS INITIAL THEN s_email-low ELSE |{ lv_rcpt }, { s_email-low }| ).
+        LOOP AT s_email INTO DATA(ls_email) WHERE sign = 'I' AND option = 'EQ' AND low IS NOT INITIAL.
+          lo_send->add_recipient( cl_cam_address_bcs=>create_internet_address( ls_email-low ) ).
+          lv_rcpt = COND #( WHEN lv_rcpt IS INITIAL THEN ls_email-low ELSE |{ lv_rcpt }, { ls_email-low }| ).
         ENDLOOP.
         IF lv_rcpt IS INITIAL.
           RETURN.
@@ -3024,14 +3024,14 @@ CLASS lcl_screen IMPLEMENTATION.
     ENDIF.
 
     "e-mail recipients: single values in a valid address format
-    LOOP AT s_email.
-      IF s_email-sign <> 'I' OR s_email-option <> 'EQ'.
+    LOOP AT s_email INTO DATA(ls_email).
+      IF ls_email-sign <> 'I' OR ls_email-option <> 'EQ'.
         MESSAGE 'E-mail recipients: only single values can be included'(e05) TYPE 'E'.
       ENDIF.
-      IF s_email-low IS INITIAL OR
-         NOT matches( val   = condense( s_email-low )
+      IF ls_email-low IS INITIAL OR
+         NOT matches( val   = condense( ls_email-low )
                       regex = `[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}` ).
-        MESSAGE |Invalid e-mail address: { s_email-low }| TYPE 'E'.
+        MESSAGE |Invalid e-mail address: { ls_email-low }| TYPE 'E'.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
@@ -3443,19 +3443,92 @@ CLASS lcl_app IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD derive_values.
-    "PRDHA derived from PRODH_LVL1..n if not given directly
-    DATA lv_prdha TYPE string.
+    "PRDHA derived from PRODH_LVL1..n if not given directly.
+    " - each level is padded to its own length (taken from the nodes of T179:
+    "   the key length of a node of level n = sum of the lengths of levels 1..n)
+    " - levels must be filled without gaps
+    " - the resulting / given PRDHA must exist in T179
+    " - PRDHA given together with levels: PRDHA wins, difference is reported
+    TYPES: BEGIN OF lty_len,
+             stufe TYPE t179-stufe,
+             len   TYPE i,
+           END OF lty_len.
+    DATA: lt_len  TYPE SORTED TABLE OF lty_len WITH UNIQUE KEY stufe,
+          lt_node TYPE SORTED TABLE OF t179-prodh WITH UNIQUE KEY table_line,
+          lv_lvl  TYPE string,
+          lv_seg  TYPE string,
+          lv_prdha TYPE string.
+
+    SELECT prodh, stufe FROM t179 INTO TABLE @DATA(lt_t179).
+    LOOP AT lt_t179 INTO DATA(ls_t179).
+      INSERT ls_t179-prodh INTO TABLE lt_node.
+      INSERT VALUE #( stufe = ls_t179-stufe len = strlen( ls_t179-prodh ) ) INTO TABLE lt_len.
+    ENDLOOP.
+
     LOOP AT mt_row INTO DATA(ls_row).
-      CHECK NOT line_exists( mt_cell[ row = ls_row-row field = gc_col-prdha ] ).
-      CLEAR lv_prdha.
+      "--- levels -> key (padded, no gaps)
+      CLEAR: lv_prdha.
+      DATA(lv_last)   = 0.                                   "highest filled level
+      DATA(lv_gap)    = 0.                                   "first empty level below it
+      DATA(lv_failed) = abap_false.
+      DATA(lv_prev)   = 0.                                   "cumulative length of the level before
       DO gc_prodh_levels TIMES.
-        lv_prdha = lv_prdha && get_value( iv_row   = ls_row-row
-                                          iv_field = CONV #( |PRODH_LVL{ sy-index }| ) ).
+        DATA(lv_i) = sy-index.
+        lv_lvl = to_upper( lcl_mapper=>trim( get_value( iv_row   = ls_row-row
+                                                        iv_field = CONV #( |PRODH_LVL{ lv_i }| ) ) ) ).
+        IF lv_lvl IS INITIAL.
+          IF lv_gap = 0.
+            lv_gap = lv_i.
+          ENDIF.
+          CONTINUE.
+        ENDIF.
+        IF lv_gap <> 0.
+          mo_log->add( iv_type = 'E' is_row = ls_row iv_field = CONV #( |PRODH_LVL{ lv_i }| )
+                       iv_text = |PRODH_LVL{ lv_i } is filled but PRODH_LVL{ lv_gap } is empty - | &&
+                                 |product hierarchy levels must be filled without gaps| ).
+          lv_failed = abap_true.
+          EXIT.
+        ENDIF.
+        lv_last = lv_i.
+        "length of this level from T179 (if the level exists there)
+        DATA(lv_cum) = VALUE i( lt_len[ stufe = lv_i ]-len OPTIONAL ).
+        IF lv_cum > 0.
+          DATA(lv_width) = lv_cum - lv_prev.
+          IF strlen( lv_lvl ) > lv_width.
+            mo_log->add( iv_type = 'E' is_row = ls_row iv_field = CONV #( |PRODH_LVL{ lv_i }| )
+                         iv_text = |PRODH_LVL{ lv_i } '{ lv_lvl }' is longer than { lv_width } characters| ).
+            lv_failed = abap_true.
+            EXIT.
+          ENDIF.
+          lv_seg = |{ lv_lvl WIDTH = lv_width }|.             "pad right to the level length
+          lv_prev = lv_cum.
+        ELSE.
+          lv_seg = lv_lvl.
+        ENDIF.
+        lv_prdha = lv_prdha && lv_seg.
       ENDDO.
-      CHECK lv_prdha IS NOT INITIAL.
-      INSERT VALUE #( row = ls_row-row field = gc_col-prdha value = lv_prdha ) INTO TABLE mt_cell.
-      mo_log->add( iv_type = 'S' is_row = ls_row iv_field = gc_col-prdha
-                   iv_text = |Product hierarchy { lv_prdha } derived from PRODH_LVL1-{ gc_prodh_levels }| ).
+      CHECK lv_failed = abap_false.
+
+      "--- PRDHA given directly
+      DATA(lv_given) = to_upper( get_value( iv_row = ls_row-row iv_field = gc_col-prdha ) ).
+      IF lv_given IS NOT INITIAL.
+        IF lv_prdha IS NOT INITIAL AND condense( lv_given ) <> condense( lv_prdha ).
+          mo_log->add( iv_type = 'W' is_row = ls_row iv_field = gc_col-prdha
+                       iv_text = |PRDHA { lv_given } is used - it differs from PRODH_LVL1-{ gc_prodh_levels } ({ lv_prdha })| ).
+        ENDIF.
+        lv_prdha = lv_given.
+      ELSEIF lv_prdha IS NOT INITIAL.
+        INSERT VALUE #( row = ls_row-row field = gc_col-prdha value = lv_prdha ) INTO TABLE mt_cell.
+        mo_log->add( iv_type = 'S' is_row = ls_row iv_field = gc_col-prdha
+                     iv_text = |Product hierarchy '{ lv_prdha }' derived from PRODH_LVL1-{ lv_last }| ).
+      ENDIF.
+
+      "--- existence (only if the hierarchy is maintained in this system)
+      IF lv_prdha IS NOT INITIAL AND lt_node IS NOT INITIAL AND
+         NOT line_exists( lt_node[ table_line = CONV t179-prodh( lv_prdha ) ] ).
+        mo_log->add( iv_type = 'E' is_row = ls_row iv_field = gc_col-prdha
+                     iv_text = |Product hierarchy '{ lv_prdha }' does not exist (T179)| ).
+      ENDIF.
     ENDLOOP.
   ENDMETHOD.
 
