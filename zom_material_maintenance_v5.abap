@@ -45,6 +45,8 @@ CONSTANTS:
     profile    TYPE fieldname VALUE 'PROCESS_PROFILE',
     ref_matnr  TYPE fieldname VALUE 'REFERENCE_MATNR',
     ref_werks  TYPE fieldname VALUE 'REF_WERKS',
+    ref_lgort  TYPE fieldname VALUE 'REF_LGORT',
+    lgort      TYPE fieldname VALUE 'LGORT',
     ref_vkorg  TYPE fieldname VALUE 'REF_VKORG',
     ref_vtweg  TYPE fieldname VALUE 'REF_VTWEG',
     ref_ekorg  TYPE fieldname VALUE 'REF_EKORG',
@@ -1692,8 +1694,9 @@ CLASS lcl_config IMPLEMENTATION.
   METHOD control_columns.
     "Template columns that steer processing (not in the view tables)
     rt_cols = VALUE #( ( gc_col-action )     ( gc_col-message )    ( gc_col-profile )
-                       ( gc_col-ref_matnr )  ( gc_col-ref_werks )  ( gc_col-ref_vkorg )
-                       ( gc_col-ref_vtweg )  ( gc_col-ref_ekorg )  ( gc_col-def_mode )
+                       ( gc_col-ref_matnr )  ( gc_col-ref_werks )  ( gc_col-ref_lgort )
+                       ( gc_col-ref_vkorg )  ( gc_col-ref_vtweg )  ( gc_col-ref_ekorg )
+                       ( gc_col-def_mode )
                        ( gc_col-copy_basic ) ( gc_col-copy_purch ) ( gc_col-copy_mrp )
                        ( gc_col-copy_sales ) ( gc_col-copy_acct )  ( gc_col-copy_class ) ).
   ENDMETHOD.
@@ -2564,7 +2567,7 @@ CLASS lcl_template IMPLEMENTATION.
   METHOD template_columns.
     "Structure of the upload template (column order)
     DATA(lv_cols) =
-      `ACTION MESSAGE PROCESS_PROFILE REFERENCE_MATNR REF_WERKS REF_VKORG REF_VTWEG REF_EKORG ` &&
+      `ACTION MESSAGE PROCESS_PROFILE REFERENCE_MATNR REF_WERKS REF_LGORT REF_VKORG REF_VTWEG REF_EKORG ` &&
       `DEFAULT_MODE COPY_BASIC COPY_PURCH COPY_MRP COPY_SALES COPY_ACCOUNTING ` &&
       `MATNR MTART MBRSH LGORT SPRAS MAKTX MEINS MATKL PRDHA EXTWG BRGEW NTGEW GEWEI VOLUM VOLEH ` &&
       `EAN11 NUMTP XCHPF IPRKZ MHDRZ MHDLP SERNP MTPOS_MARA SPART KZUMV LABOR LAENG BREIT HOEHE MEABM ` &&
@@ -3464,6 +3467,18 @@ CLASS lcl_app IMPLEMENTATION.
         ENDIF.
       ENDIF.
 
+      "Storage location (plant / storage view)
+      IF lv_no_flag = abap_true OR lv_mrp = abap_true OR lv_purch = abap_true.
+        IF get_value( iv_row = <ls_row>-row iv_field = gc_col-lgort ) IS INITIAL.
+          DATA(lv_lgort) = to_upper( get_value( iv_row = <ls_row>-row iv_field = gc_col-ref_lgort ) ).
+          IF lv_lgort IS NOT INITIAL.
+            INSERT VALUE #( row = <ls_row>-row field = gc_col-lgort value = lv_lgort ) INTO TABLE mt_cell.
+            mo_log->add( iv_type = 'S' is_row = <ls_row> iv_field = gc_col-lgort
+                         iv_text = |Storage location { lv_lgort } taken from REF_LGORT| ).
+          ENDIF.
+        ENDIF.
+      ENDIF.
+
       "Sales area (sales view)
       IF lv_no_flag = abap_true OR lv_sales = abap_true.
         IF <ls_row>-vkorg IS INITIAL.
@@ -3515,7 +3530,7 @@ CLASS lcl_app IMPLEMENTATION.
 * 5.5 - validation and mapping, row by row
 *----------------------------------------------------------------------*
   METHOD validate_and_map.
-    DATA(lv_fixed_comp) = 'ROW_NO  ACTION  STATUS  MESSAGE PROCESS_PROFILE REFERENCE_MATNR REF_WERKS ' &&
+    DATA(lv_fixed_comp) = 'ROW_NO  ACTION  STATUS  MESSAGE PROCESS_PROFILE REFERENCE_MATNR REF_WERKS REF_LGORT ' &&
           ' REF_VKORG  REF_VTWEG REF_EKORG DEFAULT_MODE  COPY_BASIC  COPY_PURCH  COPY_MRP  COPY_SALES  COPY_ACCOUNTING COPY_CLASS DEFAULT_SUMMARY MATNR '.
 *    LOOP AT mt_row INTO DATA(ls_row).
 *      DATA(ls_bapi) = VALUE ty_bapi( row = ls_row-row matkey = ls_row-matkey ).
@@ -3693,7 +3708,8 @@ CLASS lcl_app IMPLEMENTATION.
     DATA: lv_refmat   TYPE matnr,
           lv_explicit TYPE abap_bool,
           lv_dummy    TYPE matnr,
-          lv_bwkey    TYPE bwkey.
+          lv_bwkey    TYPE bwkey,
+          lv_ref_lgort TYPE lgort_d.
 
     CLEAR: es_ref, et_views.
 
@@ -3786,6 +3802,10 @@ CLASS lcl_app IMPLEMENTATION.
       lv_ref_vtweg = is_row-vtweg.
     ENDIF.
     lv_bwkey = lv_ref_werks.                                 "valuation area = plant
+    lv_ref_lgort = to_upper( get_value( iv_row = is_row-row iv_field = gc_col-ref_lgort ) ).
+    IF lv_ref_lgort IS INITIAL.
+      lv_ref_lgort = to_upper( get_value( iv_row = is_row-row iv_field = gc_col-lgort ) ).
+    ENDIF.
 
     "Plant level (purchasing, MRP, plant/storage; sales fields of MARC)
     IF lv_ref_werks IS NOT INITIAL.
@@ -3807,6 +3827,20 @@ CLASS lcl_app IMPLEMENTATION.
                      iv_text = 'No reference plant (REF_WERKS / WERKS) - view not copied' ).
         DELETE et_views.
       ENDLOOP.
+    ENDIF.
+
+    "Storage location of the reference (REF_LGORT, default LGORT of the row)
+    IF lv_ref_lgort IS NOT INITIAL.
+      SELECT SINGLE * FROM mard INTO @DATA(ls_ref_mard)
+        WHERE matnr = @lv_refmat AND werks = @lv_ref_werks AND lgort = @lv_ref_lgort.
+      IF sy-subrc <> 0 OR lv_ref_werks IS INITIAL.
+        IF get_value( iv_row = is_row-row iv_field = gc_col-ref_lgort ) <> ``.
+          mo_log->add( iv_type = lv_msgty is_row = is_row iv_field = gc_col-ref_lgort iv_view = gc_view-plntst
+                       iv_text = |Reference { lv_ref } not maintained in storage location | &&
+                                 |{ lv_ref_werks }/{ lv_ref_lgort } - storage data not copied| ).
+        ENDIF.
+        CLEAR: lv_ref_lgort, ls_ref_mard.
+      ENDIF.
     ENDIF.
 
     "Valuation
@@ -3857,6 +3891,14 @@ CLASS lcl_app IMPLEMENTATION.
         CLEAR et_views.
         RETURN.
     ENDTRY.
+
+    "storage location data of the reference (not part of BAPI_MATERIAL_GET_ALL)
+    IF ls_ref_mard IS NOT INITIAL AND line_exists( et_views[ table_line = gc_view-plntst ] ).
+      MOVE-CORRESPONDING ls_ref_mard TO es_ref-storagelocationdata.
+      es_ref-storagelocationdata-material = lv_refmat.
+      es_ref-storagelocationdata-plant    = ls_ref_mard-werks.
+      es_ref-storagelocationdata-stge_loc = ls_ref_mard-lgort.
+    ENDIF.
 
     "--- 5. single fields: configured fields of the views, no template value
     LOOP AT mo_config->mt_fcat INTO DATA(ls_fcat) WHERE system_derived = abap_false.
