@@ -920,7 +920,7 @@ CLASS lcl_mapper IMPLEMENTATION.
 
   METHOD trim.
     rv_value = iv_value.
-    rv_value = replace( val = rv_value regex = `^\s+|\s+$` with = `` occ = 0 ).
+    rv_value = replace( val = rv_value pcre = `^\s+|\s+$` with = `` occ = 0 ).
   ENDMETHOD.
 
   METHOD is_dummy_key.
@@ -1062,7 +1062,7 @@ CLASS lcl_mapper IMPLEMENTATION.
       lv_key = is_target-linekey.
       IF lv_key IS INITIAL.
         "fields ending with _<n> (CHAR_NAME_1 / CHAR_VALUE_1) share line <n>
-        FIND REGEX `_(\d+)$` IN iv_field SUBMATCHES lv_suffix.
+        FIND PCRE `_(\d+)$` IN iv_field SUBMATCHES lv_suffix.
         lv_key = |{ REDUCE string( INIT k = `` FOR f IN is_target-fixed
                                    NEXT k = |{ k }{ f-comp }={ f-value };| ) }| &&
                  |#{ COND string( WHEN lv_suffix IS INITIAL THEN `1` ELSE lv_suffix ) }|.
@@ -1166,6 +1166,9 @@ CLASS lcl_mapper IMPLEMENTATION.
           WHEN cl_abap_typedescr=>typekind_char OR cl_abap_typedescr=>typekind_num.
             IF lo_elem->is_ddic_type( ) = abap_true.
               lo_elem->get_ddic_field( RECEIVING p_flddescr = ls_dfies EXCEPTIONS OTHERS = 1 ).
+              IF sy-subrc <> 0.
+                CLEAR ls_dfies.
+              ENDIF.
             ENDIF.
 
             IF ls_dfies-convexit IS NOT INITIAL.          "ALPHA, MATN1, CUNIT, ISOLA ...
@@ -1482,7 +1485,7 @@ CLASS lcl_file_reader IMPLEMENTATION.
 
   METHOD get_extension.
     DATA(lv_file) = to_lower( iv_file ).
-    FIND REGEX `\.([a-z0-9]+)$` IN lv_file SUBMATCHES rv_ext.
+    FIND PCRE `\.([a-z0-9]+)$` IN lv_file SUBMATCHES rv_ext.
   ENDMETHOD.
 
   METHOD read.
@@ -2204,7 +2207,7 @@ CLASS lcl_material_bapi IMPLEMENTATION.
           READ TABLE is_call-origin INTO DATA(ls_origin)
                WITH KEY param = to_upper( <lv_param> ) idx = <lv_line>.
           IF sy-subrc = 0.
-            ls_row = VALUE #( it_rows[ row = ls_origin-row ] DEFAULT ls_first ).
+            ls_row = VALUE #( it_rows[ KEY k_row COMPONENTS row = ls_origin-row ] DEFAULT ls_first ).
           ENDIF.
         ENDIF.
       ENDIF.
@@ -2662,7 +2665,7 @@ CLASS lcl_template IMPLEMENTATION.
           WHEN line_exists( lt_fcat[ temp_field_name = lv_name system_derived = abap_true ] ) AND
                NOT line_exists( lt_fcat[ temp_field_name = lv_name optional = abap_true ] )
             THEN c_style-system
-          ELSE c_style-header ) ) TO lt_cols.
+          ELSE c_style-header ) ) TO lt_cols ##PRIMKEY[K_FIELD].
     ENDLOOP.
 
     DATA(lv_xlsx) = build_xlsx( it_cols = lt_cols it_fcat = lt_fcat iv_variant = lv_variant ).
@@ -3047,7 +3050,7 @@ CLASS lcl_screen IMPLEMENTATION.
       ENDIF.
       IF ls_email-low IS INITIAL OR
          NOT matches( val   = condense( ls_email-low )
-                      regex = `[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}` ).
+                      pcre  = `[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}` ).
         MESSAGE |Invalid e-mail address: { ls_email-low }| TYPE 'E'.
       ENDIF.
     ENDLOOP.
