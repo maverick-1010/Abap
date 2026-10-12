@@ -2549,9 +2549,9 @@ CLASS lcl_output IMPLEMENTATION.
 
         lo_send->set_document( lo_doc ).
         DATA(lv_rcpt) = ``.
-        LOOP AT s_email WHERE sign = 'I' AND option = 'EQ' AND low IS NOT INITIAL.
-          lo_send->add_recipient( cl_cam_address_bcs=>create_internet_address( s_email-low ) ).
-          lv_rcpt = COND #( WHEN lv_rcpt IS INITIAL THEN s_email-low ELSE |{ lv_rcpt }, { s_email-low }| ).
+        LOOP AT s_email INTO DATA(ls_email) WHERE sign = 'I' AND option = 'EQ' AND low IS NOT INITIAL.
+          lo_send->add_recipient( cl_cam_address_bcs=>create_internet_address( ls_email-low ) ).
+          lv_rcpt = COND #( WHEN lv_rcpt IS INITIAL THEN ls_email-low ELSE |{ lv_rcpt }, { ls_email-low }| ).
         ENDLOOP.
         IF lv_rcpt IS INITIAL.
           RETURN.
@@ -3024,14 +3024,14 @@ CLASS lcl_screen IMPLEMENTATION.
     ENDIF.
 
     "e-mail recipients: single values in a valid address format
-    LOOP AT s_email.
-      IF s_email-sign <> 'I' OR s_email-option <> 'EQ'.
+    LOOP AT s_email INTO DATA(ls_email).
+      IF ls_email-sign <> 'I' OR ls_email-option <> 'EQ'.
         MESSAGE 'E-mail recipients: only single values can be included'(e05) TYPE 'E'.
       ENDIF.
-      IF s_email-low IS INITIAL OR
-         NOT matches( val   = condense( s_email-low )
+      IF ls_email-low IS INITIAL OR
+         NOT matches( val   = condense( ls_email-low )
                       regex = `[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}` ).
-        MESSAGE |Invalid e-mail address: { s_email-low }| TYPE 'E'.
+        MESSAGE |Invalid e-mail address: { ls_email-low }| TYPE 'E'.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
