@@ -2917,9 +2917,6 @@ CLASS lcl_screen IMPLEMENTATION.
 
   METHOD initialization.
     p_btn = 'Download Template'(b01).
-    IF s_email[] IS INITIAL.                                    "default recipient (TEXT-008)
-      APPEND VALUE #( sign = 'I' option = 'EQ' low = TEXT-008 ) TO s_email.
-    ENDIF.
   ENDMETHOD.
 
   METHOD get_operation.
