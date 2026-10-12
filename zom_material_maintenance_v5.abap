@@ -2440,8 +2440,20 @@ CLASS lcl_output IMPLEMENTATION.
     CHECK build_alv( ) = abap_true.
 
     DATA(lv_xlsx) = to_xlsx( ).
-*    save_to_server( lv_xlsx ).
-*    send_mail( lv_xlsx ).
+
+    "Server file and e-mail: not in a test run, not if the output is empty
+    IF p_file3 IS NOT INITIAL OR s_email[] IS NOT INITIAL.
+      IF p_test = abap_true.
+        mo_log->add( iv_type = 'W'
+                     iv_text = 'Test run - output file on server and e-mail skipped' ).
+      ELSEIF lv_xlsx IS INITIAL OR lines( mt_out ) = 0.
+        mo_log->add( iv_type = 'W'
+                     iv_text = 'Output is empty - output file on server and e-mail skipped' ).
+      ELSE.
+        save_to_server( lv_xlsx ).
+        send_mail( lv_xlsx ).
+      ENDIF.
+    ENDIF.
 
     "messages of save / mail step
     mt_out = mo_log->mt_msg.
