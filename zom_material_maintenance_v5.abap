@@ -2384,6 +2384,15 @@ CLASS lcl_material_bapi IMPLEMENTATION.
           allocvaluescurr = lt_curr
           return          = lt_return.
       CHECK NOT line_exists( lt_return[ type = 'E' ] ).
+      "VALUE_CHAR can hold the value in the logon language (text), not the
+      "key: take the language-neutral value, which is what the class master
+      "(value list, length) and the BAPI expect
+      LOOP AT lt_char ASSIGNING FIELD-SYMBOL(<ls_nchar>).
+        ASSIGN COMPONENT 'VALUE_NEUTRAL' OF STRUCTURE <ls_nchar> TO FIELD-SYMBOL(<lv_neutral>).
+        IF sy-subrc = 0 AND <lv_neutral> IS NOT INITIAL.
+          <ls_nchar>-value_char = <lv_neutral>.
+        ENDIF.
+      ENDLOOP.
       IF rs_class-classkey-classnum IS INITIAL.
         rs_class-classkey-classnum  = lv_class.
         rs_class-classkey-classtype = lv_ctype.
