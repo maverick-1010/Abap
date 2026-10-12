@@ -2441,16 +2441,21 @@ CLASS lcl_output IMPLEMENTATION.
 
     DATA(lv_xlsx) = to_xlsx( ).
 
-    "Server file and e-mail: not in a test run, not if the output is empty
-    IF p_file3 IS NOT INITIAL OR s_email[] IS NOT INITIAL.
-      IF p_test = abap_true.
+    "Server file and e-mail: not in a test run; missing path / recipient -> warning
+    IF p_test = abap_true.
+      IF p_file3 IS NOT INITIAL OR s_email[] IS NOT INITIAL.
         mo_log->add( iv_type = 'W'
                      iv_text = 'Test run - output file on server and e-mail skipped' ).
-      ELSEIF lv_xlsx IS INITIAL OR lines( mt_out ) = 0.
-        mo_log->add( iv_type = 'W'
-                     iv_text = 'Output is empty - output file on server and e-mail skipped' ).
+      ENDIF.
+    ELSE.
+      IF p_file3 IS INITIAL.
+        mo_log->add( iv_type = 'W' iv_text = 'No server path entered - output file not created' ).
       ELSE.
         save_to_server( lv_xlsx ).
+      ENDIF.
+      IF s_email[] IS INITIAL.
+        mo_log->add( iv_type = 'W' iv_text = 'No e-mail recipient entered - e-mail not sent' ).
+      ELSE.
         send_mail( lv_xlsx ).
       ENDIF.
     ENDIF.
