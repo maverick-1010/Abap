@@ -1228,13 +1228,6 @@ CLASS lcl_mapper IMPLEMENTATION.
       CHECK <lv_data> IS NOT INITIAL.
       ASSIGN COMPONENT ls_comp-name OF STRUCTURE cs_x TO <lv_x>.
       CHECK sy-subrc = 0.
-      "VAL_CAT (valuation category, template BWTTY) is a normal data field: its X
-      "flag must be 'X' even if the X structure uses the data element of the field
-      "(set_x would copy the value, e.g. '1', which the BAPI does not take as flag)
-      IF ls_comp-name = 'VAL_CAT'.
-        <lv_x> = abap_true.
-        CONTINUE.
-      ENDIF.
       set_x( EXPORTING iv_value = <lv_data> CHANGING cv_x = <lv_x> ).
     ENDLOOP.
   ENDMETHOD.
