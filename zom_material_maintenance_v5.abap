@@ -180,6 +180,15 @@ TYPES:
   tt_views   TYPE SORTED TABLE OF char10 WITH UNIQUE KEY table_line,
   tt_atnam   TYPE SORTED TABLE OF atnam WITH UNIQUE KEY table_line,
 
+  "Further classes of the same class type (copied from the reference material)
+  BEGIN OF ty_classdata,
+    classkey        TYPE bapi1003_key,
+    allocvalueschar TYPE STANDARD TABLE OF bapi1003_alloc_values_char WITH EMPTY KEY,
+    allocvaluesnum  TYPE STANDARD TABLE OF bapi1003_alloc_values_num  WITH EMPTY KEY,
+    allocvaluescurr TYPE STANDARD TABLE OF bapi1003_alloc_values_curr WITH EMPTY KEY,
+  END OF ty_classdata,
+  tt_classdata TYPE STANDARD TABLE OF ty_classdata WITH EMPTY KEY,
+
   "Template data of one row, mapped to the structures of
   "BAPI_MATERIAL_SAVEREPLICA (one line per org. level parameter).
   "Component names = BAPI parameter names (used dynamically!)
@@ -219,6 +228,7 @@ TYPES:
     allocvalueschar     TYPE STANDARD TABLE OF bapi1003_alloc_values_char WITH EMPTY KEY,
     allocvaluesnum      TYPE STANDARD TABLE OF bapi1003_alloc_values_num  WITH EMPTY KEY,
     allocvaluescurr     TYPE STANDARD TABLE OF bapi1003_alloc_values_curr WITH EMPTY KEY,
+    extra_class         TYPE tt_classdata,       "further classes (reference with several classes)
     "meta data
     row                 TYPE i,
     matkey              TYPE string,
@@ -2321,7 +2331,8 @@ CLASS lcl_material_bapi IMPLEMENTATION.
 
   METHOD get_ref_classification.
     "Classification of a reference material, class type IV_CTYPE (default
-    "001): class IV_CLASS or - if not given - the only class of this type
+    "001): class IV_CLASS or - if not given - all classes of this type
+    "(first class = main class, the others are returned in EXTRA_CLASS)
     DATA: lt_alloc  TYPE STANDARD TABLE OF bapi1003_alloc_list,
           lt_char   TYPE STANDARD TABLE OF bapi1003_alloc_values_char,
           lt_num    TYPE STANDARD TABLE OF bapi1003_alloc_values_num,
@@ -2340,8 +2351,11 @@ CLASS lcl_material_bapi IMPLEMENTATION.
     ENDIF.
 
     lv_objkey = iv_matnr.
-    lv_class  = to_upper( iv_class ).
-    IF lv_class IS INITIAL.
+    DATA(lt_classes) = VALUE tt_fieldname( ).
+    IF iv_class IS NOT INITIAL.
+      APPEND CONV fieldname( to_upper( iv_class ) ) TO lt_classes.
+    ELSE.
+      "all classes of the type (several classes: first = main class, others = extra_class)
       CALL FUNCTION 'BAPI_OBJCL_GETCLASSES'
         EXPORTING
           objectkey_imp   = lv_objkey
@@ -2350,17 +2364,14 @@ CLASS lcl_material_bapi IMPLEMENTATION.
         TABLES
           alloclist       = lt_alloc
           return          = lt_return.
-      IF lines( lt_alloc ) > 1.
-        RAISE EXCEPTION TYPE lcx_error
-          EXPORTING
-            iv_text = |Reference material { iv_matnr ALPHA = OUT } has { lines( lt_alloc ) } classes | &&
-                      |of type { lv_ctype } - give the class in the template|.
-      ENDIF.
-      lv_class = VALUE #( lt_alloc[ 1 ]-classnum OPTIONAL ).
+      LOOP AT lt_alloc INTO DATA(ls_alloc).
+        APPEND CONV fieldname( ls_alloc-classnum ) TO lt_classes.
+      ENDLOOP.
     ENDIF.
 
-    IF lv_class IS NOT INITIAL.
-      CLEAR lt_return.
+    LOOP AT lt_classes INTO DATA(lv_cls).
+      lv_class = lv_cls.
+      CLEAR: lt_return, lt_char, lt_num, lt_curr.
       CALL FUNCTION 'BAPI_OBJCL_GETDETAIL'
         EXPORTING
           objectkey       = lv_objkey
@@ -2372,14 +2383,20 @@ CLASS lcl_material_bapi IMPLEMENTATION.
           allocvalueschar = lt_char
           allocvaluescurr = lt_curr
           return          = lt_return.
-      IF NOT line_exists( lt_return[ type = 'E' ] ).
+      CHECK NOT line_exists( lt_return[ type = 'E' ] ).
+      IF rs_class-classkey-classnum IS INITIAL.
         rs_class-classkey-classnum  = lv_class.
         rs_class-classkey-classtype = lv_ctype.
         rs_class-allocvalueschar    = lt_char.
         rs_class-allocvaluesnum     = lt_num.
         rs_class-allocvaluescurr    = lt_curr.
+      ELSE.
+        APPEND VALUE #( classkey        = VALUE #( classnum = lv_class classtype = lv_ctype )
+                        allocvalueschar = lt_char
+                        allocvaluesnum  = lt_num
+                        allocvaluescurr = lt_curr ) TO rs_class-extra_class.
       ENDIF.
-    ENDIF.
+    ENDLOOP.
 
     APPEND VALUE #( key = lv_key data = rs_class ) TO mt_clcache.
   ENDMETHOD.
@@ -4627,9 +4644,11 @@ CLASS lcl_app IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    DATA(lv_all_classes) = abap_false.
     IF cs_bapi-classkey-classnum IS INITIAL.
       cs_bapi-classkey = ls_rcl-classkey.
       APPEND 'CLASSKEY' TO et_params.
+      lv_all_classes = abap_true.                     "no class in the template -> copy all
     ENDIF.
 
     "characteristics given in the template
@@ -4664,6 +4683,34 @@ CLASS lcl_app IMPLEMENTATION.
       APPEND ls_rcurr TO cs_bapi-allocvaluescurr.
       lv_count = lv_count + 1.
     ENDLOOP.
+    "reference with several classes of the type: copy all of them (warning)
+    IF lv_all_classes = abap_true AND ls_rcl-extra_class IS NOT INITIAL.
+      LOOP AT ls_rcl-extra_class INTO DATA(ls_extra).
+        DATA(ls_copy) = ls_extra.
+        LOOP AT ls_copy-allocvalueschar INTO DATA(ls_xc).
+          ASSIGN COMPONENT 'INHERITED' OF STRUCTURE ls_xc TO <lv_inh>.
+          IF sy-subrc = 0 AND <lv_inh> IS NOT INITIAL.
+            DELETE ls_copy-allocvalueschar.                  "inherited values are not copied
+          ENDIF.
+        ENDLOOP.
+        LOOP AT ls_copy-allocvaluesnum INTO DATA(ls_xn).
+          ASSIGN COMPONENT 'INHERITED' OF STRUCTURE ls_xn TO <lv_inh>.
+          IF sy-subrc = 0 AND <lv_inh> IS NOT INITIAL.
+            DELETE ls_copy-allocvaluesnum.
+          ENDIF.
+        ENDLOOP.
+        LOOP AT ls_copy-allocvaluescurr INTO DATA(ls_xr).
+          ASSIGN COMPONENT 'INHERITED' OF STRUCTURE ls_xr TO <lv_inh>.
+          IF sy-subrc = 0 AND <lv_inh> IS NOT INITIAL.
+            DELETE ls_copy-allocvaluescurr.
+          ENDIF.
+        ENDLOOP.
+        APPEND ls_copy TO cs_bapi-extra_class.
+      ENDLOOP.
+      mo_log->add( iv_type = 'W' is_row = is_row iv_view = gc_view-class iv_field = gc_col-ref_matnr
+                   iv_text = |Reference { lv_ref } has { lines( ls_rcl-extra_class ) + 1 } classes of type | &&
+                             |{ ls_rcl-classkey-classtype } - all classes are copied| ).
+    ENDIF.
     IF lv_count > 0.
       APPEND 'ALLOCVALUESCHAR' TO et_params.
       APPEND 'ALLOCVALUESNUM'  TO et_params.
@@ -4895,22 +4942,40 @@ CLASS lcl_app IMPLEMENTATION.
       "    (conflicting values were rejected in CHECK_CLASS_CONFLICTS)
       CLEAR lt_class.
       LOOP AT mt_bapi ASSIGNING FIELD-SYMBOL(<ls_rb>) USING KEY k_mat WHERE matkey = lv_matkey.
-        CHECK <ls_rb>-classkey-classnum IS NOT INITIAL.
-        READ TABLE lt_class ASSIGNING <ls_class>
-             WITH KEY classkey-classnum  = <ls_rb>-classkey-classnum
-                      classkey-classtype = <ls_rb>-classkey-classtype.
-        IF sy-subrc <> 0.
-          APPEND VALUE #( classkey = <ls_rb>-classkey row = <ls_rb>-row matkey = lv_matkey )
-            TO lt_class ASSIGNING <ls_class>.
+        "main class of the row + further classes copied from the reference
+        DATA(lt_src) = VALUE tt_bapi( ).
+        IF <ls_rb>-classkey-classnum IS NOT INITIAL.
+          APPEND VALUE #( classkey        = <ls_rb>-classkey
+                          allocvalueschar = <ls_rb>-allocvalueschar
+                          allocvaluesnum  = <ls_rb>-allocvaluesnum
+                          allocvaluescurr = <ls_rb>-allocvaluescurr
+                          row             = <ls_rb>-row ) TO lt_src.
         ENDIF.
-        LOOP AT <ls_rb>-allocvalueschar INTO DATA(ls_vchar).
-          lcl_mapper=>append_unique( EXPORTING is_line = ls_vchar CHANGING ct_tab = <ls_class>-allocvalueschar ).
+        LOOP AT <ls_rb>-extra_class INTO DATA(ls_xcl).
+          APPEND VALUE #( classkey        = ls_xcl-classkey
+                          allocvalueschar = ls_xcl-allocvalueschar
+                          allocvaluesnum  = ls_xcl-allocvaluesnum
+                          allocvaluescurr = ls_xcl-allocvaluescurr
+                          row             = <ls_rb>-row ) TO lt_src.
         ENDLOOP.
-        LOOP AT <ls_rb>-allocvaluesnum INTO DATA(ls_vnum).
-          lcl_mapper=>append_unique( EXPORTING is_line = ls_vnum CHANGING ct_tab = <ls_class>-allocvaluesnum ).
-        ENDLOOP.
-        LOOP AT <ls_rb>-allocvaluescurr INTO DATA(ls_vcurr).
-          lcl_mapper=>append_unique( EXPORTING is_line = ls_vcurr CHANGING ct_tab = <ls_class>-allocvaluescurr ).
+
+        LOOP AT lt_src ASSIGNING FIELD-SYMBOL(<ls_src>).
+          READ TABLE lt_class ASSIGNING <ls_class>
+               WITH KEY classkey-classnum  = <ls_src>-classkey-classnum
+                        classkey-classtype = <ls_src>-classkey-classtype.
+          IF sy-subrc <> 0.
+            APPEND VALUE #( classkey = <ls_src>-classkey row = <ls_src>-row matkey = lv_matkey )
+              TO lt_class ASSIGNING <ls_class>.
+          ENDIF.
+          LOOP AT <ls_src>-allocvalueschar INTO DATA(ls_vchar).
+            lcl_mapper=>append_unique( EXPORTING is_line = ls_vchar CHANGING ct_tab = <ls_class>-allocvalueschar ).
+          ENDLOOP.
+          LOOP AT <ls_src>-allocvaluesnum INTO DATA(ls_vnum).
+            lcl_mapper=>append_unique( EXPORTING is_line = ls_vnum CHANGING ct_tab = <ls_class>-allocvaluesnum ).
+          ENDLOOP.
+          LOOP AT <ls_src>-allocvaluescurr INTO DATA(ls_vcurr).
+            lcl_mapper=>append_unique( EXPORTING is_line = ls_vcurr CHANGING ct_tab = <ls_class>-allocvaluescurr ).
+          ENDLOOP.
         ENDLOOP.
       ENDLOOP.
 
