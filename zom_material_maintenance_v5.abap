@@ -3977,7 +3977,8 @@ CLASS lcl_app IMPLEMENTATION.
           WHERE matnr = @lv_refmat AND vkorg = @lv_ref_vkorg AND vtweg = @lv_ref_vtweg.
       ENDIF.
       IF lv_ref_vkorg IS INITIAL OR lv_ref_vtweg IS INITIAL OR sy-subrc <> 0.
-        mo_log->add( iv_type = lv_msgty is_row = is_row iv_field = gc_col-ref_vkorg iv_view = gc_view-sales
+        "no sales data at the reference: warning only (other rows may have it)
+        mo_log->add( iv_type = 'W' is_row = is_row iv_field = gc_col-ref_vkorg iv_view = gc_view-sales
                      iv_text = |Reference { lv_ref } has no sales data for sales area | &&
                                |'{ lv_ref_vkorg }/{ lv_ref_vtweg }' - view not copied| ).
         DELETE et_views WHERE table_line = gc_view-sales.
@@ -4619,7 +4620,8 @@ CLASS lcl_app IMPLEMENTATION.
         RETURN.
     ENDTRY.
     IF ls_rcl-classkey-classnum IS INITIAL.
-      mo_log->add( iv_type = lv_msgty is_row = is_row iv_view = gc_view-class iv_field = gc_col-ref_matnr
+      "no classification at the reference: warning only (other rows may have it)
+      mo_log->add( iv_type = 'W' is_row = is_row iv_view = gc_view-class iv_field = gc_col-ref_matnr
                    iv_text = |Reference { lv_ref } has no classification | &&
                              |{ cs_bapi-classkey-classnum } - not copied| ).
       RETURN.
