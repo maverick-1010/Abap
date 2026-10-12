@@ -3022,6 +3022,18 @@ CLASS lcl_screen IMPLEMENTATION.
     IF lv_ext <> 'xlsx' AND lv_ext <> 'csv'.
       MESSAGE 'Only .xlsx and .csv files are allowed'(e04) TYPE 'E'.
     ENDIF.
+
+    "e-mail recipients: single values in a valid address format
+    LOOP AT s_email.
+      IF s_email-sign <> 'I' OR s_email-option <> 'EQ'.
+        MESSAGE 'E-mail recipients: only single values can be included'(e05) TYPE 'E'.
+      ENDIF.
+      IF s_email-low IS INITIAL OR
+         NOT matches( val   = condense( s_email-low )
+                      regex = `[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}` ).
+        MESSAGE |Invalid e-mail address: { s_email-low }| TYPE 'E'.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD f4_local_file.
