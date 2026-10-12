@@ -18,6 +18,7 @@ REPORT zom_material_maintenance_v5.
 *& Mapping syntax in the view tables (BAPI_STRUCT_NAME / BAPI_FIELD_NAME
 *&---------------------------------------------------------------------*
 TABLES sscrfields.
+DATA gv_email TYPE ad_smtpadr.                 "basis of S_EMAIL (recipients)
 
 *----------------------------------------------------------------------*
 * Constants
@@ -383,9 +384,9 @@ SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE TEXT-004.
 SELECTION-SCREEN END OF BLOCK b3.
 
 SELECTION-SCREEN BEGIN OF BLOCK b4 WITH FRAME TITLE TEXT-005.
-  PARAMETERS : p_file3 TYPE string LOWER CASE DEFAULT TEXT-006 MODIF ID md3,
-               p_email TYPE ad_smtpadr DEFAULT TEXT-008 MODIF ID md3,
-               p_test  AS CHECKBOX DEFAULT abap_true USER-COMMAND ucmd.
+  PARAMETERS : p_file3 TYPE string LOWER CASE DEFAULT TEXT-006 MODIF ID md3.
+  SELECT-OPTIONS s_email FOR gv_email NO INTERVALS LOWER CASE MODIF ID md3.
+  PARAMETERS : p_test  AS CHECKBOX DEFAULT abap_true USER-COMMAND ucmd.
 SELECTION-SCREEN END OF BLOCK b4.
 
 
@@ -2519,7 +2520,7 @@ CLASS lcl_output IMPLEMENTATION.
 
   METHOD send_mail.
     DATA lt_body TYPE soli_tab.
-    CHECK p_email IS NOT INITIAL.
+    CHECK s_email[] IS NOT INITIAL.
 
     TRY.
         DATA(lo_send) = cl_bcs=>create_persistent( ).
@@ -2547,11 +2548,18 @@ CLASS lcl_output IMPLEMENTATION.
         ENDIF.
 
         lo_send->set_document( lo_doc ).
-        lo_send->add_recipient( cl_cam_address_bcs=>create_internet_address( p_email ) ).
+        DATA(lv_rcpt) = ``.
+        LOOP AT s_email WHERE sign = 'I' AND option = 'EQ' AND low IS NOT INITIAL.
+          lo_send->add_recipient( cl_cam_address_bcs=>create_internet_address( s_email-low ) ).
+          lv_rcpt = COND #( WHEN lv_rcpt IS INITIAL THEN s_email-low ELSE |{ lv_rcpt }, { s_email-low }| ).
+        ENDLOOP.
+        IF lv_rcpt IS INITIAL.
+          RETURN.
+        ENDIF.
         lo_send->set_send_immediately( abap_true ).
         lo_send->send( ).
         COMMIT WORK.
-        mo_log->add( iv_type = 'S' iv_text = |Output log sent to { p_email }| ).
+        mo_log->add( iv_type = 'S' iv_text = |Output log sent to { lv_rcpt }| ).
       CATCH cx_bcs INTO DATA(lx_bcs).
         mo_log->add( iv_type = 'W' iv_text = |E-mail not sent: { lx_bcs->get_text( ) }| ).
     ENDTRY.
@@ -2889,6 +2897,9 @@ CLASS lcl_screen IMPLEMENTATION.
 
   METHOD initialization.
     p_btn = 'Download Template'(b01).
+    IF s_email[] IS INITIAL.                                    "default recipient (TEXT-008)
+      APPEND VALUE #( sign = 'I' option = 'EQ' low = TEXT-008 ) TO s_email.
+    ENDIF.
   ENDMETHOD.
 
   METHOD get_operation.
