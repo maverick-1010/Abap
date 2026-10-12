@@ -583,6 +583,7 @@ CLASS lcl_material_bapi DEFINITION FINAL.
                              RETURNING VALUE(rs_class) TYPE ty_bapi
                              RAISING   lcx_error.
   PRIVATE SECTION.
+    METHODS sync_long_values CHANGING ct_char TYPE STANDARD TABLE.
     DATA: mo_log   TYPE REF TO lcl_log,
           mt_cache TYPE tt_refcache,
           mt_clcache TYPE tt_refcache.            "classification of reference materials
@@ -2283,6 +2284,8 @@ CLASS lcl_material_bapi IMPLEMENTATION.
     ENDLOOP.
     APPEND LINES OF is_class-allocvaluescurr TO lt_curr.
 
+    sync_long_values( CHANGING ct_char = lt_char ).
+
     CLEAR lt_return.
     IF lv_exists = abap_true.
       CALL FUNCTION 'BAPI_OBJCL_CHANGE'
@@ -2393,6 +2396,7 @@ CLASS lcl_material_bapi IMPLEMENTATION.
           <ls_nchar>-value_char = <lv_neutral>.
         ENDIF.
       ENDLOOP.
+      sync_long_values( CHANGING ct_char = lt_char ).
       IF rs_class-classkey-classnum IS INITIAL.
         rs_class-classkey-classnum  = lv_class.
         rs_class-classkey-classtype = lv_ctype.
@@ -2408,6 +2412,24 @@ CLASS lcl_material_bapi IMPLEMENTATION.
     ENDLOOP.
 
     APPEND VALUE #( key = lv_key data = rs_class ) TO mt_clcache.
+  ENDMETHOD.
+
+  METHOD sync_long_values.
+    "S/4HANA (CLS_S4_CONV/004): short and long value of a characteristic
+    "must be equal - VALUE_CHAR = VALUE_CHAR_LONG, VALUE_NEUTRAL = VALUE_NEUTRAL_LONG
+    FIELD-SYMBOLS: <lv_short> TYPE any,
+                   <lv_long>  TYPE any.
+    LOOP AT ct_char ASSIGNING FIELD-SYMBOL(<ls_char>).
+      DO 2 TIMES.
+        DATA(lv_short) = COND string( WHEN sy-index = 1 THEN `VALUE_CHAR`    ELSE `VALUE_NEUTRAL` ).
+        DATA(lv_long)  = COND string( WHEN sy-index = 1 THEN `VALUE_CHAR_LONG` ELSE `VALUE_NEUTRAL_LONG` ).
+        ASSIGN COMPONENT lv_short OF STRUCTURE <ls_char> TO <lv_short>.
+        CHECK sy-subrc = 0.
+        ASSIGN COMPONENT lv_long OF STRUCTURE <ls_char> TO <lv_long>.
+        CHECK sy-subrc = 0.
+        <lv_long> = <lv_short>.
+      ENDDO.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD finish_luw.
