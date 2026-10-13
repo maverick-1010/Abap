@@ -3361,21 +3361,21 @@ CLASS lcl_app IMPLEMENTATION.
       APPEND lv_field TO mt_header.
     ENDLOOP.
 
-    CLEAR: lv_field.
-    IF line_exists( mt_header[ table_line = 'MEINS' ] ).
-      IF NOT line_exists( mt_header[ table_line = 'MEINH' ] )  .
-        lv_field = CONV fieldname( 'MEINH' ).
-        APPEND lv_field TO mt_header.
-      ENDIF.
-      IF NOT line_exists( mt_header[ table_line = 'UMREZ' ] )  .
-        lv_field = CONV fieldname( 'UMREZ' ).
-        APPEND lv_field TO mt_header.
-      ENDIF.
-      IF NOT line_exists( mt_header[ table_line = 'UMREN' ] )  .
-        lv_field = CONV fieldname( 'UMREN' ).
-        APPEND lv_field TO mt_header.
-      ENDIF.
-    ENDIF.
+*    CLEAR: lv_field.
+*    IF line_exists( mt_header[ table_line = 'MEINS' ] ).
+*      IF NOT line_exists( mt_header[ table_line = 'MEINH' ] )  .
+*        lv_field = CONV fieldname( 'MEINH' ).
+*        APPEND lv_field TO mt_header.
+*      ENDIF.
+*      IF NOT line_exists( mt_header[ table_line = 'UMREZ' ] )  .
+*        lv_field = CONV fieldname( 'UMREZ' ).
+*        APPEND lv_field TO mt_header.
+*      ENDIF.
+*      IF NOT line_exists( mt_header[ table_line = 'UMREN' ] )  .
+*        lv_field = CONV fieldname( 'UMREN' ).
+*        APPEND lv_field TO mt_header.
+*      ENDIF.
+*    ENDIF.
 
     "Data rows: keep non-empty cells only
     LOOP AT lt_raw INTO DATA(lt_values) FROM gc_data_row.
