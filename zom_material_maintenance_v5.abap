@@ -2107,6 +2107,24 @@ CLASS lcl_material_bapi IMPLEMENTATION.
       LOOP AT <lt_src> ASSIGNING <ls_src>.
         APPEND INITIAL LINE TO <lt_tgt> ASSIGNING <ls_tgt>.
         MOVE-CORRESPONDING <ls_src> TO <ls_tgt>.
+        "BAPI_MLAN names the country key DEPCOUNTR (BAPIE1MLAN: DEPCOUNTRY): without
+        "this every line has an empty key and only the first line survives
+        IF ls_reftab-param = 'TAXCLASSIFICATIONS'.
+          ASSIGN COMPONENT 'DEPCOUNTR' OF STRUCTURE <ls_src> TO FIELD-SYMBOL(<lv_ctry>).
+          IF sy-subrc = 0.
+            ASSIGN COMPONENT 'DEPCOUNTRY' OF STRUCTURE <ls_tgt> TO FIELD-SYMBOL(<lv_ctry_tgt>).
+            IF sy-subrc = 0 AND <lv_ctry_tgt> IS INITIAL.
+              <lv_ctry_tgt> = <lv_ctry>.
+            ENDIF.
+          ENDIF.
+          ASSIGN COMPONENT 'DEPCOUNTR_ISO' OF STRUCTURE <ls_src> TO <lv_ctry>.
+          IF sy-subrc = 0.
+            ASSIGN COMPONENT 'DEPCOUNTRY_ISO' OF STRUCTURE <ls_tgt> TO <lv_ctry_tgt>.
+            IF sy-subrc = 0 AND <lv_ctry_tgt> IS INITIAL.
+              <lv_ctry_tgt> = <lv_ctry>.
+            ENDIF.
+          ENDIF.
+        ENDIF.
       ENDLOOP.
     ENDLOOP.
 
@@ -4028,11 +4046,8 @@ CLASS lcl_app IMPLEMENTATION.
         "no sales data at the reference: warning only (other rows may have it)
         mo_log->add( iv_type = 'W' is_row = is_row iv_field = gc_col-ref_vkorg iv_view = gc_view-sales
                      iv_text = |Reference { lv_ref } has no sales data for sales area | &&
-                               |'{ lv_ref_vkorg }/{ lv_ref_vtweg }' - sales data not copied | &&
-                               |(tax classifications are still copied)| ).
+                               |'{ lv_ref_vkorg }/{ lv_ref_vtweg }' - view not copied| ).
         DELETE et_views WHERE table_line = gc_view-sales.
-        "tax classifications (MLAN) are per country, not per sales area
-        INSERT CONV char10( 'TAX' ) INTO TABLE et_views.
       ENDIF.
     ENDIF.
     IF NOT line_exists( et_views[ table_line = gc_view-sales ] ).
@@ -4113,8 +4128,7 @@ CLASS lcl_app IMPLEMENTATION.
 
     DATA(lv_basic) = xsdbool( line_exists( it_views[ table_line = gc_view-basic ] ) ).
     DATA(lv_purch) = xsdbool( line_exists( it_views[ table_line = gc_view-purch ] ) ).
-    DATA(lv_sales) = xsdbool( line_exists( it_views[ table_line = gc_view-sales ] ) OR
-                              line_exists( it_views[ table_line = 'TAX' ] ) ).
+    DATA(lv_sales) = xsdbool( line_exists( it_views[ table_line = gc_view-sales ] ) ).
 
     "Descriptions
     IF lv_basic = abap_true.
@@ -4245,9 +4259,7 @@ CLASS lcl_app IMPLEMENTATION.
     "Fields whose target now has a value from the reference count as given
     "(mandatory check) and their view is created
     LOOP AT mo_config->mt_fcat INTO DATA(ls_fcat).
-      "SALES fields of the tax classifications also count if only 'TAX' was copied
-      CHECK line_exists( it_views[ table_line = ls_fcat-view ] ) OR
-            ( line_exists( it_views[ table_line = 'TAX' ] ) AND ls_fcat-view = gc_view-sales ).
+      CHECK line_exists( it_views[ table_line = ls_fcat-view ] ).
       CHECK NOT line_exists( mt_cell[ row = is_row-row field = ls_fcat-temp_field_name ] ).
       CLEAR lv_copied.
       LOOP AT ls_fcat-targets INTO DATA(ls_target) WHERE table = abap_true OR param = 'CLASSKEY'.
