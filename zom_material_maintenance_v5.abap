@@ -702,6 +702,8 @@ CLASS lcl_app DEFINITION FINAL.
       check_defaults,
       apply_defaults         IMPORTING is_row  TYPE ty_row
                              CHANGING  cs_bapi TYPE ty_bapi,
+      apply_unit_defaults    IMPORTING is_row  TYPE ty_row
+                             CHANGING  cs_bapi TYPE ty_bapi,
       is_yyyymmdd            IMPORTING iv_value     TYPE string
                              RETURNING VALUE(rv_ok) TYPE abap_bool,
       apply_current_date     IMPORTING is_row  TYPE ty_row
@@ -3435,6 +3437,35 @@ CLASS lcl_app IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+  METHOD apply_unit_defaults.
+    "Unit of measure lines (MARM): ALT_UNIT (MEINH), NUMERATOR (UMREZ) and
+    "DENOMINATR (UMREN) - priority: 1. template  2. reference material
+    "3. default table ZTMM_DEFLT_DATA (APPLY_DEFAULTS) - what is still empty
+    "is set here: ALT_UNIT = base unit (MEINS), NUMERATOR = 1, DENOMINATR = 1
+    DATA(lv_base) = cs_bapi-clientdata-base_uom.
+    CHECK lv_base IS NOT INITIAL.
+
+    LOOP AT cs_bapi-unitsofmeasure ASSIGNING FIELD-SYMBOL(<ls_uom>).
+      DATA(lv_set) = abap_false.
+      IF <ls_uom>-alt_unit IS INITIAL AND <ls_uom>-alt_unit_iso IS INITIAL.
+        <ls_uom>-alt_unit = lv_base.
+        lv_set = abap_true.
+      ENDIF.
+      IF <ls_uom>-numerator IS INITIAL.
+        <ls_uom>-numerator = 1.
+        lv_set = abap_true.
+      ENDIF.
+      IF <ls_uom>-denominatr IS INITIAL.
+        <ls_uom>-denominatr = 1.
+        lv_set = abap_true.
+      ENDIF.
+      CHECK lv_set = abap_true.
+      mo_log->add( iv_type = 'S' is_row = is_row iv_view = gc_view-basic
+                   iv_text = |Unit of measure { <ls_uom>-alt_unit }: missing unit / numerator / | &&
+                             |denominator set (base unit { lv_base }, 1 / 1)| ).
+    ENDLOOP.
+  ENDMETHOD.
+
   METHOD apply_defaults.
     "Default values (ZTMM_DEFLT_DATA) - priority per field:
     "  1. template value  2. value copied from the reference material
@@ -3770,6 +3801,7 @@ CLASS lcl_app IMPLEMENTATION.
 
       "Defaults for fields neither in the template nor copied from the reference
       apply_defaults( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
+      apply_unit_defaults( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
       apply_current_date( EXPORTING is_row = ls_row CHANGING cs_bapi = ls_bapi ).
 
       "Classification: values, class master, single values
