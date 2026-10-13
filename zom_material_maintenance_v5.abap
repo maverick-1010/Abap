@@ -2107,23 +2107,23 @@ CLASS lcl_material_bapi IMPLEMENTATION.
       LOOP AT <lt_src> ASSIGNING <ls_src>.
         APPEND INITIAL LINE TO <lt_tgt> ASSIGNING <ls_tgt>.
         MOVE-CORRESPONDING <ls_src> TO <ls_tgt>.
-        "BAPI_MLAN names the country key DEPCOUNTR (BAPIE1MLAN: DEPCOUNTRY): without
-        "this every line has an empty key and only the first line survives
+        "Tax lines: the country is the key of every line (MLAN). If the reference
+        "structure names it differently than BAPIE1MLAN (DEPCOUNTRY), MOVE-CORRESPONDING
+        "leaves it empty and all lines get the same (empty) key - then only one line
+        "is kept. Take the country from the source field whose name says so.
         IF ls_reftab-param = 'TAXCLASSIFICATIONS'.
-          ASSIGN COMPONENT 'DEPCOUNTR' OF STRUCTURE <ls_src> TO FIELD-SYMBOL(<lv_ctry>).
-          IF sy-subrc = 0.
-            ASSIGN COMPONENT 'DEPCOUNTRY' OF STRUCTURE <ls_tgt> TO FIELD-SYMBOL(<lv_ctry_tgt>).
+          DATA(lo_src) = CAST cl_abap_structdescr( cl_abap_typedescr=>describe_by_data( <ls_src> ) ).
+          LOOP AT lo_src->components INTO DATA(ls_scomp).
+            DATA(lv_iso) = xsdbool( ls_scomp-name CS 'ISO' ).
+            CHECK ls_scomp-name CS 'COUNTR' OR ls_scomp-name = 'ALAND'.
+            ASSIGN COMPONENT ls_scomp-name OF STRUCTURE <ls_src> TO FIELD-SYMBOL(<lv_ctry>).
+            CHECK sy-subrc = 0 AND <lv_ctry> IS NOT INITIAL.
+            DATA(lv_tgt_name) = COND string( WHEN lv_iso = abap_true THEN `DEPCOUNTRY_ISO` ELSE `DEPCOUNTRY` ).
+            ASSIGN COMPONENT lv_tgt_name OF STRUCTURE <ls_tgt> TO FIELD-SYMBOL(<lv_ctry_tgt>).
             IF sy-subrc = 0 AND <lv_ctry_tgt> IS INITIAL.
               <lv_ctry_tgt> = <lv_ctry>.
             ENDIF.
-          ENDIF.
-          ASSIGN COMPONENT 'DEPCOUNTR_ISO' OF STRUCTURE <ls_src> TO <lv_ctry>.
-          IF sy-subrc = 0.
-            ASSIGN COMPONENT 'DEPCOUNTRY_ISO' OF STRUCTURE <ls_tgt> TO <lv_ctry_tgt>.
-            IF sy-subrc = 0 AND <lv_ctry_tgt> IS INITIAL.
-              <lv_ctry_tgt> = <lv_ctry>.
-            ENDIF.
-          ENDIF.
+          ENDLOOP.
         ENDIF.
       ENDLOOP.
     ENDLOOP.
@@ -4201,7 +4201,8 @@ CLASS lcl_app IMPLEMENTATION.
       LOOP AT is_ref-taxclassifications INTO DATA(ls_mlan).
         READ TABLE cs_bapi-taxclassifications ASSIGNING <ls_line>
              WITH KEY depcountry = ls_mlan-depcountry.
-        IF sy-subrc <> 0.
+        "no country in the reference line: cannot be compared - take every line
+        IF sy-subrc <> 0 OR ls_mlan-depcountry IS INITIAL.
           APPEND ls_mlan TO cs_bapi-taxclassifications.
           INSERT CONV fieldname( 'TAXCLASSIFICATIONS' ) INTO TABLE lt_params.
           CONTINUE.
