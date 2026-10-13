@@ -4157,18 +4157,25 @@ CLASS lcl_app IMPLEMENTATION.
                WITH KEY alt_unit = space.
         ENDIF.
         IF sy-subrc <> 0.
+          "the base unit is not an alternative unit (M3/332): the base unit line
+          "of the reference is not copied as a line of its own
+          CHECK ls_marm-alt_unit <> is_ref-clientdata-base_uom.
           APPEND ls_marm TO cs_bapi-unitsofmeasure.
         ELSE.
-          DO.
-            ASSIGN COMPONENT sy-index OF STRUCTURE ls_marm TO <lv_src>.
-            IF sy-subrc <> 0.
-              EXIT.
-            ENDIF.
-            ASSIGN COMPONENT sy-index OF STRUCTURE <ls_line> TO <lv_tgt>.
-            IF sy-subrc = 0 AND <lv_tgt> IS INITIAL AND <lv_src> IS NOT INITIAL.
+          "fill empty fields of the template line - never the unit itself
+          "(a template line without unit is the base unit line)
+          DATA(lo_marm) = CAST cl_abap_structdescr( cl_abap_typedescr=>describe_by_data( ls_marm ) ).
+          LOOP AT lo_marm->components INTO DATA(ls_mcomp).
+            CHECK ls_mcomp-name <> 'ALT_UNIT' AND ls_mcomp-name <> 'ALT_UNIT_ISO' AND
+                  ls_mcomp-name <> 'MATERIAL' AND ls_mcomp-name <> 'MATERIAL_LONG' AND
+                  ls_mcomp-name <> 'FUNCTION'.
+            ASSIGN COMPONENT ls_mcomp-name OF STRUCTURE ls_marm TO <lv_src>.
+            CHECK sy-subrc = 0 AND <lv_src> IS NOT INITIAL.
+            ASSIGN COMPONENT ls_mcomp-name OF STRUCTURE <ls_line> TO <lv_tgt>.
+            IF sy-subrc = 0 AND <lv_tgt> IS INITIAL.
               <lv_tgt> = <lv_src>.                         "template value wins
             ENDIF.
-          ENDDO.
+          ENDLOOP.
         ENDIF.
         INSERT CONV fieldname( 'UNITSOFMEASURE' ) INTO TABLE lt_params.
       ENDLOOP.
