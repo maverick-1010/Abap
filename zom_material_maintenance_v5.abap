@@ -4028,8 +4028,11 @@ CLASS lcl_app IMPLEMENTATION.
         "no sales data at the reference: warning only (other rows may have it)
         mo_log->add( iv_type = 'W' is_row = is_row iv_field = gc_col-ref_vkorg iv_view = gc_view-sales
                      iv_text = |Reference { lv_ref } has no sales data for sales area | &&
-                               |'{ lv_ref_vkorg }/{ lv_ref_vtweg }' - view not copied| ).
+                               |'{ lv_ref_vkorg }/{ lv_ref_vtweg }' - sales data not copied | &&
+                               |(tax classifications are still copied)| ).
         DELETE et_views WHERE table_line = gc_view-sales.
+        "tax classifications (MLAN) are per country, not per sales area
+        INSERT CONV char10( 'TAX' ) INTO TABLE et_views.
       ENDIF.
     ENDIF.
     IF NOT line_exists( et_views[ table_line = gc_view-sales ] ).
@@ -4110,7 +4113,8 @@ CLASS lcl_app IMPLEMENTATION.
 
     DATA(lv_basic) = xsdbool( line_exists( it_views[ table_line = gc_view-basic ] ) ).
     DATA(lv_purch) = xsdbool( line_exists( it_views[ table_line = gc_view-purch ] ) ).
-    DATA(lv_sales) = xsdbool( line_exists( it_views[ table_line = gc_view-sales ] ) ).
+    DATA(lv_sales) = xsdbool( line_exists( it_views[ table_line = gc_view-sales ] ) OR
+                              line_exists( it_views[ table_line = 'TAX' ] ) ).
 
     "Descriptions
     IF lv_basic = abap_true.
@@ -4181,9 +4185,48 @@ CLASS lcl_app IMPLEMENTATION.
     "Tax classifications
     IF lv_sales = abap_true.
       LOOP AT is_ref-taxclassifications INTO DATA(ls_mlan).
-        CHECK NOT line_exists( cs_bapi-taxclassifications[ depcountry = ls_mlan-depcountry ] ).
-        APPEND ls_mlan TO cs_bapi-taxclassifications.
-        INSERT CONV fieldname( 'TAXCLASSIFICATIONS' ) INTO TABLE lt_params.
+        READ TABLE cs_bapi-taxclassifications ASSIGNING <ls_line>
+             WITH KEY depcountry = ls_mlan-depcountry.
+        IF sy-subrc <> 0.
+          APPEND ls_mlan TO cs_bapi-taxclassifications.
+          INSERT CONV fieldname( 'TAXCLASSIFICATIONS' ) INTO TABLE lt_params.
+          CONTINUE.
+        ENDIF.
+        "country already in the template: add the tax type / class pairs
+        "(TAX_TYPE_n / TAXCLASS_n) the template line does not have
+        DO 9 TIMES.
+          DATA(lv_tt) = |TAX_TYPE_{ sy-index }|.
+          DATA(lv_tc) = |TAXCLASS_{ sy-index }|.
+          ASSIGN COMPONENT lv_tt OF STRUCTURE ls_mlan TO <lv_src>.
+          CHECK sy-subrc = 0 AND <lv_src> IS NOT INITIAL.
+          DATA(lv_type) = CONV string( <lv_src> ).
+          ASSIGN COMPONENT lv_tc OF STRUCTURE ls_mlan TO <lv_src>.
+          CHECK sy-subrc = 0.
+          DATA(lv_class) = CONV string( <lv_src> ).
+          "tax type already in the template line?
+          DATA(lv_have) = abap_false.
+          DO 9 TIMES.
+            DATA(lv_nt) = |TAX_TYPE_{ sy-index }|.
+            ASSIGN COMPONENT lv_nt OF STRUCTURE <ls_line> TO <lv_tgt>.
+            IF sy-subrc = 0 AND <lv_tgt> = lv_type.
+              lv_have = abap_true.
+            ENDIF.
+          ENDDO.
+          CHECK lv_have = abap_false.
+          "free slot (type and class empty) in the template line
+          DO 9 TIMES.
+            DATA(lv_ft) = |TAX_TYPE_{ sy-index }|.
+            DATA(lv_fc) = |TAXCLASS_{ sy-index }|.
+            ASSIGN COMPONENT lv_ft OF STRUCTURE <ls_line> TO <lv_tgt>.
+            CHECK sy-subrc = 0 AND <lv_tgt> IS INITIAL.
+            ASSIGN COMPONENT lv_fc OF STRUCTURE <ls_line> TO <lv_src>.
+            CHECK sy-subrc = 0 AND <lv_src> IS INITIAL.
+            <lv_tgt> = lv_type.
+            <lv_src> = lv_class.
+            INSERT CONV fieldname( 'TAXCLASSIFICATIONS' ) INTO TABLE lt_params.
+            EXIT.
+          ENDDO.
+        ENDDO.
       ENDLOOP.
     ENDIF.
 
@@ -4202,7 +4245,9 @@ CLASS lcl_app IMPLEMENTATION.
     "Fields whose target now has a value from the reference count as given
     "(mandatory check) and their view is created
     LOOP AT mo_config->mt_fcat INTO DATA(ls_fcat).
-      CHECK line_exists( it_views[ table_line = ls_fcat-view ] ).
+      "SALES fields of the tax classifications also count if only 'TAX' was copied
+      CHECK line_exists( it_views[ table_line = ls_fcat-view ] ) OR
+            ( line_exists( it_views[ table_line = 'TAX' ] ) AND ls_fcat-view = gc_view-sales ).
       CHECK NOT line_exists( mt_cell[ row = is_row-row field = ls_fcat-temp_field_name ] ).
       CLEAR lv_copied.
       LOOP AT ls_fcat-targets INTO DATA(ls_target) WHERE table = abap_true OR param = 'CLASSKEY'.
