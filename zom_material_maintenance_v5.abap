@@ -3389,11 +3389,11 @@ CLASS lcl_app IMPLEMENTATION.
         DATA(lv_value) = lcl_mapper=>trim( lv_raw ).
         CHECK lv_value IS NOT INITIAL.
         INSERT VALUE #( row = lv_row field = lv_colname value = lv_value ) INTO TABLE mt_cell.
-        IF lv_colname = 'MEINS' AND lv_value IS NOT INITIAL.
-          INSERT VALUE #( row = lv_row field = 'MEINH' value = lv_value ) INTO TABLE mt_cell.
-          INSERT VALUE #( row = lv_row field = 'UMREN' value = '1' ) INTO TABLE mt_cell.
-          INSERT VALUE #( row = lv_row field = 'UMREZ' value = '1' ) INTO TABLE mt_cell.
-        ENDIF.
+*        IF lv_colname = 'MEINS' AND lv_value IS NOT INITIAL.
+*          INSERT VALUE #( row = lv_row field = 'MEINH' value = lv_value ) INTO TABLE mt_cell.
+*          INSERT VALUE #( row = lv_row field = 'UMREN' value = '1' ) INTO TABLE mt_cell.
+*          INSERT VALUE #( row = lv_row field = 'UMREZ' value = '1' ) INTO TABLE mt_cell.
+*        ENDIF.
         lv_has_data = abap_true.
       ENDLOOP.
 
