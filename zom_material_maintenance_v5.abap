@@ -35,6 +35,7 @@ CONSTANTS:
     class  TYPE char10 VALUE 'CLASS',
     purch  TYPE char10 VALUE 'PURCH',
     mrp    TYPE char10 VALUE 'MRP',
+    frcst  TYPE char10 VALUE 'FRCST',
     plntst TYPE char10 VALUE 'PLNTST',
     sales  TYPE char10 VALUE 'SALES',
     val    TYPE char10 VALUE 'VAL',
@@ -55,6 +56,7 @@ CONSTANTS:
     copy_basic TYPE fieldname VALUE 'COPY_BASIC',
     copy_purch TYPE fieldname VALUE 'COPY_PURCH',
     copy_mrp   TYPE fieldname VALUE 'COPY_MRP',
+    copy_frcst TYPE fieldname VALUE 'COPY_FRCST',
     copy_sales TYPE fieldname VALUE 'COPY_SALES',
     copy_acct  TYPE fieldname VALUE 'COPY_ACCOUNTING',
     copy_class TYPE fieldname VALUE 'COPY_CLASS',
@@ -385,8 +387,10 @@ SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE TEXT-004.
   PARAMETERS : p_mtart  TYPE mtart AS LISTBOX VISIBLE LENGTH 10, " USER-COMMAND ucmd,
                p_indsec TYPE char1 AS LISTBOX VISIBLE LENGTH 4, " USER-COMMAND ucmd,
                p_busprf TYPE char20 AS LISTBOX VISIBLE LENGTH 20, " USER-COMMAND ucmd,
+               p_basic  AS CHECKBOX DEFAULT 'X',
                p_class  AS CHECKBOX DEFAULT 'X',
                p_mrp    AS CHECKBOX DEFAULT 'X',
+               p_frcst  AS CHECKBOX DEFAULT 'X',
                p_plntst AS CHECKBOX DEFAULT 'X',
                p_purch  AS CHECKBOX DEFAULT 'X',
                p_sales  AS CHECKBOX DEFAULT 'X',
@@ -1699,10 +1703,11 @@ CLASS lcl_config IMPLEMENTATION.
 
   METHOD view_tables.
     "View table per selection-screen checkbox
-    rt_tab = VALUE #( ( view = gc_view-basic  tabname = 'ZTMM_BASIC_DATA'  active = abap_true   )
+    rt_tab = VALUE #( ( view = gc_view-basic  tabname = 'ZTMM_BASIC_DATA'  active = p_basic )
                       ( view = gc_view-class  tabname = 'ZTMM_CLASS_DATA'  active = p_class )
                       ( view = gc_view-purch  tabname = 'ZTMM_PURCH_DATA'  active = p_purch )
                       ( view = gc_view-mrp    tabname = 'ZTMM_MRP_DATA'    active = p_mrp )
+                      ( view = gc_view-frcst  tabname = 'ZTMM_FRCST_DATA'  active = p_frcst )
                       ( view = gc_view-plntst tabname = 'ZTMM_PLNTST_DATA' active = p_plntst )
                       ( view = gc_view-sales  tabname = 'ZTMM_SALES_DATA'  active = p_sales )
                       ( view = gc_view-val    tabname = 'ZTMM_VAL_DATA'    active = p_val ) ).
@@ -1714,7 +1719,7 @@ CLASS lcl_config IMPLEMENTATION.
                        ( gc_col-ref_matnr )  ( gc_col-ref_werks )  ( gc_col-ref_lgort )
                        ( gc_col-ref_vkorg )  ( gc_col-ref_vtweg )  ( gc_col-ref_ekorg )
                        ( gc_col-def_mode )
-                       ( gc_col-copy_basic ) ( gc_col-copy_purch ) ( gc_col-copy_mrp )
+                       ( gc_col-copy_basic ) ( gc_col-copy_purch ) ( gc_col-copy_mrp ) ( gc_col-copy_frcst )
                        ( gc_col-copy_sales ) ( gc_col-copy_acct )  ( gc_col-copy_class ) ).
   ENDMETHOD.
 
@@ -2664,7 +2669,7 @@ CLASS lcl_template IMPLEMENTATION.
     "Structure of the upload template (column order)
     DATA(lv_cols) =
       `ACTION MESSAGE PROCESS_PROFILE REFERENCE_MATNR REF_WERKS REF_LGORT REF_VKORG REF_VTWEG REF_EKORG ` &&
-      `DEFAULT_MODE COPY_BASIC COPY_PURCH COPY_MRP COPY_SALES COPY_ACCOUNTING ` &&
+      `DEFAULT_MODE COPY_BASIC COPY_PURCH COPY_MRP COPY_FRCST COPY_SALES COPY_ACCOUNTING ` &&
       `MATNR MTART MBRSH LGORT SPRAS MAKTX MEINS MATKL PRDHA EXTWG BRGEW NTGEW GEWEI VOLUM VOLEH ` &&
       `EAN11 NUMTP XCHPF IPRKZ MHDRZ MHDLP SERNP MTPOS_MARA SPART KZUMV LABOR LAENG BREIT HOEHE MEABM ` &&
       `CLASS_TYPE CLASS_NAME CHAR_NAME_1 CHAR_VALUE_1 CHAR_NAME_2 CHAR_VALUE_2 CHAR_NAME_3 CHAR_VALUE_3 ` &&
@@ -3001,6 +3006,11 @@ CLASS lcl_screen IMPLEMENTATION.
         WHEN 'MD2'.
           screen-input = COND #( WHEN r_unix  = abap_true THEN '1' ELSE '0' ).
       ENDCASE.
+      "basic data is always processed: checkbox fixed to 'X', not editable
+      IF screen-name = 'P_BASIC'.
+        p_basic      = abap_true.
+        screen-input = '0'.
+      ENDIF.
       MODIFY SCREEN.
     ENDLOOP.
     set_listboxes( ).
@@ -3096,7 +3106,8 @@ CLASS lcl_screen IMPLEMENTATION.
       MESSAGE 'Select material type, industry sector and business profile'(e01) TYPE 'E'.
     ENDIF.
     IF p_class IS INITIAL AND p_sales IS INITIAL AND p_purch  IS INITIAL AND
-       p_mrp IS INITIAL AND p_plntst IS INITIAL AND p_val IS INITIAL AND p_class IS INITIAL.
+       p_mrp IS INITIAL AND p_frcst IS INITIAL AND p_plntst IS INITIAL AND p_val IS INITIAL AND
+       p_basic IS INITIAL.
       MESSAGE 'Select at least one view'(e02) TYPE 'E'.
     ENDIF.
     DATA(lv_file) = COND string( WHEN r_local = abap_true THEN p_file1 ELSE p_file2 ).
@@ -3657,17 +3668,20 @@ CLASS lcl_app IMPLEMENTATION.
 
       DATA(lv_purch) = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_purch ).
       DATA(lv_mrp)   = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_mrp ).
+      DATA(lv_frcst) = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_frcst ).
       DATA(lv_acct)  = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_acct ).
       DATA(lv_sales) = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_sales ).
       DATA(lv_basic) = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_basic ).
       DATA(lv_class) = is_flag_set( iv_row = <ls_row>-row iv_field = gc_col-copy_class ).
       DATA(lv_no_flag) = xsdbool( lv_purch = abap_false AND lv_mrp   = abap_false AND
+                                  lv_frcst = abap_false AND
                                   lv_acct  = abap_false AND lv_sales = abap_false AND
                                   lv_basic = abap_false AND lv_class = abap_false ).
 
       "Plant (plant-level views: purchasing, MRP, plant/storage, accounting)
       IF <ls_row>-werks IS INITIAL AND
-         ( lv_no_flag = abap_true OR lv_purch = abap_true OR lv_mrp = abap_true OR lv_acct = abap_true ).
+         ( lv_no_flag = abap_true OR lv_purch = abap_true OR lv_mrp = abap_true OR
+           lv_frcst = abap_true OR lv_acct = abap_true ).
         DATA(lv_werks) = to_upper( get_value( iv_row = <ls_row>-row iv_field = gc_col-ref_werks ) ).
         IF lv_werks IS NOT INITIAL.
           INSERT VALUE #( row = <ls_row>-row field = gc_col-werks value = lv_werks ) INTO TABLE mt_cell.
@@ -3741,7 +3755,7 @@ CLASS lcl_app IMPLEMENTATION.
 *----------------------------------------------------------------------*
   METHOD validate_and_map.
     DATA(lv_fixed_comp) = 'ROW_NO  ACTION  STATUS  MESSAGE PROCESS_PROFILE REFERENCE_MATNR REF_WERKS REF_LGORT ' &&
-          ' REF_VKORG  REF_VTWEG REF_EKORG DEFAULT_MODE  COPY_BASIC  COPY_PURCH  COPY_MRP  COPY_SALES  COPY_ACCOUNTING COPY_CLASS DEFAULT_SUMMARY MATNR '.
+          ' REF_VKORG  REF_VTWEG REF_EKORG DEFAULT_MODE  COPY_BASIC  COPY_PURCH  COPY_MRP  COPY_FRCST  COPY_SALES  COPY_ACCOUNTING COPY_CLASS DEFAULT_SUMMARY MATNR '.
 *    LOOP AT mt_row INTO DATA(ls_row).
 *      DATA(ls_bapi) = VALUE ty_bapi( row = ls_row-row matkey = ls_row-matkey ).
 *
@@ -3887,6 +3901,7 @@ CLASS lcl_app IMPLEMENTATION.
        ( is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_basic ) = abap_true OR
          is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_purch ) = abap_true OR
          is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_mrp   ) = abap_true OR
+         is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_frcst ) = abap_true OR
          is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_sales ) = abap_true OR
          is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_acct  ) = abap_true OR
          is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_class ) = abap_true ).
@@ -3915,7 +3930,7 @@ CLASS lcl_app IMPLEMENTATION.
     CONSTANTS:
       lc_org_keys    TYPE string VALUE
         ` MATERIAL MATERIAL_LONG PLANT SALES_ORG DISTR_CHAN VAL_AREA VAL_TYPE STGE_LOC WHSE_NO STGE_TYPE `,
-      lc_plant_views TYPE string VALUE ` PURCH MRP PLNTST `.
+      lc_plant_views TYPE string VALUE ` PURCH MRP FRCST PLNTST `.
     DATA: lv_refmat   TYPE matnr,
           lv_explicit TYPE abap_bool,
           lv_dummy    TYPE matnr,
@@ -3936,6 +3951,9 @@ CLASS lcl_app IMPLEMENTATION.
     ENDIF.
     IF is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_mrp ) = abap_true.
       INSERT gc_view-mrp INTO TABLE et_views.
+    ENDIF.
+    IF is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_frcst ) = abap_true.
+      INSERT gc_view-frcst INTO TABLE et_views.
     ENDIF.
     IF is_flag_set( iv_row = is_row-row iv_field = gc_col-copy_sales ) = abap_true.
       INSERT gc_view-sales INTO TABLE et_views.
@@ -5238,6 +5256,7 @@ CLASS lcl_app IMPLEMENTATION.
     ls_head-basic_view    = xsdbool( lv_extend = abap_false ).
     ls_head-purchase_view = COND #( WHEN p_purch  = abap_true AND line_exists( lt_views[ table_line = gc_view-purch  ] ) THEN abap_true ).
     ls_head-mrp_view      = COND #( WHEN p_mrp   = abap_true AND line_exists( lt_views[ table_line = gc_view-mrp    ] ) THEN abap_true ).
+    ls_head-forecast_view = COND #( WHEN p_frcst = abap_true AND line_exists( lt_views[ table_line = gc_view-frcst ] ) THEN abap_true ).
     ls_head-storage_view  = COND #( WHEN p_plntst = abap_true AND line_exists( lt_views[ table_line = gc_view-plntst ] ) THEN abap_true ).
     ls_head-sales_view    = COND #( WHEN p_sales = abap_true AND line_exists( lt_views[ table_line = gc_view-sales  ] ) THEN abap_true ).
     ls_head-account_view  = COND #( WHEN p_val  = abap_true AND line_exists( lt_views[ table_line = gc_view-val    ] ) THEN abap_true ).
