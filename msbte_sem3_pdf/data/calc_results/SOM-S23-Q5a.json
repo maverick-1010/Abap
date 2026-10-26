@@ -1,0 +1,149 @@
+{
+ "id": "SOM-S23-Q5a",
+ "title": "Compound tube of steel and brass",
+ "given": [
+  {
+   "sym": "Steel tube",
+   "val": "140 mm ID, 160 mm OD",
+   "unit": "",
+   "note": ""
+  },
+  {
+   "sym": "Brass tube",
+   "val": "160 mm ID, 180 mm OD",
+   "unit": "",
+   "note": ""
+  },
+  {
+   "sym": "Length of each tube",
+   "val": "140",
+   "unit": "mm",
+   "note": "as printed"
+  },
+  {
+   "sym": "Axial load P",
+   "val": "900",
+   "unit": "kN",
+   "note": ""
+  },
+  {
+   "sym": "E_{s}, E_{br}",
+   "val": "2 × 10⁵, 1 × 10⁵",
+   "unit": "N/mm²",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Area of steel",
+   "formula": "A_{s} = π (160² − 140²) / 4",
+   "subst": "",
+   "value": "4712.39",
+   "raw": 4712.38898038469,
+   "unit": "mm²"
+  },
+  {
+   "label": "Area of brass",
+   "formula": "A_{b} = π (180² − 160²) / 4",
+   "subst": "",
+   "value": "5340.71",
+   "raw": 5340.707511102648,
+   "unit": "mm²"
+  },
+  {
+   "label": "Equal strain ⇒ σ_{s} = (E_{s}/E_{br}) σ_{b} = 2 σ_{b};  P = σ_{s}A_{s} + σ_{b}A_{b}",
+   "formula": "σ_{b} = P / (2 A_{s} + A_{b})",
+   "subst": "= 900000 / (2 × 4712.39 + 5340.71)",
+   "value": "60.95",
+   "raw": 60.952956928810984,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "Stress in steel",
+   "formula": "σ_{s} = 2 σ_{b}",
+   "subst": "= 2 × 60.953",
+   "value": "121.91",
+   "raw": 121.90591385762197,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "Load carried by steel",
+   "formula": "P_{s} = σ_{s} A_{s}",
+   "subst": "= 121.906 × 4712.39",
+   "value": "574.47",
+   "raw": 574.468085106383,
+   "unit": "kN"
+  },
+  {
+   "label": "Load carried by brass",
+   "formula": "P_{b} = σ_{b} A_{b}",
+   "subst": "= 60.953 × 5340.71",
+   "value": "325.53",
+   "raw": 325.531914893617,
+   "unit": "kN"
+  },
+  {
+   "label": "Shortening of the tubes",
+   "formula": "δ = σ_{s} L / E_{s}",
+   "subst": "= 121.906 × 140 / 200000",
+   "value": "0.0853",
+   "raw": 0.08533413970033538,
+   "unit": "mm"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Stress in steel",
+   "value": "121.91",
+   "raw": 121.90591385762197,
+   "unit": "N/mm²"
+  },
+  {
+   "name": "Stress in brass",
+   "value": "60.95",
+   "raw": 60.952956928810984,
+   "unit": "N/mm²"
+  },
+  {
+   "name": "Load carried by steel",
+   "value": "574.47",
+   "raw": 574.468085106383,
+   "unit": "kN"
+  },
+  {
+   "name": "Load carried by brass",
+   "value": "325.53",
+   "raw": 325.531914893617,
+   "unit": "kN"
+  },
+  {
+   "name": "Shortening",
+   "value": "0.0853",
+   "raw": 0.08533413970033538,
+   "unit": "mm"
+  }
+ ],
+ "checks": [
+  {
+   "method": "P_{s} + P_{b} = 900 kN",
+   "a": "900.0000",
+   "b": "900.0000",
+   "a_raw": 900.0,
+   "b_raw": 900.0,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Strain in brass = strain in steel",
+   "a": "6.095 × 10^{-4}",
+   "b": "6.095 × 10^{-4}",
+   "a_raw": 0.0006095295692881099,
+   "b_raw": 0.0006095295692881099,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": [
+  "The question gives the tube length as 140 mm (same as the steel ID); it is used as printed. Stresses and loads do not depend on length."
+ ]
+}

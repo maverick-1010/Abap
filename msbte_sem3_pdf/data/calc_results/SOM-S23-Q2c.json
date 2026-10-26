@@ -1,0 +1,131 @@
+{
+ "id": "SOM-S23-Q2c",
+ "title": "Tri-axial stress: strains and volume change",
+ "given": [
+  {
+   "sym": "σ_{x}",
+   "val": "100",
+   "unit": "N/mm²",
+   "note": "tensile"
+  },
+  {
+   "sym": "σ_{y}",
+   "val": "60",
+   "unit": "N/mm²",
+   "note": "tensile"
+  },
+  {
+   "sym": "σ_{z}",
+   "val": "-30",
+   "unit": "N/mm²",
+   "note": "compressive, so negative"
+  },
+  {
+   "sym": "E",
+   "val": "200000",
+   "unit": "N/mm²",
+   "note": ""
+  },
+  {
+   "sym": "μ",
+   "val": "0.25",
+   "unit": "",
+   "note": ""
+  },
+  {
+   "sym": "X, Y, Z",
+   "val": "400, 150, 300",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Strain in x direction",
+   "formula": "ε_{x} = [σ_{x} − μ(σ_{y} + σ_{z})] / E",
+   "subst": "= [100 − 0.25(60 + (-30))] / 200000",
+   "value": "4.625 × 10^{-4}",
+   "raw": 0.0004625,
+   "unit": ""
+  },
+  {
+   "label": "Strain in y direction",
+   "formula": "ε_{y} = [σ_{y} − μ(σ_{x} + σ_{z})] / E",
+   "subst": "= [60 − 0.25(100 + (-30))] / 200000",
+   "value": "2.125 × 10^{-4}",
+   "raw": 0.0002125,
+   "unit": ""
+  },
+  {
+   "label": "Strain in z direction",
+   "formula": "ε_{z} = [σ_{z} − μ(σ_{x} + σ_{y})] / E",
+   "subst": "= [-30 − 0.25(100 + 60)] / 200000",
+   "value": "-3.5 × 10^{-4}",
+   "raw": -0.00035,
+   "unit": ""
+  },
+  {
+   "label": "Volumetric strain",
+   "formula": "ε_{v} = ε_{x} + ε_{y} + ε_{z}",
+   "subst": "= 0.0004625 + 0.0002125 + (-0.00035)",
+   "value": "3.25 × 10^{-4}",
+   "raw": 0.00032500000000000004,
+   "unit": ""
+  },
+  {
+   "label": "Change in volume",
+   "formula": "δV = ε_{v} × V,  V = 400 × 150 × 300",
+   "subst": "= 0.000325 × 1.8 × 10^{7}",
+   "value": "5850.0",
+   "raw": 5850.000000000001,
+   "unit": "mm³"
+  }
+ ],
+ "answers": [
+  {
+   "name": "ε_{x}",
+   "value": "4.625 × 10^{-4}",
+   "raw": 0.0004625,
+   "unit": ""
+  },
+  {
+   "name": "ε_{y}",
+   "value": "2.125 × 10^{-4}",
+   "raw": 0.0002125,
+   "unit": ""
+  },
+  {
+   "name": "ε_{z}",
+   "value": "-3.5 × 10^{-4}",
+   "raw": -0.00035,
+   "unit": "(negative = contraction)"
+  },
+  {
+   "name": "Change in volume δV (increase)",
+   "value": "5850.0",
+   "raw": 5850.000000000001,
+   "unit": "mm³"
+  }
+ ],
+ "checks": [
+  {
+   "method": "ε_{v} = (1 − 2μ)(σ_{x} + σ_{y} + σ_{z}) / E",
+   "a": "3.25 × 10^{-4}",
+   "b": "3.25 × 10^{-4}",
+   "a_raw": 0.000325,
+   "b_raw": 0.00032500000000000004,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "δV from changed sides: (X(1+ε_x))(Y(1+ε_y))(Z(1+ε_z)) − XYZ",
+   "a": "5847.5159",
+   "b": "5850.0000",
+   "a_raw": 5847.515943326056,
+   "b_raw": 5850.000000000001,
+   "rtol": 0.002,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

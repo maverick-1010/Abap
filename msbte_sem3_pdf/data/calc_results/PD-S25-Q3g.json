@@ -1,0 +1,124 @@
+{
+ "id": "PD-S25-Q3g",
+ "title": "Fit between shaft Ø20(+0.023/+0.012) and hole Ø20(+0.018/0)",
+ "given": [
+  {
+   "sym": "Basic size",
+   "val": "20",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Shaft deviations (es, ei)",
+   "val": "+0.023, +0.012",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Hole deviations (ES, EI)",
+   "val": "+0.018, +0.000",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Fit: limits of hole",
+   "formula": "H_{max} = B + ES,   H_{min} = B + EI",
+   "subst": "= 20 + (0.018),  20 + (0)",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Hole: maximum = 20.018 mm,  minimum = 20.000 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Shaft: maximum = 20.023 mm,  minimum = 20.012 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Fit: maximum clearance",
+   "formula": "= H_{max} − S_{min}",
+   "subst": "= 20.018 − 20.012",
+   "value": "0.006",
+   "raw": 0.006000000000000227,
+   "unit": "mm"
+  },
+  {
+   "label": "Fit: minimum clearance",
+   "formula": "= H_{min} − S_{max}",
+   "subst": "= 20.000 − 20.023",
+   "value": "-0.023",
+   "raw": -0.022999999999999687,
+   "unit": "mm"
+  },
+  {
+   "label": "",
+   "formula": "Fit: minimum clearance < 0 and maximum clearance > 0, so it is a TRANSITION fit.",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  }
+ ],
+ "answers": [
+  {
+   "name": "Maximum clearance",
+   "value": "0.006",
+   "raw": 0.006000000000000227,
+   "unit": "mm"
+  },
+  {
+   "name": "Minimum clearance (negative = interference)",
+   "value": "-0.023",
+   "raw": -0.022999999999999687,
+   "unit": "mm"
+  },
+  {
+   "name": "Type of fit",
+   "value": "Transition fit",
+   "raw": "Transition fit",
+   "unit": ""
+  }
+ ],
+ "checks": [
+  {
+   "method": "Fit: max clearance = ES − ei",
+   "a": "0.0060",
+   "b": "0.0060",
+   "a_raw": 0.005999999999999998,
+   "b_raw": 0.006000000000000227,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Fit: min clearance = EI − es",
+   "a": "-0.0230",
+   "b": "-0.0230",
+   "a_raw": -0.023,
+   "b_raw": -0.022999999999999687,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Type is transition",
+   "a": "1.0000",
+   "b": "1.0000",
+   "a_raw": 1.0,
+   "b_raw": 1.0,
+   "rtol": 1e-06,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

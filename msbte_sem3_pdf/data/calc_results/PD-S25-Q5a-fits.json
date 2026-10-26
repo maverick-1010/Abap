@@ -1,0 +1,235 @@
+{
+ "id": "PD-S25-Q5a-fits",
+ "title": "Fits in the foot step bearing (tolerance chart)",
+ "given": [
+  {
+   "sym": "Tolerance chart (printed)",
+   "val": "68H7: +0.030/0;  68h6: 0/−0.019;  50H7: +0.039/0;  50e8: −0.050/−0.089;  8H7: +0.015/0;  8g6: −0.005/−0.014 (signs read from the scan)",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Ø68 H7/h6 (body bore – bush): limits of hole",
+   "formula": "H_{max} = B + ES,   H_{min} = B + EI",
+   "subst": "= 68 + (0.03),  68 + (0)",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Hole: maximum = 68.030 mm,  minimum = 68.000 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Shaft: maximum = 68.000 mm,  minimum = 67.981 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Ø68 H7/h6 (body bore – bush): maximum clearance",
+   "formula": "= H_{max} − S_{min}",
+   "subst": "= 68.030 − 67.981",
+   "value": "0.049",
+   "raw": 0.049000000000006594,
+   "unit": "mm"
+  },
+  {
+   "label": "Ø68 H7/h6 (body bore – bush): minimum clearance",
+   "formula": "= H_{min} − S_{max}",
+   "subst": "= 68.000 − 68.000",
+   "value": "0.000",
+   "raw": 0.0,
+   "unit": "mm"
+  },
+  {
+   "label": "",
+   "formula": "Ø68 H7/h6 (body bore – bush): minimum clearance ≥ 0 and maximum clearance > 0, so it is a CLEARANCE fit.",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Ø50 H7/e8 (bush bore – shaft/disc): limits of hole",
+   "formula": "H_{max} = B + ES,   H_{min} = B + EI",
+   "subst": "= 50 + (0.039),  50 + (0)",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Hole: maximum = 50.039 mm,  minimum = 50.000 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Shaft: maximum = 49.950 mm,  minimum = 49.911 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Ø50 H7/e8 (bush bore – shaft/disc): maximum clearance",
+   "formula": "= H_{max} − S_{min}",
+   "subst": "= 50.039 − 49.911",
+   "value": "0.128",
+   "raw": 0.1280000000000001,
+   "unit": "mm"
+  },
+  {
+   "label": "Ø50 H7/e8 (bush bore – shaft/disc): minimum clearance",
+   "formula": "= H_{min} − S_{max}",
+   "subst": "= 50.000 − 49.950",
+   "value": "0.050",
+   "raw": 0.04999999999999716,
+   "unit": "mm"
+  },
+  {
+   "label": "",
+   "formula": "Ø50 H7/e8 (bush bore – shaft/disc): minimum clearance ≥ 0 and maximum clearance > 0, so it is a CLEARANCE fit.",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Ø8 H7/g6 (pin): limits of hole",
+   "formula": "H_{max} = B + ES,   H_{min} = B + EI",
+   "subst": "= 8 + (0.015),  8 + (0)",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Hole: maximum = 8.015 mm,  minimum = 8.000 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Shaft: maximum = 7.995 mm,  minimum = 7.986 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Ø8 H7/g6 (pin): maximum clearance",
+   "formula": "= H_{max} − S_{min}",
+   "subst": "= 8.015 − 7.986",
+   "value": "0.029",
+   "raw": 0.029000000000000803,
+   "unit": "mm"
+  },
+  {
+   "label": "Ø8 H7/g6 (pin): minimum clearance",
+   "formula": "= H_{min} − S_{max}",
+   "subst": "= 8.000 − 7.995",
+   "value": "0.005",
+   "raw": 0.004999999999999893,
+   "unit": "mm"
+  },
+  {
+   "label": "",
+   "formula": "Ø8 H7/g6 (pin): minimum clearance ≥ 0 and maximum clearance > 0, so it is a CLEARANCE fit.",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  }
+ ],
+ "answers": [
+  {
+   "name": "Ø68 H7/h6",
+   "value": "CLEARANCE fit  (clearance 0.000 to 0.049 mm)",
+   "raw": "CLEARANCE fit  (clearance 0.000 to 0.049 mm)",
+   "unit": ""
+  },
+  {
+   "name": "Ø50 H7/e8",
+   "value": "CLEARANCE fit  (clearance 0.050 to 0.128 mm)",
+   "raw": "CLEARANCE fit  (clearance 0.050 to 0.128 mm)",
+   "unit": ""
+  },
+  {
+   "name": "Ø8 H7/g6",
+   "value": "CLEARANCE fit  (clearance 0.005 to 0.029 mm)",
+   "raw": "CLEARANCE fit  (clearance 0.005 to 0.029 mm)",
+   "unit": ""
+  }
+ ],
+ "checks": [
+  {
+   "method": "Ø68 H7/h6 (body bore – bush): max clearance = ES − ei",
+   "a": "0.0490",
+   "b": "0.0490",
+   "a_raw": 0.049,
+   "b_raw": 0.049000000000006594,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Ø68 H7/h6 (body bore – bush): min clearance = EI − es",
+   "a": "0.0000",
+   "b": "0.0000",
+   "a_raw": 0.0,
+   "b_raw": 0.0,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Ø50 H7/e8 (bush bore – shaft/disc): max clearance = ES − ei",
+   "a": "0.1280",
+   "b": "0.1280",
+   "a_raw": 0.128,
+   "b_raw": 0.1280000000000001,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Ø50 H7/e8 (bush bore – shaft/disc): min clearance = EI − es",
+   "a": "0.0500",
+   "b": "0.0500",
+   "a_raw": 0.05,
+   "b_raw": 0.04999999999999716,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Ø8 H7/g6 (pin): max clearance = ES − ei",
+   "a": "0.0290",
+   "b": "0.0290",
+   "a_raw": 0.028999999999999998,
+   "b_raw": 0.029000000000000803,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Ø8 H7/g6 (pin): min clearance = EI − es",
+   "a": "0.0050",
+   "b": "0.0050",
+   "a_raw": 0.005,
+   "b_raw": 0.004999999999999893,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

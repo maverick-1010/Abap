@@ -1,0 +1,62 @@
+{
+ "id": "PD-S25-Q3b",
+ "title": "Taper 1:20 on a shaft Ø40 × 120",
+ "given": [
+  {
+   "sym": "Large diameter D",
+   "val": "40",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Length L",
+   "val": "120",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Taper",
+   "val": "1 : 20",
+   "unit": "",
+   "note": "taper = (D − d)/L"
+  }
+ ],
+ "steps": [
+  {
+   "label": "Small diameter",
+   "formula": "d = D − L / 20",
+   "subst": "= 40 − 120 / 20",
+   "value": "34.00",
+   "raw": 34.0,
+   "unit": "mm"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Small end diameter d",
+   "value": "34.00",
+   "raw": 34.0,
+   "unit": "mm"
+  },
+  {
+   "name": "Taper per unit length (D − d)/L",
+   "value": "1 : 20",
+   "raw": "1 : 20",
+   "unit": ""
+  }
+ ],
+ "checks": [
+  {
+   "method": "(D − d)/L = 1/k",
+   "a": "0.0500",
+   "b": "0.0500",
+   "a_raw": 0.05,
+   "b_raw": 0.05,
+   "rtol": 1e-12,
+   "passed": true
+  }
+ ],
+ "notes": [
+  "The taper is assumed to run over the whole length of 120 mm."
+ ]
+}

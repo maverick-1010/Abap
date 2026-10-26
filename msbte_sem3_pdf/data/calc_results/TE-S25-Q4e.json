@@ -1,0 +1,140 @@
+{
+ "id": "TE-S25-Q4e",
+ "title": "Adiabatic compression of 0.17 kg of gas",
+ "given": [
+  {
+   "sym": "Mass m",
+   "val": "0.17",
+   "unit": "kg",
+   "note": ""
+  },
+  {
+   "sym": "V₁",
+   "val": "0.14",
+   "unit": "m³",
+   "note": ""
+  },
+  {
+   "sym": "t₁",
+   "val": "15",
+   "unit": "°C",
+   "note": "T₁ = 15 + 273 = 288 K"
+  },
+  {
+   "sym": "p₁",
+   "val": "1",
+   "unit": "bar",
+   "note": "= 10⁵ N/m²"
+  },
+  {
+   "sym": "V₂",
+   "val": "0.057",
+   "unit": "m³",
+   "note": ""
+  },
+  {
+   "sym": "p₂",
+   "val": "4",
+   "unit": "bar",
+   "note": "= 4 × 10⁵ N/m²"
+  },
+  {
+   "sym": "γ",
+   "val": "1.407",
+   "unit": "",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "(i) Gas constant",
+   "formula": "R = p₁ V₁ / (m T₁)",
+   "subst": "= (100000 × 0.14) / (0.17 × 288)",
+   "value": "285.95",
+   "raw": 285.9477124183007,
+   "unit": "J/kg K"
+  },
+  {
+   "label": "(ii) Specific heat at constant volume",
+   "formula": "C_{v} = R / (γ − 1)",
+   "subst": "= 285.95 / (1.407 − 1)",
+   "value": "0.7026",
+   "raw": 0.7025742319859967,
+   "unit": "kJ/kg K"
+  },
+  {
+   "label": "Specific heat at constant pressure",
+   "formula": "C_{p} = γ C_{v}",
+   "subst": "= 1.407 × 0.7026",
+   "value": "0.9885",
+   "raw": 0.9885219444042973,
+   "unit": "kJ/kg K"
+  },
+  {
+   "label": "Final temperature from end state",
+   "formula": "T₂ = p₂ V₂ / (m R)",
+   "subst": "= (400000 × 0.057) / (0.17 × 285.95)",
+   "value": "469.03",
+   "raw": 469.02857142857135,
+   "unit": "K"
+  },
+  {
+   "label": "(iii) Change in internal energy",
+   "formula": "ΔU = m C_{v} (T₂ − T₁)",
+   "subst": "= 0.17 × 0.7026 × (469.03 − 288)",
+   "value": "21.62",
+   "raw": 21.621621621621614,
+   "unit": "kJ"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Gas constant R",
+   "value": "285.95",
+   "raw": 285.9477124183007,
+   "unit": "J/kg K"
+  },
+  {
+   "name": "C_{v}",
+   "value": "0.7026",
+   "raw": 0.7025742319859967,
+   "unit": "kJ/kg K"
+  },
+  {
+   "name": "C_{p}",
+   "value": "0.9885",
+   "raw": 0.9885219444042973,
+   "unit": "kJ/kg K"
+  },
+  {
+   "name": "Change in internal energy ΔU (increase)",
+   "value": "21.62",
+   "raw": 21.621621621621614,
+   "unit": "kJ"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Adiabatic: ΔU = −W, with W = (p₁V₁ − p₂V₂)/(γ − 1)",
+   "a": "21.6216",
+   "b": "21.6216",
+   "a_raw": 21.621621621621617,
+   "b_raw": 21.621621621621614,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "C_{p} − C_{v} = R",
+   "a": "0.2859",
+   "b": "0.2859",
+   "a_raw": 0.28594771241830064,
+   "b_raw": 0.2859477124183007,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": [
+  "Data check: the end states give γ(implied) = ln(p₂/p₁)/ln(V₁/V₂) = 1.543, not 1.407. Using T₂ from the end state (as above) is the usual method.",
+  "T₂ by the adiabatic law T₁(V₁/V₂)^(γ−1) would be 415.2 K – it does not agree with 469.0 K, so the data are slightly inconsistent."
+ ]
+}

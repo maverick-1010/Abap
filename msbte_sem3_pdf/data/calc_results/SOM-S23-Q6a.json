@@ -1,0 +1,123 @@
+{
+ "id": "SOM-S23-Q6a",
+ "title": "T-section simply supported beam: maximum span",
+ "given": [
+  {
+   "sym": "T-section",
+   "val": "110 × 110 × 10",
+   "unit": "mm",
+   "note": "flange 110 × 10 at top; web 10 × 100"
+  },
+  {
+   "sym": "UDL w",
+   "val": "10",
+   "unit": "kN/m",
+   "note": "= 10 N/mm"
+  },
+  {
+   "sym": "Permissible stress σ",
+   "val": "150",
+   "unit": "N/mm²",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Centroid from top",
+   "formula": "ȳ = (A₁y₁ + A₂y₂) / (A₁ + A₂)",
+   "subst": "= (1100×5 + 1000×60) / (1100 + 1000)",
+   "value": "31.190",
+   "raw": 31.19047619047619,
+   "unit": "mm"
+  },
+  {
+   "label": "Distance of bottom fibre",
+   "formula": "y_{b} = 110 − ȳ",
+   "subst": "= 110 − 31.190",
+   "value": "78.810",
+   "raw": 78.80952380952381,
+   "unit": "mm"
+  },
+  {
+   "label": "MI about NA",
+   "formula": "I = [b₁t₁³/12 + A₁(ȳ − y₁)²] + [t₂d₂³/12 + A₂(y₂ − ȳ)²]",
+   "subst": "= [9166.7 + 1100.0×26.190²] + [833333.3 + 1000.0×28.810²]",
+   "value": "2 427 024",
+   "raw": 2427023.8095238097,
+   "unit": "mm⁴"
+  },
+  {
+   "label": "Section modulus (critical = bottom, tension)",
+   "formula": "Z = I / y_{b}",
+   "subst": "= 2427024 / 78.810",
+   "value": "30796",
+   "raw": 30796.07250755287,
+   "unit": "mm³"
+  },
+  {
+   "label": "Maximum BM",
+   "formula": "M = σ Z",
+   "subst": "= 150 × 30796",
+   "value": "4 619 411",
+   "raw": 4619410.876132931,
+   "unit": "N·mm"
+  },
+  {
+   "label": "Span:  M = w L² / 8",
+   "formula": "L = √(8 M / w)",
+   "subst": "= √(8 × 4619411 / 10)",
+   "value": "1.922",
+   "raw": 1.9223757959635115,
+   "unit": "m"
+  },
+  {
+   "label": "Maximum compressive stress at top fibre",
+   "formula": "σ_{c} = M y_{t} / I",
+   "subst": "= 4619411 × 31.190 / 2427024",
+   "value": "59.37",
+   "raw": 59.36555891238671,
+   "unit": "N/mm²"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Maximum span",
+   "value": "1.922",
+   "raw": 1.9223757959635115,
+   "unit": "m"
+  },
+  {
+   "name": "Stress at top fibre (compression)",
+   "value": "59.37",
+   "raw": 59.36555891238671,
+   "unit": "N/mm²"
+  },
+  {
+   "name": "Stress at bottom fibre (tension)",
+   "value": "150.00",
+   "raw": 150.0,
+   "unit": "N/mm²"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Centroid from numerical strip integration",
+   "a": "31.1905",
+   "b": "31.1905",
+   "a_raw": 31.190476190476204,
+   "b_raw": 31.19047619047619,
+   "rtol": 1e-05,
+   "passed": true
+  },
+  {
+   "method": "I from numerical strip integration",
+   "a": "2 427 023.7920",
+   "b": "2 427 023.8095",
+   "a_raw": 2427023.792023809,
+   "b_raw": 2427023.8095238097,
+   "rtol": 0.0001,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

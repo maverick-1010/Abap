@@ -1,0 +1,58 @@
+{
+ "id": "PD-W24-Q2b",
+ "title": "Completing the front view: size of the Ø40 hole in the inclined block",
+ "given": [
+  {
+   "sym": "Hole diameter",
+   "val": "40",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Angle of the inclined face with the XY line in plan",
+   "val": "30",
+   "unit": "°",
+   "note": "read from the auxiliary view of the figure"
+  }
+ ],
+ "steps": [
+  {
+   "label": "Width of the hole's ellipse in the front view",
+   "formula": "w = Ø × cos θ",
+   "subst": "= 40 × cos 30°",
+   "value": "34.64",
+   "raw": 34.64101615137755,
+   "unit": "mm"
+  },
+  {
+   "label": "Height of the ellipse in the front view",
+   "formula": "h = Ø (true size, the vertical axis is parallel to the V.P.)",
+   "subst": "= 40",
+   "value": "40.00",
+   "raw": 40.0,
+   "unit": "mm"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Ellipse in front view: width × height",
+   "value": "34.64 × 40",
+   "raw": "34.64 × 40",
+   "unit": "mm"
+  }
+ ],
+ "checks": [
+  {
+   "method": "w² + (Ø sin θ)² = Ø²",
+   "a": "1600.0000",
+   "b": "1600.0000",
+   "a_raw": 1600.0,
+   "b_raw": 1600.0,
+   "rtol": 1e-12,
+   "passed": true
+  }
+ ],
+ "notes": [
+  "Slot check: the dimensions 15 + 20 + 15 = 50 mm give a slot width of 20 mm, so the end radius should be 10 mm, but the figure says R12."
+ ]
+}

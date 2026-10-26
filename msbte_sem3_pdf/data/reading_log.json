@@ -1,0 +1,62 @@
+{
+ "requested": {
+  "SOM": {
+   "W24": null,
+   "S25": null,
+   "W25": null
+  },
+  "FMM": {
+   "W24": null,
+   "S25": null,
+   "W25": null
+  },
+  "TE": {
+   "W24": "TE-W24",
+   "S25": "TE-S25",
+   "W25": null
+  },
+  "PD": {
+   "W24": "PD-W24",
+   "S25": "PD-S25",
+   "W25": null
+  }
+ },
+ "received": {
+  "PD-W24": {
+   "file": "Production_Drawing_Winter_2024_Question_Paper_First_K_Scheme_Paper.pdf",
+   "pages": 8,
+   "readable": "yes",
+   "how": "text layer + page images",
+   "unreadable": []
+  },
+  "PD-S25": {
+   "file": "Production_Drawing_Summer_2025_Question_Paper_Second_K_Scheme_Paper.pdf",
+   "pages": 7,
+   "readable": "yes",
+   "how": "text layer + page images",
+   "unreadable": []
+  },
+  "TE-W24": {
+   "file": "Thermal_Engineering_Winter_2024_Question_Paper_First_K_Scheme_Paper.pdf",
+   "pages": 3,
+   "readable": "yes",
+   "how": "text layer",
+   "unreadable": []
+  },
+  "TE-S25": {
+   "file": "Thermal_Engineering_Summer_2025_Question_Paper_Second_K_Scheme_Paper.pdf",
+   "pages": 4,
+   "readable": "yes",
+   "how": "text layer + page images",
+   "unreadable": []
+  },
+  "SOM-S23": {
+   "file": "2023_summer_SOM.pdf",
+   "pages": 6,
+   "readable": "yes",
+   "how": "scanned images read page by page (watermark over some lines, still legible)",
+   "unreadable": [],
+   "warning": "Summer 2023, paper code 22306 (I-scheme). Not one of the requested sessions and not K-scheme."
+  }
+ }
+}

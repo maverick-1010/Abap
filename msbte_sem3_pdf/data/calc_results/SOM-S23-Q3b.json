@@ -1,0 +1,111 @@
+{
+ "id": "SOM-S23-Q3b",
+ "title": "Impact load on a hanging bar",
+ "given": [
+  {
+   "sym": "Diameter d",
+   "val": "20",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Length L",
+   "val": "1000",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Falling weight W",
+   "val": "1000",
+   "unit": "N",
+   "note": ""
+  },
+  {
+   "sym": "Height of fall h",
+   "val": "250",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "E",
+   "val": "200000",
+   "unit": "N/mm²",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Area of bar",
+   "formula": "A = π d² / 4",
+   "subst": "= π × 20² / 4",
+   "value": "314.16",
+   "raw": 314.1592653589793,
+   "unit": "mm²"
+  },
+  {
+   "label": "Maximum instantaneous stress",
+   "formula": "σ = (W/A) [1 + √(1 + 2 A E h / (W L))]",
+   "subst": "= (1000/314.16) [1 + √(1 + 2 × 314.16 × 200000 × 250 / (1000 × 1000))]",
+   "value": "567.38",
+   "raw": 567.3816616942462,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "Instantaneous elongation",
+   "formula": "δ = σ L / E",
+   "subst": "= 567.38 × 1000 / 200000",
+   "value": "2.837",
+   "raw": 2.836908308471231,
+   "unit": "mm"
+  },
+  {
+   "label": "Strain energy stored",
+   "formula": "U = σ² / (2E) × A L",
+   "subst": "= 567.38² / (2 × 200000) × 314.16 × 1000",
+   "value": "252.84",
+   "raw": 252.83690830847127,
+   "unit": "N·m"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Maximum instantaneous stress",
+   "value": "567.38",
+   "raw": 567.3816616942462,
+   "unit": "N/mm²"
+  },
+  {
+   "name": "Elongation",
+   "value": "2.837",
+   "raw": 2.836908308471231,
+   "unit": "mm"
+  },
+  {
+   "name": "Strain energy stored",
+   "value": "252.84",
+   "raw": 252.83690830847127,
+   "unit": "N·m"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Energy balance: W (h + δ) = U",
+   "a": "252.8369",
+   "b": "252.8369",
+   "a_raw": 252.83690830847124,
+   "b_raw": 252.83690830847127,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Equivalent static load P = σ A satisfies  P δ / 2 = U",
+   "a": "252.8369",
+   "b": "252.8369",
+   "a_raw": 252.83690830847127,
+   "b_raw": 252.83690830847127,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

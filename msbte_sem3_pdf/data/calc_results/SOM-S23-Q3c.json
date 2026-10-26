@@ -1,0 +1,180 @@
+{
+ "id": "SOM-S23-Q3c",
+ "title": "Simply supported beam: SF and BM values",
+ "given": [
+  {
+   "sym": "Span L",
+   "val": "7",
+   "unit": "m",
+   "note": ""
+  },
+  {
+   "sym": "Point load W₁",
+   "val": "3 kN at 3 m from left support",
+   "unit": "",
+   "note": ""
+  },
+  {
+   "sym": "Point load W₂",
+   "val": "5 kN at 2 m from right support, i.e. 5 m from left",
+   "unit": "",
+   "note": ""
+  },
+  {
+   "sym": "UDL",
+   "val": "2 kN/m over 3 m from left support",
+   "unit": "",
+   "note": "total 6 kN, acts at 1.5 m"
+  }
+ ],
+ "steps": [
+  {
+   "label": "Moments about A (R_{B} × 7)",
+   "formula": "R_{B} × 7 = 3×3 + 5×5 + (2×3)×1.5",
+   "subst": "= 9 + 25 + 9 = 43",
+   "value": "6.143",
+   "raw": 6.142857142857143,
+   "unit": "kN"
+  },
+  {
+   "label": "Vertical equilibrium",
+   "formula": "R_{A} = (3 + 5 + 6) − R_{B}",
+   "subst": "= 14 − 6.143",
+   "value": "7.857",
+   "raw": 7.857142857142857,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at A (right)",
+   "formula": "",
+   "subst": "",
+   "value": "7.857",
+   "raw": 7.857142857142857,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at C (3 m, left of 3 kN)",
+   "formula": "",
+   "subst": "",
+   "value": "1.857",
+   "raw": 1.8571428571428568,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at C (3 m, right of 3 kN)",
+   "formula": "",
+   "subst": "",
+   "value": "-1.143",
+   "raw": -1.1428571428571432,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at D (5 m, left of 5 kN)",
+   "formula": "",
+   "subst": "",
+   "value": "-1.143",
+   "raw": -1.1428571428571432,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at D (5 m, right of 5 kN)",
+   "formula": "",
+   "subst": "",
+   "value": "-6.143",
+   "raw": -6.142857142857143,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at B (left)",
+   "formula": "",
+   "subst": "",
+   "value": "-6.143",
+   "raw": -6.142857142857143,
+   "unit": "kN"
+  },
+  {
+   "label": "BM at C (3 m)",
+   "formula": "M_{C} = R_{A} × 3 − 2×3×1.5",
+   "subst": "= 7.857 × 3 − 9",
+   "value": "14.571",
+   "raw": 14.57142857142857,
+   "unit": "kN·m"
+  },
+  {
+   "label": "BM at D (5 m)",
+   "formula": "M_{D} = R_{A} × 5 − 2×3×3.5 − 3 × 2",
+   "subst": "= 7.857 × 5 − 21 − 6",
+   "value": "12.286",
+   "raw": 12.285714285714285,
+   "unit": "kN·m"
+  }
+ ],
+ "answers": [
+  {
+   "name": "R_{A}",
+   "value": "7.857",
+   "raw": 7.857142857142857,
+   "unit": "kN"
+  },
+  {
+   "name": "R_{B}",
+   "value": "6.143",
+   "raw": 6.142857142857143,
+   "unit": "kN"
+  },
+  {
+   "name": "Maximum BM (at 3 m from A, where SF changes sign)",
+   "value": "14.571",
+   "raw": 14.57142857142857,
+   "unit": "kN·m"
+  }
+ ],
+ "checks": [
+  {
+   "method": "R_{A} from the beam solver",
+   "a": "7.8571",
+   "b": "7.8571",
+   "a_raw": 7.857142857142857,
+   "b_raw": 7.857142857142857,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "R_{B} from the beam solver",
+   "a": "6.1429",
+   "b": "6.1429",
+   "a_raw": 6.142857142857143,
+   "b_raw": 6.142857142857143,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "BM at C from the beam solver",
+   "a": "14.5714",
+   "b": "14.5714",
+   "a_raw": 14.57142857142857,
+   "b_raw": 14.57142857142857,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "BM at D from the beam solver",
+   "a": "12.2857",
+   "b": "12.2857",
+   "a_raw": 12.285714285714285,
+   "b_raw": 12.285714285714285,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "BM at B is zero (simple support)",
+   "a": "0.0000",
+   "b": "0.0000",
+   "a_raw": 0.0,
+   "b_raw": 0.0,
+   "rtol": 0,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

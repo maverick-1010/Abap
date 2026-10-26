@@ -1,0 +1,115 @@
+{
+ "id": "SOM-S23-Q6c",
+ "title": "C-clamp section for P = 27 kN",
+ "given": [
+  {
+   "sym": "Load P",
+   "val": "27",
+   "unit": "kN",
+   "note": ""
+  },
+  {
+   "sym": "Distance of load line from centroidal axis e",
+   "val": "144",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Section: depth b = 2t, thickness t",
+   "val": "b = 2t",
+   "unit": "",
+   "note": ""
+  },
+  {
+   "sym": "Allowable stress",
+   "val": "100",
+   "unit": "N/mm²",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "",
+   "formula": "Direct tension P/A plus bending P e / Z:  σ_{max} = P/(b t) + 6 P e/(t b²)  with b = 2t",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "A = 2t²,  Z = t b²/6 = 2t³/3,  so  σ = 13 500 / t² + 5 832 000 / t³  = 100",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Solve 100 t³ − 13 500 t − 5 832 000 = 0 for t",
+   "formula": "t",
+   "subst": "(trial and error / Newton)",
+   "value": "39.94",
+   "raw": 39.93988565253263,
+   "unit": "mm"
+  },
+  {
+   "label": "Adopt (rounded up)",
+   "formula": "t",
+   "subst": "",
+   "value": "40",
+   "raw": 40.0,
+   "unit": "mm"
+  },
+  {
+   "label": "Width b = 2t",
+   "formula": "b",
+   "subst": "",
+   "value": "80",
+   "raw": 80.0,
+   "unit": "mm"
+  },
+  {
+   "label": "Check: stress at adopted section",
+   "formula": "σ = P/A + P e/Z",
+   "subst": "= 8.438 + 91.125",
+   "value": "99.56",
+   "raw": 99.5625,
+   "unit": "N/mm²"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Thickness t",
+   "value": "40",
+   "raw": 40.0,
+   "unit": "mm"
+  },
+  {
+   "name": "Width b = 2t",
+   "value": "80",
+   "raw": 80.0,
+   "unit": "mm"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Cubic residual at exact root",
+   "a": "-1.863 × 10^{-9}",
+   "b": "0.0000",
+   "a_raw": -1.862645149230957e-09,
+   "b_raw": 0.0,
+   "rtol": 0,
+   "passed": true
+  },
+  {
+   "method": "Stress at the adopted section does not exceed 100 N/mm²",
+   "a": "99.5625",
+   "b": "≤ 100.0000",
+   "a_raw": 99.5625,
+   "b_raw": 100.0,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

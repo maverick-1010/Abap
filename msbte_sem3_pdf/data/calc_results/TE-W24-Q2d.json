@@ -1,0 +1,119 @@
+{
+ "id": "TE-W24-Q2d",
+ "title": "Constant-pressure expansion of a gas",
+ "given": [
+  {
+   "sym": "Initial volume V₁",
+   "val": "0.5",
+   "unit": "m³",
+   "note": ""
+  },
+  {
+   "sym": "Final volume V₂",
+   "val": "1.2",
+   "unit": "m³",
+   "note": ""
+  },
+  {
+   "sym": "Pressure p (constant)",
+   "val": "10",
+   "unit": "bar",
+   "note": "= 10 × 100 = 1000 kPa"
+  },
+  {
+   "sym": "Initial temperature t₁",
+   "val": "200",
+   "unit": "°C",
+   "note": "T₁ = 200 + 273 = 473 K"
+  },
+  {
+   "sym": "C_{p}",
+   "val": "1.005",
+   "unit": "kJ/kg K",
+   "note": ""
+  },
+  {
+   "sym": "C_{v}",
+   "val": "0.712",
+   "unit": "kJ/kg K",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Characteristic gas constant",
+   "formula": "R = C_{p} − C_{v}",
+   "subst": "= 1.005 − 0.712",
+   "value": "0.293",
+   "raw": 0.2929999999999999,
+   "unit": "kJ/kg K"
+  },
+  {
+   "label": "Mass of gas",
+   "formula": "m = p V₁ / (R T₁)",
+   "subst": "= (1000 × 0.5) / (0.293 × 473)",
+   "value": "3.6078",
+   "raw": 3.607789940038532,
+   "unit": "kg"
+  },
+  {
+   "label": "Work done (constant pressure)",
+   "formula": "W = p (V₂ − V₁)",
+   "subst": "= 1000 × (1.2 − 0.5)",
+   "value": "700.00",
+   "raw": 700.0,
+   "unit": "kJ"
+  },
+  {
+   "label": "Final temperature (V/T = constant)",
+   "formula": "T₂ = T₁ × V₂ / V₁",
+   "subst": "= 473 × 1.2 / 0.5",
+   "value": "1135.20",
+   "raw": 1135.2,
+   "unit": "K"
+  },
+  {
+   "label": "Increase in internal energy",
+   "formula": "ΔU = m C_{v} (T₂ − T₁)",
+   "subst": "= 3.6078 × 0.712 × (1135.20 − 473)",
+   "value": "1701.02",
+   "raw": 1701.0238907849835,
+   "unit": "kJ"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Work done by the gas",
+   "value": "700.00",
+   "raw": 700.0,
+   "unit": "kJ"
+  },
+  {
+   "name": "Increase in internal energy",
+   "value": "1701.02",
+   "raw": 1701.0238907849835,
+   "unit": "kJ"
+  }
+ ],
+ "checks": [
+  {
+   "method": "First law: Q − W (Q = m C_{p} ΔT) equals ΔU",
+   "a": "1701.0239",
+   "b": "1701.0239",
+   "a_raw": 1701.0238907849835,
+   "b_raw": 1701.0238907849835,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "ΔU = (C_{v}/R) × p ΔV",
+   "a": "1701.0239",
+   "b": "1701.0239",
+   "a_raw": 1701.0238907849832,
+   "b_raw": 1701.0238907849835,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

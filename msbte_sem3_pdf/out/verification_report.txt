@@ -1,0 +1,13 @@
+Verification of MSBTE_Sem3_Mechanical_Solved_Papers.pdf: 130 pages
+A1   question count in PDF = question bank                                       PASS  116 sub-question bookmarks, 117 questions in bank
+A3   marks per paper = printed total (70) and equal split holds                  PASS  all 5 papers total 70
+A4   marks split of each solution = question marks                               PASS  117 questions checked
+A5   every numerical has a result file and passing second-method check           PASS  35 numericals; missing []; failed []
+A6   numbers shown in the PDF match the result files                             PASS  0 unmatched
+A7   chapter table totals = question bank totals                                 PASS  
+A8   each revision sheet is exactly 1 page                                       PASS  3 sheets; []
+A9   bookmark tree has all subjects, sessions, groups, questions, summary pages  PASS  7 top-level, 29 groups, 116 sub-questions
+A10  table of contents has clickable links                                       PASS  50 link annotations on the first pages
+A11  no placeholders in PDF text                                                 PASS  []
+A12  unreadable / missing items listed on the Reading report                     PASS  8 missing papers listed
+A14  every flagged question has a Data note box and is on the Data notes page    PASS  25 flagged, 27 'Assumption used' boxes

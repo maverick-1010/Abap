@@ -1,0 +1,175 @@
+{
+ "id": "PD-W24-Q5b-fits",
+ "title": "Fits in the lathe tool post (W24 tolerance chart)",
+ "given": [
+  {
+   "sym": "Tolerance chart (printed)",
+   "val": "Ø60H7: +0.030/0;  Ø60e8: −0.060/−0.106;  24H7: +0.021/0;  24n6: +0.036/+0.015",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Ø60 H7/e8 (block hole – post): limits of hole",
+   "formula": "H_{max} = B + ES,   H_{min} = B + EI",
+   "subst": "= 60 + (0.03),  60 + (0)",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Hole: maximum = 60.030 mm,  minimum = 60.000 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Shaft: maximum = 59.940 mm,  minimum = 59.894 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Ø60 H7/e8 (block hole – post): maximum clearance",
+   "formula": "= H_{max} − S_{min}",
+   "subst": "= 60.030 − 59.894",
+   "value": "0.136",
+   "raw": 0.13600000000000279,
+   "unit": "mm"
+  },
+  {
+   "label": "Ø60 H7/e8 (block hole – post): minimum clearance",
+   "formula": "= H_{min} − S_{max}",
+   "subst": "= 60.000 − 59.940",
+   "value": "0.060",
+   "raw": 0.060000000000002274,
+   "unit": "mm"
+  },
+  {
+   "label": "",
+   "formula": "Ø60 H7/e8 (block hole – post): minimum clearance ≥ 0 and maximum clearance > 0, so it is a CLEARANCE fit.",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "24 H7/n6 (post slot – wedge): limits of hole",
+   "formula": "H_{max} = B + ES,   H_{min} = B + EI",
+   "subst": "= 24 + (0.021),  24 + (0)",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Hole: maximum = 24.021 mm,  minimum = 24.000 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Shaft: maximum = 24.036 mm,  minimum = 24.015 mm",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "24 H7/n6 (post slot – wedge): maximum clearance",
+   "formula": "= H_{max} − S_{min}",
+   "subst": "= 24.021 − 24.015",
+   "value": "0.006",
+   "raw": 0.006000000000000227,
+   "unit": "mm"
+  },
+  {
+   "label": "24 H7/n6 (post slot – wedge): minimum clearance",
+   "formula": "= H_{min} − S_{max}",
+   "subst": "= 24.000 − 24.036",
+   "value": "-0.036",
+   "raw": -0.036000000000001364,
+   "unit": "mm"
+  },
+  {
+   "label": "",
+   "formula": "24 H7/n6 (post slot – wedge): minimum clearance < 0 and maximum clearance > 0, so it is a TRANSITION fit.",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  }
+ ],
+ "answers": [
+  {
+   "name": "Ø60 H7/e8 – min / max clearance",
+   "value": "0.060 / 0.136",
+   "raw": "0.060 / 0.136",
+   "unit": "mm"
+  },
+  {
+   "name": "Ø60 H7/e8",
+   "value": "CLEARANCE fit",
+   "raw": "CLEARANCE fit",
+   "unit": ""
+  },
+  {
+   "name": "24 H7/n6 – max clearance / max interference",
+   "value": "0.006 / 0.036",
+   "raw": "0.006 / 0.036",
+   "unit": "mm"
+  },
+  {
+   "name": "24 H7/n6",
+   "value": "TRANSITION fit",
+   "raw": "TRANSITION fit",
+   "unit": ""
+  }
+ ],
+ "checks": [
+  {
+   "method": "Ø60 H7/e8 (block hole – post): max clearance = ES − ei",
+   "a": "0.1360",
+   "b": "0.1360",
+   "a_raw": 0.136,
+   "b_raw": 0.13600000000000279,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Ø60 H7/e8 (block hole – post): min clearance = EI − es",
+   "a": "0.0600",
+   "b": "0.0600",
+   "a_raw": 0.06,
+   "b_raw": 0.060000000000002274,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "24 H7/n6 (post slot – wedge): max clearance = ES − ei",
+   "a": "0.0060",
+   "b": "0.0060",
+   "a_raw": 0.006000000000000002,
+   "b_raw": 0.006000000000000227,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "24 H7/n6 (post slot – wedge): min clearance = EI − es",
+   "a": "-0.0360",
+   "b": "-0.0360",
+   "a_raw": -0.036,
+   "b_raw": -0.036000000000001364,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

@@ -1,0 +1,92 @@
+{
+ "id": "SOM-S23-Q4b",
+ "title": "UDL a cast iron pipe can carry",
+ "given": [
+  {
+   "sym": "External diameter D",
+   "val": "800",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Internal diameter d",
+   "val": "700",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Span L",
+   "val": "7.5",
+   "unit": "m",
+   "note": "= 7500 mm"
+  },
+  {
+   "sym": "Permissible bending stress σ_{b}",
+   "val": "140",
+   "unit": "N/mm²",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "MI of pipe section",
+   "formula": "I = π (D⁴ − d⁴) / 64",
+   "subst": "= π (800⁴ − 700⁴) / 64",
+   "value": "8.32 × 10^{9}",
+   "raw": 8320311793.491717,
+   "unit": "mm⁴"
+  },
+  {
+   "label": "Section modulus",
+   "formula": "Z = I / y = I / (D/2)",
+   "subst": "= 8.3203 × 10^{9} / 400",
+   "value": "2.08 × 10^{7}",
+   "raw": 20800779.48372929,
+   "unit": "mm³"
+  },
+  {
+   "label": "Maximum BM the pipe can resist",
+   "formula": "M = σ_{b} Z",
+   "subst": "= 140 × 2.0801 × 10^{7}",
+   "value": "2.912 × 10^{9}",
+   "raw": 2912109127.7221007,
+   "unit": "N·mm"
+  },
+  {
+   "label": "UDL from M = w L² / 8",
+   "formula": "w = 8 M / L²",
+   "subst": "= 8 × 2.9121 × 10^{9} / 7500²",
+   "value": "414.17",
+   "raw": 414.16663149825433,
+   "unit": "N/mm"
+  }
+ ],
+ "answers": [
+  {
+   "name": "UDL intensity",
+   "value": "414.17",
+   "raw": 414.16663149825433,
+   "unit": "N/mm"
+  },
+  {
+   "name": "UDL intensity",
+   "value": "414.17",
+   "raw": 414.16663149825433,
+   "unit": "kN/m"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Round trip: σ = (w L² / 8) / Z gives 140 N/mm²",
+   "a": "140.0000",
+   "b": "140.0000",
+   "a_raw": 140.0,
+   "b_raw": 140.0,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": [
+  "Self-weight of pipe and oil is ignored (not asked)."
+ ]
+}

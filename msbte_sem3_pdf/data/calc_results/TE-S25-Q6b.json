@@ -1,0 +1,154 @@
+{
+ "id": "TE-S25-Q6b",
+ "title": "Heat transfer through brick, cork and wood wall",
+ "given": [
+  {
+   "sym": "Wall area A = 5 × 3",
+   "val": "15",
+   "unit": "m²",
+   "note": ""
+  },
+  {
+   "sym": "Brick: L₁, k₁",
+   "val": "0.1 m, 0.7",
+   "unit": "W/m °C",
+   "note": "k printed as kW/m°C – taken as W/m°C"
+  },
+  {
+   "sym": "Cork: L₂, k₂",
+   "val": "0.08 m, 0.05",
+   "unit": "W/m °C",
+   "note": ""
+  },
+  {
+   "sym": "Wood: L₃, k₃",
+   "val": "0.025 m, 0.2",
+   "unit": "W/m °C",
+   "note": ""
+  },
+  {
+   "sym": "Inner wall temperature T_{i}",
+   "val": "-5",
+   "unit": "°C",
+   "note": ""
+  },
+  {
+   "sym": "Outer wall temperature T_{o}",
+   "val": "15",
+   "unit": "°C",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Resistance of layer 1 per m²",
+   "formula": "R1 = L1 / k1",
+   "subst": "= 0.1 / 0.7",
+   "value": "0.14286",
+   "raw": 0.14285714285714288,
+   "unit": "m² °C/W"
+  },
+  {
+   "label": "Resistance of layer 2 per m²",
+   "formula": "R2 = L2 / k2",
+   "subst": "= 0.08 / 0.05",
+   "value": "1.60000",
+   "raw": 1.5999999999999999,
+   "unit": "m² °C/W"
+  },
+  {
+   "label": "Resistance of layer 3 per m²",
+   "formula": "R3 = L3 / k3",
+   "subst": "= 0.025 / 0.2",
+   "value": "0.12500",
+   "raw": 0.125,
+   "unit": "m² °C/W"
+  },
+  {
+   "label": "Total resistance per m²",
+   "formula": "R = R₁ + R₂ + R₃",
+   "subst": "= 0.14286 + 1.60000 + 0.12500",
+   "value": "1.86786",
+   "raw": 1.8678571428571427,
+   "unit": "m² °C/W"
+  },
+  {
+   "label": "Heat flux",
+   "formula": "q = (T_{o} − T_{i}) / R",
+   "subst": "= (15 − (-5)) / 1.86786",
+   "value": "10.7075",
+   "raw": 10.707456978967496,
+   "unit": "W/m²"
+  },
+  {
+   "label": "Heat flow through the wall",
+   "formula": "Q = q × A",
+   "subst": "= 10.7075 × 15",
+   "value": "160.612",
+   "raw": 160.61185468451245,
+   "unit": "W"
+  },
+  {
+   "label": "Heat transfer per hour",
+   "formula": "Q × 3600",
+   "subst": "= 160.612 × 3600",
+   "value": "578.2",
+   "raw": 578.2026768642448,
+   "unit": "kJ/h"
+  },
+  {
+   "label": "Temperature at brick–cork surface",
+   "formula": "T₁₂ = T_{i} + q R₁",
+   "subst": "= -5 + 10.7075 × 0.14286",
+   "value": "-3.47",
+   "raw": -3.4703632887189286,
+   "unit": "°C"
+  },
+  {
+   "label": "Temperature at cork–wood surface",
+   "formula": "T₂₃ = T₁₂ + q R₂",
+   "subst": "= -3.47 + 10.7075 × 1.60000",
+   "value": "13.66",
+   "raw": 13.661567877629064,
+   "unit": "°C"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Heat transfer per hour",
+   "value": "578.2",
+   "raw": 578.2026768642448,
+   "unit": "kJ/h"
+  },
+  {
+   "name": "Heat flow rate",
+   "value": "160.61",
+   "raw": 160.61185468451245,
+   "unit": "W"
+  },
+  {
+   "name": "Temperature at brick–cork surface",
+   "value": "-3.47",
+   "raw": -3.4703632887189286,
+   "unit": "°C"
+  },
+  {
+   "name": "Temperature at cork–wood surface",
+   "value": "13.66",
+   "raw": 13.661567877629064,
+   "unit": "°C"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Outer wall: T₂₃ + q R₃ = T_{o}",
+   "a": "15.0000",
+   "b": "15.0000",
+   "a_raw": 15.000000000000002,
+   "b_raw": 15.0,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

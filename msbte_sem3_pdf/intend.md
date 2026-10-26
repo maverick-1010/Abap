@@ -68,8 +68,7 @@ At the end of each subject:
 - Committing or publishing anything to GitHub unless asked.
 
 ## Status
-**Blocked:** the 12 papers were not received (upload folders are empty). Work starts
-when they are re-attached. Original PDFs or clear scans work best.
+**First full build done** from the papers received: Thermal Engineering W24 and S25, Production Drawing W24 and S25, and one Strength of Materials paper (Summer 2023, I-scheme – not a requested session).
+**Still missing (8 of the 12 requested papers):** SOM W24, S25, W25; FMM W24, S25, W25; TE W25; PD W25. The build is data driven, so each new paper is a new module in `src/papers/`.
 
-Optional inputs that improve quality: K-scheme syllabus (real chapter names) and
-official model answers (for cross-checking).
+Output: `out/MSBTE_Sem3_Mechanical_Solved_Papers.pdf`; checks: `out/verification_report.txt`.

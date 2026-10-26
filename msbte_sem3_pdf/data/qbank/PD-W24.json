@@ -1,0 +1,383 @@
+{
+ "paper": "PD-W24",
+ "subject": "313311",
+ "session": "W24",
+ "scheme": "K-scheme",
+ "total_marks": 70,
+ "printed_id": "12425",
+ "source_file": "Production_Drawing_Winter_2024_Question_Paper_First_K_Scheme_Paper.pdf",
+ "groups": [
+  {
+   "no": "1",
+   "text": "Attempt any FIVE of the following :",
+   "marks": 10,
+   "attempt": 5
+  },
+  {
+   "no": "2",
+   "text": "Attempt any ONE of the following :",
+   "marks": 8,
+   "attempt": 1
+  },
+  {
+   "no": "3",
+   "text": "Attempt any FIVE of the following :",
+   "marks": 20,
+   "attempt": 5
+  },
+  {
+   "no": "4",
+   "text": "Fig. No. 5 shown the assembly of universal coupling. Attempt any TWO of the following :",
+   "marks": 16,
+   "attempt": 2
+  },
+  {
+   "no": "5",
+   "text": "Attempt any ONE of the following :",
+   "marks": 16,
+   "attempt": 1
+  }
+ ],
+ "questions": [
+  {
+   "id": "PD-W24-Q1a",
+   "label": "1(a)",
+   "text": "Draw the conventional representation of the following :\n(i) Diamond Knurling\n(ii) Splined Shaft",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Conventions and standard representations (BIS SP-46)",
+   "chapter_source": "inferred",
+   "concept": "pd-knurl-spline",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q1b",
+   "label": "1(b)",
+   "text": "Draw a sketch to represent taper 1 : 10 on a shaft of diameter 40 mm and length 110 mm.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Conventions and standard representations (BIS SP-46)",
+   "chapter_source": "inferred",
+   "concept": "pd-taper",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q1c",
+   "label": "1(c)",
+   "text": "Draw the conventional representation of the following :\n(i) Short break in pipe\n(ii) Gate valve",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Conventions and standard representations (BIS SP-46)",
+   "chapter_source": "inferred",
+   "concept": "pd-pipe-valve",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q1d",
+   "label": "1(d)",
+   "text": "Draw the symbol for representing the geometrical tolerance in case of the following :\n(i) Circularity\n(ii) Symmetry",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Limits, fits, tolerances, surface finish and welding symbols",
+   "chapter_source": "inferred",
+   "concept": "pd-gt-symbols",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q1e",
+   "label": "1(e)",
+   "text": "Draw a sketch showing basic size, lower deviation, upper deviation and tolerance.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Limits, fits, tolerances, surface finish and welding symbols",
+   "chapter_source": "inferred",
+   "concept": "pd-tolerance-sketch",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q1f",
+   "label": "1(f)",
+   "text": "State the meaning of symbols shown in the Fig. No. 1.\n[Fig. No. 1: machining symbol with 0.8 above the bar, 0.5 at left, “Grinding” above the extension line and 2 below it]",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Limits, fits, tolerances, surface finish and welding symbols",
+   "chapter_source": "inferred",
+   "concept": "pd-surface-meaning",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q1g",
+   "label": "1(g)",
+   "text": "Show machining symbols to represent direction of lay for approximately radial relative to the center of the surface.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Limits, fits, tolerances, surface finish and welding symbols",
+   "chapter_source": "inferred",
+   "concept": "pd-lay",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q2a",
+   "label": "2(a)",
+   "text": "Fig. No. 2 shows front view, auxiliary view and incomplete side view of an object. Redraw the given views and complete the side view.\n[Fig. No. 2: bent plate – base 150 × 18, arm 100 long at 60°, R40 end with Ø50 hole, plate width 80; incomplete S.V. 80 wide]",
+   "marks": 8,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "drawing",
+   "chapter": "Orthographic and auxiliary views",
+   "chapter_source": "inferred",
+   "concept": "pd-projection",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The printed figure is small; a few details (the exact vertical lines in the base of the F.V., and the lines at 30 mm in the S.V.) are hard to read.",
+    "assumption": "The drawing reproduces them as printed (a line at 40 mm from the right end in the F.V.; lines at ± 15 mm in the S.V.). Check against your paper."
+   }
+  },
+  {
+   "id": "PD-W24-Q2b",
+   "label": "2(b)",
+   "text": "Fig. No. 3 shows incomplete front view, top view and auxiliary view of an object. Draw the given views and complete Front view.\n[Fig. No. 3: base plate 15 thick with slot R12 and chamfered corners, upright block 50 high, auxiliary view with Ø40 hole]",
+   "marks": 8,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "drawing",
+   "chapter": "Orthographic and auxiliary views",
+   "chapter_source": "inferred",
+   "concept": "pd-projection",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The figure is small and the angle of the inclined face, and the end radius of the slot are not clear: R12 does not match the slot width of 20 mm (15 + 20 + 15 = 50).",
+    "assumption": "The inclined face is taken as 30° to the XY line and the slot width as 20 mm (end radius 10 mm). No finished view is drawn here because the shape cannot be established with certainty; the method and the calculated sizes are given."
+   }
+  },
+  {
+   "id": "PD-W24-Q3a",
+   "label": "3(a)",
+   "text": "Draw the material convention of the following :\n(i) Copper\n(ii) Rubber\n(iii) Glass\n(iv) Marble",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Conventions and standard representations (BIS SP-46)",
+   "chapter_source": "inferred",
+   "concept": "pd-material",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q3b",
+   "label": "3(b)",
+   "text": "Draw the conventional representation of the following :\n(i) Holes on circular pitch\n(ii) Bearings",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Conventions and standard representations (BIS SP-46)",
+   "chapter_source": "inferred",
+   "concept": "pd-pcd-bearing",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q3c",
+   "label": "3(c)",
+   "text": "Draw the conventional representation of the following :\n(i) Spur gear\n(ii) Worm and worm wheel",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Conventions and standard representations (BIS SP-46)",
+   "chapter_source": "inferred",
+   "concept": "pd-gears",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q3d",
+   "label": "3(d)",
+   "text": "The shaft size is given as 40(−0.02/−0.04) and the hole size is 40(+0.02/−0.04). Determine the type of fit between them.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Limits, fits, tolerances, surface finish and welding symbols",
+   "chapter_source": "inferred",
+   "concept": "pd-fit",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The hole size is printed with a lower deviation of −0.04 (below the basic size). For a hole this is unusual (holes normally have a lower deviation of 0 or more).",
+    "assumption": "The sizes are used exactly as printed, giving a transition fit."
+   }
+  },
+  {
+   "id": "PD-W24-Q3e",
+   "label": "3(e)",
+   "text": "Refer Fig. No. 4 and state the meaning of symbol at X & Y.\n[Fig. No. 4: X = ∥ 0.02 A, Y = ⊥ 0.03 A, datum A]",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Limits, fits, tolerances, surface finish and welding symbols",
+   "chapter_source": "inferred",
+   "concept": "pd-gt-meaning",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q3f",
+   "label": "3(f)",
+   "text": "Two rectangular plates are to be welded with each other along the length. The thickness and length of both plates 12 mm and 60 mm respectively. The plates are to be U Butt welded with convex counter. Prepare welding drawing.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Limits, fits, tolerances, surface finish and welding symbols",
+   "chapter_source": "inferred",
+   "concept": "pd-weld-drawing",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "PD-W24-Q4a",
+   "label": "4(a)",
+   "text": "Draw the sectional front view and top view of fork.",
+   "marks": 8,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "drawing",
+   "chapter": "Assembly and detail drawings",
+   "chapter_source": "inferred",
+   "concept": "pd-ujoint",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "Fig. No. 5 is a small scan; some sizes (the exact outline of the fork ears and the length of the collar) are hard to read.",
+    "assumption": "The drawings use the sizes legible in the figure (Ø88, 86, 44, 28, Ø30, 106, Ø50, Ø6, 30) and are approximate in proportion. Take exact sizes from your paper's Fig. 5 in the exam."
+   }
+  },
+  {
+   "id": "PD-W24-Q4b",
+   "label": "4(b)",
+   "text": "Draw the front view and top view of center block and pin.",
+   "marks": 8,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "drawing",
+   "chapter": "Assembly and detail drawings",
+   "chapter_source": "inferred",
+   "concept": "pd-ujoint",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "Fig. No. 5 is a small scan; some sizes (the exact outline of the fork ears and the length of the collar) are hard to read.",
+    "assumption": "The drawings use the sizes legible in the figure (Ø88, 86, 44, 28, Ø30, 106, Ø50, Ø6, 30) and are approximate in proportion. Take exact sizes from your paper's Fig. 5 in the exam."
+   }
+  },
+  {
+   "id": "PD-W24-Q4c",
+   "label": "4(c)",
+   "text": "Draw the front view and top view of collar, shaft and key.",
+   "marks": 8,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "drawing",
+   "chapter": "Assembly and detail drawings",
+   "chapter_source": "inferred",
+   "concept": "pd-ujoint",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "Fig. No. 5 is a small scan; some sizes (the exact outline of the fork ears and the length of the collar) are hard to read.",
+    "assumption": "The drawings use the sizes legible in the figure (Ø88, 86, 44, 28, Ø30, 106, Ø50, Ø6, 30) and are approximate in proportion. Take exact sizes from your paper's Fig. 5 in the exam."
+   }
+  },
+  {
+   "id": "PD-W24-Q5a",
+   "label": "5(a)",
+   "text": "Fig. No. 6 shows the details of Oldham’s coupling. Draw the following views of the assembly :\n(i) Sectional Front View\n(ii) Left hand Side View\n[Parts: 1 Flange C.I. 2 off; 2 Central disc C.I. 1 off; 3 Shaft M.S. 2 off; 4 Taper key M.S. 2 off]",
+   "marks": 16,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "drawing",
+   "chapter": "Assembly and detail drawings",
+   "chapter_source": "inferred",
+   "concept": "pd-oldham",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "In Fig. 6, the hub diameter is printed as “φ12D” and the flange keyway width as “28H7”. The key is 20 mm wide (20n6) and the shaft keyway is 20H7.",
+    "assumption": "“φ12D” is read as Ø120 (2 × shaft diameter), and the flange keyway width is taken as 20 mm to suit the 20 mm key. The key length 96 is more than the 86 mm bore, so the key is shown projecting 10 mm beyond the hub."
+   }
+  },
+  {
+   "id": "PD-W24-Q5b",
+   "label": "5(b)",
+   "text": "Fig. No. 7 shows details of lathe tool post. Draw the following views of assembly :\n(i) Sectional FV\n(ii) Top view\n(iii) Prepare bill of material and indicate type of fit.\n[Parts: 1 Post C.I.; 2 Block C.I.; 3 Ring C.I.; 4 Wedge M.S.; 5 Screw C.I.; each 1 off]",
+   "marks": 16,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "drawing",
+   "chapter": "Assembly and detail drawings",
+   "chapter_source": "inferred",
+   "concept": "pd-lathe-post",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "In the tolerance chart the entry for 24H7 is printed as “+0.021 / +40.000” and the wedge size “24n8” in the chart but “24n6” on the drawing. The post carries “φ60H7” and the block hole “φ60e8”, which is the reverse of normal practice (capital letters are for holes).",
+    "assumption": "24H7 is taken as +0.021 / 0.000 and 24n6 (+0.036 / +0.015). The Ø60 hole (block) is taken as H7 and the Ø60 post as e8, so that the fit is a clearance fit; if taken literally as printed the hole would be smaller than the shaft."
+   }
+  }
+ ]
+}

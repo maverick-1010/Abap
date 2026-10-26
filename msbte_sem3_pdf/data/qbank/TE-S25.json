@@ -1,0 +1,491 @@
+{
+ "paper": "TE-S25",
+ "subject": "313310",
+ "session": "S25",
+ "scheme": "K-scheme",
+ "total_marks": 70,
+ "printed_id": "24225",
+ "source_file": "Thermal_Engineering_Summer_2025_Question_Paper_Second_K_Scheme_Paper.pdf",
+ "groups": [
+  {
+   "no": "1",
+   "text": "Attempt any FIVE of the following :",
+   "marks": 10,
+   "attempt": 5
+  },
+  {
+   "no": "2",
+   "text": "Attempt any THREE of the following :",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "3",
+   "text": "Attempt any THREE of the following :",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "4",
+   "text": "Attempt any THREE of the following :",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "5",
+   "text": "Attempt any TWO of the following :",
+   "marks": 12,
+   "attempt": 2
+  },
+  {
+   "no": "6",
+   "text": "Attempt any TWO of the following :",
+   "marks": 12,
+   "attempt": 2
+  }
+ ],
+ "questions": [
+  {
+   "id": "TE-S25-Q1a",
+   "label": "1(a)",
+   "text": "Define the terms:\ni) Thermodynamic System\nii) Thermodynamic Property.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "thermo-system-property",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q1b",
+   "label": "1(b)",
+   "text": "Define the term Universal Gas Constant. State its unit.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "universal-gas-constant",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q1c",
+   "label": "1(c)",
+   "text": "Define the terms:\ni) Sensible Heat\nii) Latent Heat",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Properties of steam",
+   "chapter_source": "inferred",
+   "concept": "sensible-latent-heat",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q1d",
+   "label": "1(d)",
+   "text": "Classify the boilers according to -\ni) Relative position of flow of water and hot gases\nii) Position of furnace.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam boilers",
+   "chapter_source": "inferred",
+   "concept": "boiler-classification",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q1e",
+   "label": "1(e)",
+   "text": "State the Dalton's law of partial pressure.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "dalton-law",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q1f",
+   "label": "1(f)",
+   "text": "Define the terms –\ni) Black body\nii) Abosoptivity.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Heat transfer and heat exchangers",
+   "chapter_source": "inferred",
+   "concept": "black-body-absorptivity",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q1g",
+   "label": "1(g)",
+   "text": "Classify the I.C. engines according to –\ni) Method of igniting the fuel\nii) Cycle of operation.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Air standard cycles and I.C. engines",
+   "chapter_source": "inferred",
+   "concept": "ic-engine-classification",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q2a",
+   "label": "2(a)",
+   "text": "Explain the concept of Heat engine, Heat pump and Refrigerator with block diagram.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "cop-hp-refrigerator",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q2b",
+   "label": "2(b)",
+   "text": "Explain the concept of flow work with neat sketch.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "flow-work",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q2c",
+   "label": "2(c)",
+   "text": "Represent the isothermal process on P-V and T-S chart. State the relation to calculate the workdone during isothermal process.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "process-pv-ts",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q2d",
+   "label": "2(d)",
+   "text": "Explain the process of steam generation with the help of T-H chart.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Properties of steam",
+   "chapter_source": "inferred",
+   "concept": "steam-generation",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q3a",
+   "label": "3(a)",
+   "text": "Represent the Rankine cycle on P-V and T-S chart. Name the various processes involved in it.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam power plant, condensers and cooling towers",
+   "chapter_source": "inferred",
+   "concept": "rankine-cycle",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q3b",
+   "label": "3(b)",
+   "text": "Draw the layout of steam power plant and label the following components –\ni) Boiler\nii) Turbine\niii) Condenser\niv) Generator\nv) Cooling tower\nvi) Chimney\nvii) Feed Pump\nviii) Coal Circuit",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam power plant, condensers and cooling towers",
+   "chapter_source": "inferred",
+   "concept": "steam-plant-layout",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q3c",
+   "label": "3(c)",
+   "text": "Explain the method of velocity compounding of an impulse turbine for achieving rotor speed reduction.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam turbines",
+   "chapter_source": "inferred",
+   "concept": "steam-turbine-theory",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q3d",
+   "label": "3(d)",
+   "text": "Suggest the non mixing type and high capacity condenser for power plant. Draw its labeled sketch and explain its working in brief.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam power plant, condensers and cooling towers",
+   "chapter_source": "inferred",
+   "concept": "surface-condenser",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q4a",
+   "label": "4(a)",
+   "text": "Explain the Fourier’s law and Newton’s law of cooling related to heat transfer.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Heat transfer and heat exchangers",
+   "chapter_source": "inferred",
+   "concept": "heat-transfer-laws",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q4b",
+   "label": "4(b)",
+   "text": "Suggest the type of heat exchanger required for steam power plant. Explain its working with neat label sketch.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Heat transfer and heat exchangers",
+   "chapter_source": "inferred",
+   "concept": "heat-exchangers",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q4c",
+   "label": "4(c)",
+   "text": "Represent the Carnot cycle on P-V and T-S diagram and label it. State its limitations.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "carnot-cycle",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q4d",
+   "label": "4(d)",
+   "text": "Compare the Otto cycle with Diesel cycle on following basis -\ni) Representation on P-V and T-S Chart.\nii) Compression ratio.\niii) Heat addition\niv) Application",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Air standard cycles and I.C. engines",
+   "chapter_source": "inferred",
+   "concept": "diesel-otto-cycle",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q4e",
+   "label": "4(e)",
+   "text": "The initial volume of 0.17 kg of a certain gas was 0.14 m3 at a temperature of 15°C and a pressure of 1 bar. After adiabatic compression to 0.057m3, the pressure was found to be 4 bar.\nFind -\ni) Gas constant\nii) If ratio of specific heat is 1.407, find the value of CP and CV.\niii) Change in internal energy.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "gas-numerical",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The data are slightly inconsistent: with γ = 1.407 an adiabatic change from 0.14 m³ to 0.057 m³ would not give a final pressure of 4 bar (the end states imply γ = 1.54).",
+    "assumption": "The end-state data are used as printed (T_{2} = p_{2}V_{2}/mR); this is the usual method. The alternative T_{2} from the adiabatic law would give a different ΔU."
+   }
+  },
+  {
+   "id": "TE-S25-Q5a",
+   "label": "5(a)",
+   "text": "Apply the steady flow energy equation to boiler. Show that the heat supplied to boiler increases the enthalpy of system.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "sfee",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q5b",
+   "label": "5(b)",
+   "text": "A closed vessel contains 0.4 m3 of steam at 10 bar and 300°C. Using following steam table -\ni) Identify the quality of steam.\nii) Calculate the total enthalpy of steam\niii) Find specific volume of steam.\nTake specific heat of sueperheated steam as 2.1KJ/kg K.\n\nAbsolute Pressure in bar: 10;  Temp. in °C: 179.9;  Sp. Volume (m3/kg): vf = 1.127, vg = 0.1943;  Sp. Enthalpy (kJ/kg): hf = 763.2, hg = 2778;  Sp. Entropy (kJ/kg K): sf = 2.140, sg = 6.586",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Properties of steam",
+   "chapter_source": "inferred",
+   "concept": "steam-numerical",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The table prints v_{f} = 1.127. The correct value is 0.001127 m³/kg (1.127 is in litres/kg, or the decimal is missing). \"s_{f} = 2.140\" is also not needed.",
+    "assumption": "v_{f}, s_{f} and s_{g} are not needed for this question, so the answer is not affected. Only t_{s}, v_{g} and h_{g} are used."
+   }
+  },
+  {
+   "id": "TE-S25-Q5c",
+   "label": "5(c)",
+   "text": "A steam power plant having power generation capacity 660 MW is to be installed where availability of water is limited. Suggest the type of cooling tower required for this plant. Draw the neat labeled sketch and explain its working principle in brief.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam power plant, condensers and cooling towers",
+   "chapter_source": "inferred",
+   "concept": "cooling-tower",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q6a",
+   "label": "6(a)",
+   "text": "Explain with neat label sketch the construction and working of Lamont boiler.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam boilers",
+   "chapter_source": "inferred",
+   "concept": "special-boilers",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-S25-Q6b",
+   "label": "6(b)",
+   "text": "A 100 mm thick brick wall measuring 5m × 3 m is insulated externally by cork 80 mm thick which is further protected by wood 25 mm thick. If the interior wall temperature is - 5°C and outer wall temperature is 15°C. Determine the heat transfer through the wall per hour. Take thermal conductivities of brick, cork and wood as 0.7, 0.05, 0.20 KW/m°C respectively. Also find temperature at inner surfaces.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Heat transfer and heat exchangers",
+   "chapter_source": "inferred",
+   "concept": "composite-wall",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The thermal conductivities are printed as \"0.7, 0.05, 0.20 KW/m°C\". Brick, cork and wood have conductivities of 0.7, 0.05 and 0.20 <b>W</b>/m°C (a kilowatt value would be 1000 times too large). Also, the interior wall is colder (−5 °C) than the outer wall (15 °C), so heat flows <b>into</b> the room (cold store).",
+    "assumption": "k is taken as 0.7, 0.05 and 0.20 W/m°C. \"Temperature at inner surfaces\" is taken as the temperatures of the brick–cork and cork–wood interfaces."
+   }
+  },
+  {
+   "id": "TE-S25-Q6c",
+   "label": "6(c)",
+   "text": "Explain with neat sketch the construction and working of single cylinder four stroke C.I. engine available in your institute laboratory.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Air standard cycles and I.C. engines",
+   "chapter_source": "inferred",
+   "concept": "ic-engine-strokes",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  }
+ ]
+}

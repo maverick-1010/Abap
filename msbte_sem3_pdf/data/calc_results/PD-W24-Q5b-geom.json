@@ -1,0 +1,70 @@
+{
+ "id": "PD-W24-Q5b-geom",
+ "title": "Lathe tool post geometry (R = 144)",
+ "given": [
+  {
+   "sym": "Wedge / ring seat radius R",
+   "val": "144",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Ring: outer radius, bore radius, thickness at outer edge",
+   "val": "60, 30, 18",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Fall of the concave seat from the ring edge to its centre",
+   "formula": "s = R − √(R² − 60²)",
+   "subst": "= 144 − √(144² − 60²)",
+   "value": "13.10",
+   "raw": 13.095454624371428,
+   "unit": "mm"
+  },
+  {
+   "label": "Seat height at the axis",
+   "formula": "z₀ = 36 − s",
+   "subst": "= 36 − 13.10",
+   "value": "22.90",
+   "raw": 22.904545375628572,
+   "unit": "mm above the bottom of the block"
+  },
+  {
+   "label": "Wedge: depth of the curve at its ends (chord = R, as the wedge length equals R)",
+   "formula": "s_w = R − √(R² − (R/2)²)",
+   "subst": "= 144 − √(144² − 72²)",
+   "value": "19.29",
+   "raw": 19.29234185504083,
+   "unit": "mm"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Seat height at the axis z₀",
+   "value": "22.90",
+   "raw": 22.904545375628572,
+   "unit": "mm"
+  },
+  {
+   "name": "Depth of the wedge curve over its length",
+   "value": "19.29",
+   "raw": 19.29234185504083,
+   "unit": "mm"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Seat height + sag = ring edge height (36 mm)",
+   "a": "36.0000",
+   "b": "36.0000",
+   "a_raw": 36.0,
+   "b_raw": 36.0,
+   "rtol": 1e-12,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

@@ -1,0 +1,149 @@
+{
+ "id": "TE-S25-Q5b",
+ "title": "Superheated steam in a closed vessel (10 bar, 300 °C)",
+ "given": [
+  {
+   "sym": "Volume of vessel V",
+   "val": "0.4",
+   "unit": "m³",
+   "note": ""
+  },
+  {
+   "sym": "Pressure p",
+   "val": "10",
+   "unit": "bar",
+   "note": ""
+  },
+  {
+   "sym": "Temperature t",
+   "val": "300",
+   "unit": "°C",
+   "note": ""
+  },
+  {
+   "sym": "From the table: t_{s}",
+   "val": "179.9",
+   "unit": "°C",
+   "note": ""
+  },
+  {
+   "sym": "v_{g}",
+   "val": "0.1943",
+   "unit": "m³/kg",
+   "note": ""
+  },
+  {
+   "sym": "h_{g}",
+   "val": "2778",
+   "unit": "kJ/kg",
+   "note": ""
+  },
+  {
+   "sym": "C_{p} of superheated steam",
+   "val": "2.1",
+   "unit": "kJ/kg K",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "(i) Quality of steam",
+   "formula": "t > t_{s} ?",
+   "subst": "300 °C > 179.9 °C",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Steam temperature is higher than saturation temperature, so the steam is SUPERHEATED.",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Degree of superheat",
+   "formula": "t − t_{s}",
+   "subst": "= 300 − 179.9",
+   "value": "120.1",
+   "raw": 120.1,
+   "unit": "K"
+  },
+  {
+   "label": "(iii) Specific volume (Charles' law, p constant)",
+   "formula": "v = v_{g} × T / T_{s}",
+   "subst": "= 0.1943 × 573 / 452.9",
+   "value": "0.2458",
+   "raw": 0.24582446456171342,
+   "unit": "m³/kg"
+  },
+  {
+   "label": "Specific enthalpy of superheated steam",
+   "formula": "h = h_{g} + C_{p} (t − t_{s})",
+   "subst": "= 2778 + 2.1 × (300 − 179.9)",
+   "value": "3030.21",
+   "raw": 3030.21,
+   "unit": "kJ/kg"
+  },
+  {
+   "label": "Mass of steam in vessel",
+   "formula": "m = V / v",
+   "subst": "= 0.4 / 0.2458",
+   "value": "1.6272",
+   "raw": 1.6271773467021275,
+   "unit": "kg"
+  },
+  {
+   "label": "(ii) Total enthalpy",
+   "formula": "H = m h",
+   "subst": "= 1.6272 × 3030.21",
+   "value": "4930.69",
+   "raw": 4930.689067750254,
+   "unit": "kJ"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Quality of steam",
+   "value": "Superheated",
+   "raw": "Superheated",
+   "unit": ""
+  },
+  {
+   "name": "Total enthalpy H",
+   "value": "4930.69",
+   "raw": 4930.689067750254,
+   "unit": "kJ"
+  },
+  {
+   "name": "Specific volume v",
+   "value": "0.2458",
+   "raw": 0.24582446456171342,
+   "unit": "m³/kg"
+  }
+ ],
+ "checks": [
+  {
+   "method": "m × v = V",
+   "a": "0.4000",
+   "b": "0.4000",
+   "a_raw": 0.4,
+   "b_raw": 0.4,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Charles-law v vs IAPWS-IF97 table value at 10 bar, 300 °C (approximate method, 6 %)",
+   "a": "0.2458",
+   "b": "0.2580",
+   "a_raw": 0.24582446456171342,
+   "b_raw": 0.25797919004877357,
+   "rtol": 0.06,
+   "passed": true
+  }
+ ],
+ "notes": [
+  "The table in the question gives vf = 1.127; the correct value is 0.001127 m³/kg (not needed here)."
+ ]
+}

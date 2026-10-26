@@ -1,0 +1,491 @@
+{
+ "paper": "TE-W24",
+ "subject": "313310",
+ "session": "W24",
+ "scheme": "K-scheme",
+ "total_marks": 70,
+ "printed_id": "12425",
+ "source_file": "Thermal_Engineering_Winter_2024_Question_Paper_First_K_Scheme_Paper.pdf",
+ "groups": [
+  {
+   "no": "1",
+   "text": "Attempt any FIVE of the following:",
+   "marks": 10,
+   "attempt": 5
+  },
+  {
+   "no": "2",
+   "text": "Attempt any THREE of the following:",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "3",
+   "text": "Attempt any THREE of the following:",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "4",
+   "text": "Attempt any THREE of the following:",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "5",
+   "text": "Attempt any TWO of the following:",
+   "marks": 12,
+   "attempt": 2
+  },
+  {
+   "no": "6",
+   "text": "Attempt any TWO of the following:",
+   "marks": 12,
+   "attempt": 2
+  }
+ ],
+ "questions": [
+  {
+   "id": "TE-W24-Q1a",
+   "label": "1(a)",
+   "text": "Define Zeroth law of thermodynamics.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "zeroth-law",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q1b",
+   "label": "1(b)",
+   "text": "Define Dryness fraction of steam.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Properties of steam",
+   "chapter_source": "inferred",
+   "concept": "dryness-fraction",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q1c",
+   "label": "1(c)",
+   "text": "What is universal gas constant? State it’s unit.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "universal-gas-constant",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q1d",
+   "label": "1(d)",
+   "text": "State the Datton’s Law of partial pressure.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "dalton-law",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q1e",
+   "label": "1(e)",
+   "text": "Write basic function of condenser.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam power plant, condensers and cooling towers",
+   "chapter_source": "inferred",
+   "concept": "condenser-function",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q1f",
+   "label": "1(f)",
+   "text": "Define Thermal conductivity. Give it’s unit.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Heat transfer and heat exchangers",
+   "chapter_source": "inferred",
+   "concept": "thermal-conductivity",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q1g",
+   "label": "1(g)",
+   "text": "Define mean effective pressure for I.C. Engine.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Air standard cycles and I.C. engines",
+   "chapter_source": "inferred",
+   "concept": "mean-effective-pressure",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q2a",
+   "label": "2(a)",
+   "text": "Prove that (COP)Heat pump = (COP)Refrigerator + 1",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "cop-hp-refrigerator",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q2b",
+   "label": "2(b)",
+   "text": "State Kelvin-plank and clausius statement of second law of thermodynamics.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "second-law-statements",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q2c",
+   "label": "2(c)",
+   "text": "Represent Isobaric process and Isochoric process on P-V and T-S diagram.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "process-pv-ts",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q2d",
+   "label": "2(d)",
+   "text": "A volume of 0.5 m3 of gas at a pressure of 10 bar and 200°C is expanded in a cylinder to 1.2 m3 at a constant pressure. Calculate the amount of workdone by the gas and the increase in internal energy. Assume (Cp = 1.005 kJ/kg K and Cv = 0.712 kJ/kg K).",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "gas-numerical",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q3a",
+   "label": "3(a)",
+   "text": "A vessel of 0.03 m3 capacity contains gas at 350 kN/m2. pressure and 35°C temperature. Determine the mass of the gas in the vessel. If the pressure of this gas is increased to 1.05 × 10^{6} N/m2 while the volume remains constant, what will be the temperature of the gas? Take R = 290 J/kg K for the gas.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "gas-numerical",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q3b",
+   "label": "3(b)",
+   "text": "Explain construction and working of surface condenser with neat sketch.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam power plant, condensers and cooling towers",
+   "chapter_source": "inferred",
+   "concept": "surface-condenser",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q3c",
+   "label": "3(c)",
+   "text": "Explain construction and working of forced draught cooling tower with neat sketch.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam power plant, condensers and cooling towers",
+   "chapter_source": "inferred",
+   "concept": "cooling-tower",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q3d",
+   "label": "3(d)",
+   "text": "Give classification of Boiler.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam boilers",
+   "chapter_source": "inferred",
+   "concept": "boiler-classification",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q4a",
+   "label": "4(a)",
+   "text": "Define various modes of heat transfer with suitable example.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Heat transfer and heat exchangers",
+   "chapter_source": "inferred",
+   "concept": "heat-transfer-laws",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q4b",
+   "label": "4(b)",
+   "text": "Determine the rate of heat flow through the boiler wall made of 2 cm thick steel and covered with an insulating material of 0.5 cm thick.\nK(steel) = 58 w/mk,\nK(insulation) = 0.116 w/mk.\nthe temperature at the inner and outer surfaces of the wall are 300°C and 50°C respectively.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Heat transfer and heat exchangers",
+   "chapter_source": "inferred",
+   "concept": "composite-wall",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The wall area is not given in the question.",
+    "assumption": "Area A = 1 m² is assumed, so the answer is the heat flow <b>per square metre</b> of wall. For any other area, multiply by that area."
+   }
+  },
+  {
+   "id": "TE-W24-Q4c",
+   "label": "4(c)",
+   "text": "Differentiate two stroke and four stroke I.C. engine.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Air standard cycles and I.C. engines",
+   "chapter_source": "inferred",
+   "concept": "ic-engine-strokes",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q4d",
+   "label": "4(d)",
+   "text": "Explain Diesel cycle with P-V and T-S diagram.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Air standard cycles and I.C. engines",
+   "chapter_source": "inferred",
+   "concept": "diesel-otto-cycle",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q4e",
+   "label": "4(e)",
+   "text": "Determine if the steam is wet or superheated and calculate the dryness fraction or the superheated steam temperature for P = 9 bar and V = 0.30 m3/kg.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Properties of steam",
+   "chapter_source": "inferred",
+   "concept": "steam-numerical",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "Steam-table values differ slightly from book to book (for example v_{g} at 9 bar is 0.2148–0.2149 m³/kg).",
+    "assumption": "Values were taken from the IAPWS-IF97 steam tables (checked in code). Use the values from your own steam table in the exam; the result will differ by about 1 °C."
+   }
+  },
+  {
+   "id": "TE-W24-Q5a",
+   "label": "5(a)",
+   "text": "Write steady flow energy equation and apply it to steam turbine and steam boiler.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Basic concepts and laws of thermodynamics",
+   "chapter_source": "inferred",
+   "concept": "sfee",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q5b",
+   "label": "5(b)",
+   "text": "Derive characteristics gas equation using Boyle’s law and Charle’s law.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Perfect gases and gas processes",
+   "chapter_source": "inferred",
+   "concept": "gas-equation",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q5c",
+   "label": "5(c)",
+   "text": "Explain Benson boiler with neat sketch.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam boilers",
+   "chapter_source": "inferred",
+   "concept": "special-boilers",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q6a",
+   "label": "6(a)",
+   "text": "Differentiate between Impulse turbine and Reaction turbine.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Steam turbines",
+   "chapter_source": "inferred",
+   "concept": "steam-turbine-theory",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q6b",
+   "label": "6(b)",
+   "text": "Classify heat exchangers and state their applications.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Heat transfer and heat exchangers",
+   "chapter_source": "inferred",
+   "concept": "heat-exchangers",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "TE-W24-Q6c",
+   "label": "6(c)",
+   "text": "Define:\ni) Compression Ratio (Rc)\nii) Swept Volume (Vs)\niii) Cut off ratio.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Air standard cycles and I.C. engines",
+   "chapter_source": "inferred",
+   "concept": "ic-engine-definitions",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  }
+ ]
+}

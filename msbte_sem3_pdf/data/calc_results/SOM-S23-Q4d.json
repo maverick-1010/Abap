@@ -1,0 +1,119 @@
+{
+ "id": "SOM-S23-Q4d",
+ "title": "Young's modulus and Poisson's ratio from a compression test",
+ "given": [
+  {
+   "sym": "Cross-section",
+   "val": "50 × 50",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Axial compressive load P",
+   "val": "500",
+   "unit": "kN",
+   "note": ""
+  },
+  {
+   "sym": "Gauge length",
+   "val": "200",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Contraction",
+   "val": "0.5",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Increase in thickness",
+   "val": "0.04",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Stress",
+   "formula": "σ = P / A",
+   "subst": "= 500000 / (50 × 50)",
+   "value": "200.00",
+   "raw": 200.0,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "Longitudinal strain",
+   "formula": "ε = δL / L",
+   "subst": "= 0.5 / 200",
+   "value": "0.00250",
+   "raw": 0.0025,
+   "unit": ""
+  },
+  {
+   "label": "Young's modulus",
+   "formula": "E = σ / ε",
+   "subst": "= 200.00 / 0.00250",
+   "value": "80000",
+   "raw": 80000.0,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "Lateral strain",
+   "formula": "ε_{lat} = δb / b",
+   "subst": "= 0.04 / 50",
+   "value": "8 × 10^{-4}",
+   "raw": 0.0008,
+   "unit": ""
+  },
+  {
+   "label": "Poisson's ratio",
+   "formula": "μ = lateral strain / longitudinal strain",
+   "subst": "= 0.000800 / 0.00250",
+   "value": "0.320",
+   "raw": 0.32,
+   "unit": ""
+  }
+ ],
+ "answers": [
+  {
+   "name": "Young's modulus E",
+   "value": "80000",
+   "raw": 80000.0,
+   "unit": "N/mm²"
+  },
+  {
+   "name": "Young's modulus E",
+   "value": "80.0",
+   "raw": 80.0,
+   "unit": "GPa"
+  },
+  {
+   "name": "Poisson's ratio μ",
+   "value": "0.320",
+   "raw": 0.32,
+   "unit": ""
+  }
+ ],
+ "checks": [
+  {
+   "method": "Reproduce the contraction: δL = P L / (A E)",
+   "a": "0.5000",
+   "b": "0.5000",
+   "a_raw": 0.5,
+   "b_raw": 0.5,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Reproduce the lateral change: δb = μ ε b",
+   "a": "0.0400",
+   "b": "0.0400",
+   "a_raw": 0.04,
+   "b_raw": 0.04,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

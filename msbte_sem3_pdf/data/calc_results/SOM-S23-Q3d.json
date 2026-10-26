@@ -1,0 +1,76 @@
+{
+ "id": "SOM-S23-Q3d",
+ "title": "Greatest eccentricity for no tension (hollow circular column)",
+ "given": [
+  {
+   "sym": "External diameter D",
+   "val": "40",
+   "unit": "cm",
+   "note": "= 400 mm"
+  },
+  {
+   "sym": "Internal diameter d",
+   "val": "20",
+   "unit": "cm",
+   "note": "= 200 mm"
+  },
+  {
+   "sym": "Load P",
+   "val": "80",
+   "unit": "kN",
+   "note": "= 80 000 N"
+  }
+ ],
+ "steps": [
+  {
+   "label": "Core of hollow circular section: e = (D² + d²)/(8D)",
+   "formula": "e = (D² + d²) / (8 D)",
+   "subst": "= (400² + 200²) / (8 × 400)",
+   "value": "62.50",
+   "raw": 62.5,
+   "unit": "mm"
+  },
+  {
+   "label": "Direct stress",
+   "formula": "σ_{d} = P / A",
+   "subst": "= 80000 / 94247.78",
+   "value": "0.8488",
+   "raw": 0.8488263631567752,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "Bending stress at edge",
+   "formula": "σ_{b} = P e y / I",
+   "subst": "= 80000 × 62.50 × 200 / 1.1781 × 10^{9}",
+   "value": "0.8488",
+   "raw": 0.8488263631567752,
+   "unit": "N/mm²"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Greatest eccentricity (radius of core)",
+   "value": "62.50",
+   "raw": 62.5,
+   "unit": "mm"
+  },
+  {
+   "name": "Greatest eccentricity",
+   "value": "6.25",
+   "raw": 6.25,
+   "unit": "cm"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Minimum stress σ_{d} − σ_{b} = 0 (just no tension)",
+   "a": "0.0000",
+   "b": "0.0000",
+   "a_raw": 0.0,
+   "b_raw": 0.0,
+   "rtol": 0,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

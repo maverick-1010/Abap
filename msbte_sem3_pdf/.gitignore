@@ -1,0 +1,7 @@
+# third-party exam papers and their renders stay local
+input/
+work/
+# locally installed packages
+src/vendor/
+__pycache__/
+*.pyc

@@ -1,0 +1,105 @@
+{
+ "id": "SOM-S23-Q4e",
+ "title": "Minimum external diameter of a hollow shaft (3/5)",
+ "given": [
+  {
+   "sym": "Maximum torque T",
+   "val": "61.5",
+   "unit": "kN·m",
+   "note": "= 61.5 × 10⁶ N·mm"
+  },
+  {
+   "sym": "Shear stress limit τ",
+   "val": "63",
+   "unit": "N/mm²",
+   "note": "= 63 MPa"
+  },
+  {
+   "sym": "Twist limit θ",
+   "val": "1.4",
+   "unit": "° in 3 m",
+   "note": "= 1.4 × π/180 rad"
+  },
+  {
+   "sym": "Diameter ratio d/D",
+   "val": "3/5 = 0.6",
+   "unit": "",
+   "note": ""
+  },
+  {
+   "sym": "G",
+   "val": "84",
+   "unit": "GPa",
+   "note": "= 84 000 N/mm²"
+  }
+ ],
+ "steps": [
+  {
+   "label": "Factor (1 − k⁴)",
+   "formula": "1 − (d/D)⁴",
+   "subst": "= 1 − 0.6⁴",
+   "value": "0.8704",
+   "raw": 0.8704000000000001,
+   "unit": ""
+  },
+  {
+   "label": "(a) From strength:  T = (π/16) τ D³ (1 − k⁴)",
+   "formula": "D = [16 T / (π τ (1 − k⁴))]^{1/3}",
+   "subst": "= [16 × 6.15 × 10^{7} / (π × 63 × 0.8704)]^{1/3}",
+   "value": "178.76",
+   "raw": 178.7565364668084,
+   "unit": "mm"
+  },
+  {
+   "label": "(b) Polar MI needed for twist",
+   "formula": "J = T L / (G θ)",
+   "subst": "= (6.15 × 10^{7} × 3000) / (84000 × 0.024435)",
+   "value": "8.989 × 10^{7}",
+   "raw": 89890062.24628986,
+   "unit": "mm⁴"
+  },
+  {
+   "label": "Diameter from  J = (π/32) D⁴ (1 − k⁴)",
+   "formula": "D = [32 J / (π (1 − k⁴))]^{1/4}",
+   "subst": "= [32 × 8.9890 × 10^{7} / (π × 0.8704)]^{1/4}",
+   "value": "180.09",
+   "raw": 180.09357784415187,
+   "unit": "mm"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Minimum external diameter (larger of the two)",
+   "value": "180.09",
+   "raw": 180.09357784415187,
+   "unit": "mm"
+  },
+  {
+   "name": "Internal diameter d = 0.6 D",
+   "value": "108.06",
+   "raw": 108.05614670649112,
+   "unit": "mm"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Shear stress at the adopted D does not exceed 63 N/mm²",
+   "a": "61.6072",
+   "b": "≤ 63.0000",
+   "a_raw": 61.607227543512366,
+   "b_raw": 63.0,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Twist at D equals 1.4° (stiffness governs)",
+   "a": "1.4000",
+   "b": "1.4000",
+   "a_raw": 1.4,
+   "b_raw": 1.4,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

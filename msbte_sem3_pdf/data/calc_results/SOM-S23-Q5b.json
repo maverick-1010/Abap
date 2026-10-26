@@ -1,0 +1,225 @@
+{
+ "id": "SOM-S23-Q5b",
+ "title": "Overhanging beam: SF, BM and contraflexure",
+ "given": [
+  {
+   "sym": "Span AB",
+   "val": "5",
+   "unit": "m",
+   "note": "A at 0, D at 2 m, B at 5 m"
+  },
+  {
+   "sym": "Overhang BC",
+   "val": "2",
+   "unit": "m",
+   "note": "C at 7 m"
+  },
+  {
+   "sym": "Point loads",
+   "val": "5 kN at D (2 m) and 5 kN at C (7 m)",
+   "unit": "",
+   "note": ""
+  },
+  {
+   "sym": "UDL",
+   "val": "8 kN/m over the whole beam AC",
+   "unit": "",
+   "note": "total 56 kN at 3.5 m"
+  }
+ ],
+ "steps": [
+  {
+   "label": "Moments about A",
+   "formula": "R_{B} × 5 = 5×2 + 56×3.5 + 5×7",
+   "subst": "= 10 + 196 + 35 = 241",
+   "value": "48.20",
+   "raw": 48.2,
+   "unit": "kN"
+  },
+  {
+   "label": "Vertical equilibrium",
+   "formula": "R_{A} = 5 + 56 + 5 − R_{B}",
+   "subst": "= 66 − 48.20",
+   "value": "17.80",
+   "raw": 17.799999999999997,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at A (right)",
+   "formula": "",
+   "subst": "",
+   "value": "17.80",
+   "raw": 17.799999999999997,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at D (left)",
+   "formula": "",
+   "subst": "",
+   "value": "1.80",
+   "raw": 1.7999999999999972,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at D (right)",
+   "formula": "",
+   "subst": "",
+   "value": "-3.20",
+   "raw": -3.200000000000003,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at B (left)",
+   "formula": "",
+   "subst": "",
+   "value": "-27.20",
+   "raw": -27.200000000000003,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at B (right)",
+   "formula": "",
+   "subst": "",
+   "value": "21.00",
+   "raw": 21.0,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at C (left)",
+   "formula": "",
+   "subst": "",
+   "value": "5.00",
+   "raw": 5.0,
+   "unit": "kN"
+  },
+  {
+   "label": "SF at C (right)",
+   "formula": "",
+   "subst": "",
+   "value": "0.00",
+   "raw": 0.0,
+   "unit": "kN"
+  },
+  {
+   "label": "BM at D",
+   "formula": "M_{D} = R_{A} × 2 − 8 × 2²/2",
+   "subst": "= 17.8 × 2 − 16",
+   "value": "19.60",
+   "raw": 19.599999999999994,
+   "unit": "kN·m"
+  },
+  {
+   "label": "BM at B",
+   "formula": "M_{B} = R_{A} × 5 − 5 × 3 − 8 × 5²/2",
+   "subst": "= 17.8 × 5 − 15 − 100",
+   "value": "-26.00",
+   "raw": -26.000000000000014,
+   "unit": "kN·m"
+  },
+  {
+   "label": "BM at C",
+   "formula": "M_{C}",
+   "subst": "free end, no couple",
+   "value": "0.00",
+   "raw": 0.0,
+   "unit": "kN·m"
+  },
+  {
+   "label": "Point of contraflexure (between D and B): M = 17.8x − 5(x−2) − 4x² = 0",
+   "formula": "4x² − 12.8x − 10 = 0,  x = [12.8 + √(12.8² + 160)] / 8",
+   "subst": "= (12.8 + √323.84) / 8",
+   "value": "3.849",
+   "raw": 3.849444375840398,
+   "unit": "m from A"
+  }
+ ],
+ "answers": [
+  {
+   "name": "R_{A}",
+   "value": "17.80",
+   "raw": 17.799999999999997,
+   "unit": "kN"
+  },
+  {
+   "name": "R_{B}",
+   "value": "48.20",
+   "raw": 48.2,
+   "unit": "kN"
+  },
+  {
+   "name": "Maximum sagging BM (at D)",
+   "value": "19.60",
+   "raw": 19.599999999999994,
+   "unit": "kN·m"
+  },
+  {
+   "name": "Maximum hogging BM (at B)",
+   "value": "-26.00",
+   "raw": -26.000000000000014,
+   "unit": "kN·m"
+  },
+  {
+   "name": "Point of contraflexure from A",
+   "value": "3.849",
+   "raw": 3.849444375840398,
+   "unit": "m"
+  }
+ ],
+ "checks": [
+  {
+   "method": "R_{A} from the beam solver",
+   "a": "17.8000",
+   "b": "17.8000",
+   "a_raw": 17.799999999999997,
+   "b_raw": 17.799999999999997,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "R_{B} from the beam solver",
+   "a": "48.2000",
+   "b": "48.2000",
+   "a_raw": 48.2,
+   "b_raw": 48.2,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "BM at B from the beam solver",
+   "a": "-26.0000",
+   "b": "-26.0000",
+   "a_raw": -26.000000000000014,
+   "b_raw": -26.000000000000014,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "BM at D from the beam solver",
+   "a": "19.6000",
+   "b": "19.6000",
+   "a_raw": 19.599999999999994,
+   "b_raw": 19.599999999999994,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "BM at the free end C is zero",
+   "a": "0.0000",
+   "b": "0.0000",
+   "a_raw": 0.0,
+   "b_raw": 0.0,
+   "rtol": 0,
+   "passed": true
+  },
+  {
+   "method": "Contraflexure from the beam solver",
+   "a": "3.8494",
+   "b": "3.8494",
+   "a_raw": 3.849444375840397,
+   "b_raw": 3.849444375840398,
+   "rtol": 1e-06,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

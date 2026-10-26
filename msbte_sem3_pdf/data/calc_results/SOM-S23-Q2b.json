@@ -1,0 +1,152 @@
+{
+ "id": "SOM-S23-Q2b",
+ "title": "Stepped member ABCD in equilibrium",
+ "given": [
+  {
+   "sym": "P₁",
+   "val": "45",
+   "unit": "kN",
+   "note": ""
+  },
+  {
+   "sym": "P₃",
+   "val": "450",
+   "unit": "kN",
+   "note": ""
+  },
+  {
+   "sym": "P₄",
+   "val": "130",
+   "unit": "kN",
+   "note": ""
+  },
+  {
+   "sym": "Areas A_{AB}, A_{BC}, A_{CD}",
+   "val": "625, 2500, 1250",
+   "unit": "mm²",
+   "note": ""
+  },
+  {
+   "sym": "Lengths L_{AB}, L_{BC}, L_{CD}",
+   "val": "120, 60, 90",
+   "unit": "cm",
+   "note": "= 1200, 600, 900 mm"
+  },
+  {
+   "sym": "E",
+   "val": "210000",
+   "unit": "N/mm²",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Equilibrium of whole member (→ positive): −P₁ + P₂ − P₃ + P₄ = 0",
+   "formula": "P₂ = P₁ + P₃ − P₄",
+   "subst": "= 45 + 450 − 130",
+   "value": "365.00",
+   "raw": 365.0,
+   "unit": "kN"
+  },
+  {
+   "label": "Axial force in AB (tension)",
+   "formula": "N_{AB} = P₁",
+   "subst": "= 45",
+   "value": "45.00",
+   "raw": 45.0,
+   "unit": "kN"
+  },
+  {
+   "label": "Axial force in BC (compression)",
+   "formula": "N_{BC} = P₁ − P₂",
+   "subst": "= 45 − 365",
+   "value": "-320.00",
+   "raw": -320.0,
+   "unit": "kN"
+  },
+  {
+   "label": "Axial force in CD (tension)",
+   "formula": "N_{CD} = P₄",
+   "subst": "= 130",
+   "value": "130.00",
+   "raw": 130.0,
+   "unit": "kN"
+  },
+  {
+   "label": "Change in length of AB",
+   "formula": "δ = N L / (A E)",
+   "subst": "= (45 × 10³ × 1200) / (625 × 210000)",
+   "value": "0.4114",
+   "raw": 0.4114285714285714,
+   "unit": "mm"
+  },
+  {
+   "label": "Change in length of BC",
+   "formula": "δ = N L / (A E)",
+   "subst": "= (-320 × 10³ × 600) / (2500 × 210000)",
+   "value": "-0.3657",
+   "raw": -0.3657142857142857,
+   "unit": "mm"
+  },
+  {
+   "label": "Change in length of CD",
+   "formula": "δ = N L / (A E)",
+   "subst": "= (130 × 10³ × 900) / (1250 × 210000)",
+   "value": "0.4457",
+   "raw": 0.44571428571428573,
+   "unit": "mm"
+  },
+  {
+   "label": "Total elongation",
+   "formula": "δ = δ_{AB} + δ_{BC} + δ_{CD}",
+   "subst": "= 0.4114 + (-0.3657) + 0.4457",
+   "value": "0.4914",
+   "raw": 0.49142857142857144,
+   "unit": "mm"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Force P₂",
+   "value": "365.00",
+   "raw": 365.0,
+   "unit": "kN"
+  },
+  {
+   "name": "Total elongation of member",
+   "value": "0.4914",
+   "raw": 0.49142857142857144,
+   "unit": "mm"
+  }
+ ],
+ "checks": [
+  {
+   "method": "N_{AB} from the right-hand side equals P₁",
+   "a": "45.0000",
+   "b": "45.0000",
+   "a_raw": 45.0,
+   "b_raw": 45.0,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "N_{BC} from the right-hand side (P₄ − P₃)",
+   "a": "-320.0000",
+   "b": "-320.0000",
+   "a_raw": -320.0,
+   "b_raw": -320.0,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "Σ N L / A E recomputed using right-hand forces",
+   "a": "0.4914",
+   "b": "0.4914",
+   "a_raw": 0.49142857142857144,
+   "b_raw": 0.49142857142857144,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

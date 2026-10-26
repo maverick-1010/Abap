@@ -1,0 +1,87 @@
+{
+ "id": "SOM-S23-Q2a",
+ "title": "Hollow circular section: MI about tangent and polar MI",
+ "given": [
+  {
+   "sym": "External diameter D",
+   "val": "200",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Internal diameter d",
+   "val": "100",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "MI about a diameter (centroidal axis)",
+   "formula": "I = π (D⁴ − d⁴) / 64",
+   "subst": "= π (200⁴ − 100⁴) / 64",
+   "value": "7.363 × 10^{7}",
+   "raw": 73631077.81851077,
+   "unit": "mm⁴"
+  },
+  {
+   "label": "Area of section",
+   "formula": "A = π (D² − d²) / 4",
+   "subst": "= π (200² − 100²) / 4",
+   "value": "23561.94",
+   "raw": 23561.94490192345,
+   "unit": "mm²"
+  },
+  {
+   "label": "MI about tangent (parallel-axis theorem)",
+   "formula": "I_{T} = I + A h²,  h = D/2 = 100 mm",
+   "subst": "= 7.3631 × 10^{7} + 23561.94 × 100²",
+   "value": "3.093 × 10^{8}",
+   "raw": 309250526.83774525,
+   "unit": "mm⁴"
+  },
+  {
+   "label": "Polar MI",
+   "formula": "J = π (D⁴ − d⁴) / 32",
+   "subst": "= π (200⁴ − 100⁴) / 32",
+   "value": "1.473 × 10^{8}",
+   "raw": 147262155.63702154,
+   "unit": "mm⁴"
+  }
+ ],
+ "answers": [
+  {
+   "name": "MI about tangent I_{T}",
+   "value": "3.093 × 10^{8}",
+   "raw": 309250526.83774525,
+   "unit": "mm⁴"
+  },
+  {
+   "name": "Polar MI J",
+   "value": "1.473 × 10^{8}",
+   "raw": 147262155.63702154,
+   "unit": "mm⁴"
+  }
+ ],
+ "checks": [
+  {
+   "method": "I_{T} = (outer solid circle) − (inner solid circle) about the same tangent",
+   "a": "3.093 × 10^{8}",
+   "b": "3.093 × 10^{8}",
+   "a_raw": 309250526.8377453,
+   "b_raw": 309250526.83774525,
+   "rtol": 1e-09,
+   "passed": true
+  },
+  {
+   "method": "J = 2 I (perpendicular-axis theorem)",
+   "a": "1.473 × 10^{8}",
+   "b": "1.473 × 10^{8}",
+   "a_raw": 147262155.63702154,
+   "b_raw": 147262155.63702154,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

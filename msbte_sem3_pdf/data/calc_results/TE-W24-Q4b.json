@@ -1,0 +1,110 @@
+{
+ "id": "TE-W24-Q4b",
+ "title": "Heat flow through composite boiler wall",
+ "given": [
+  {
+   "sym": "Steel thickness L₁",
+   "val": "2",
+   "unit": "cm",
+   "note": "= 0.02 m"
+  },
+  {
+   "sym": "Steel conductivity k₁",
+   "val": "58",
+   "unit": "W/m K",
+   "note": ""
+  },
+  {
+   "sym": "Insulation thickness L₂",
+   "val": "0.5",
+   "unit": "cm",
+   "note": "= 0.005 m"
+  },
+  {
+   "sym": "Insulation conductivity k₂",
+   "val": "0.116",
+   "unit": "W/m K",
+   "note": ""
+  },
+  {
+   "sym": "Inner surface temperature T₁",
+   "val": "300",
+   "unit": "°C",
+   "note": ""
+  },
+  {
+   "sym": "Outer surface temperature T₃",
+   "val": "50",
+   "unit": "°C",
+   "note": ""
+  },
+  {
+   "sym": "Area A",
+   "val": "1",
+   "unit": "m²",
+   "note": "assumed – not given in the question"
+  }
+ ],
+ "steps": [
+  {
+   "label": "Resistance of steel",
+   "formula": "R₁ = L₁ / (k₁ A)",
+   "subst": "= 0.02 / (58 × 1)",
+   "value": "3.448 × 10^{-4}",
+   "raw": 0.0003448275862068966,
+   "unit": "K/W"
+  },
+  {
+   "label": "Resistance of insulation",
+   "formula": "R₂ = L₂ / (k₂ A)",
+   "subst": "= 0.005 / (0.116 × 1)",
+   "value": "0.043103",
+   "raw": 0.043103448275862065,
+   "unit": "K/W"
+  },
+  {
+   "label": "Total resistance",
+   "formula": "R = R₁ + R₂",
+   "subst": "= 0.000345 + 0.043103",
+   "value": "0.043448",
+   "raw": 0.04344827586206896,
+   "unit": "K/W"
+  },
+  {
+   "label": "Rate of heat flow",
+   "formula": "Q = (T₁ − T₃) / R",
+   "subst": "= (300 − 50) / 0.043448",
+   "value": "5753.97",
+   "raw": 5753.968253968254,
+   "unit": "W"
+  },
+  {
+   "label": "Interface temperature (for check)",
+   "formula": "T₂ = T₁ − Q R₁",
+   "subst": "= 300 − 5753.97 × 0.000345",
+   "value": "298.02",
+   "raw": 298.015873015873,
+   "unit": "°C"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Rate of heat flow (per m² of wall)",
+   "value": "5753.97",
+   "raw": 5753.968253968254,
+   "unit": "W"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Q through insulation = k₂ A (T₂ − T₃) / L₂",
+   "a": "5753.9683",
+   "b": "5753.9683",
+   "a_raw": 5753.968253968254,
+   "b_raw": 5753.968253968254,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

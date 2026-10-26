@@ -1,0 +1,94 @@
+{
+ "id": "TE-W24-Q3a",
+ "title": "Gas in a closed vessel",
+ "given": [
+  {
+   "sym": "Volume V",
+   "val": "0.03",
+   "unit": "m³",
+   "note": ""
+  },
+  {
+   "sym": "Initial pressure p₁",
+   "val": "350",
+   "unit": "kN/m²",
+   "note": "= 350 000 N/m²"
+  },
+  {
+   "sym": "Initial temperature t₁",
+   "val": "35",
+   "unit": "°C",
+   "note": "T₁ = 35 + 273 = 308 K"
+  },
+  {
+   "sym": "Final pressure p₂",
+   "val": "1050000",
+   "unit": "N/m²",
+   "note": ""
+  },
+  {
+   "sym": "Gas constant R",
+   "val": "290",
+   "unit": "J/kg K",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Mass of gas",
+   "formula": "m = p₁ V / (R T₁)",
+   "subst": "= (350000 × 0.03) / (290 × 308)",
+   "value": "0.1176",
+   "raw": 0.11755485893416928,
+   "unit": "kg"
+  },
+  {
+   "label": "Final temperature (V constant: p/T = constant)",
+   "formula": "T₂ = T₁ × p₂ / p₁",
+   "subst": "= 308 × 1050000 / 350000",
+   "value": "924.00",
+   "raw": 924.0,
+   "unit": "K"
+  },
+  {
+   "label": "In °C",
+   "formula": "t₂ = T₂ − 273",
+   "subst": "= 924.00 − 273",
+   "value": "651.00",
+   "raw": 651.0,
+   "unit": "°C"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Mass of gas",
+   "value": "0.1176",
+   "raw": 0.11755485893416928,
+   "unit": "kg"
+  },
+  {
+   "name": "Final temperature",
+   "value": "924.00",
+   "raw": 924.0,
+   "unit": "K"
+  },
+  {
+   "name": "Final temperature",
+   "value": "651.00",
+   "raw": 651.0,
+   "unit": "°C"
+  }
+ ],
+ "checks": [
+  {
+   "method": "p₂ V = m R T₂ (characteristic equation at final state)",
+   "a": "31500.0000",
+   "b": "31500.0000",
+   "a_raw": 31500.000000000004,
+   "b_raw": 31500.0,
+   "rtol": 1e-09,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

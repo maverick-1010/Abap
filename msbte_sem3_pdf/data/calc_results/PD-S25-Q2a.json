@@ -1,0 +1,82 @@
+{
+ "id": "PD-S25-Q2a",
+ "title": "Completing the top view of the bent plate (inclined arm at 60°)",
+ "given": [
+  {
+   "sym": "Length of inclined arm (true length, seen in the F.V.)",
+   "val": "60",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Inclination of the arm with the horizontal",
+   "val": "60",
+   "unit": "°",
+   "note": "bend angle 120° between the base and the arm"
+  },
+  {
+   "sym": "Plate thickness",
+   "val": "6",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Length of the arm in the top view",
+   "formula": "l = L cos θ",
+   "subst": "= 60 × cos 60°",
+   "value": "30.00",
+   "raw": 30.000000000000007,
+   "unit": "mm"
+  },
+  {
+   "label": "Height of the arm end in the front view",
+   "formula": "h = L sin θ",
+   "subst": "= 60 × sin 60°",
+   "value": "51.96",
+   "raw": 51.96152422706631,
+   "unit": "mm"
+  },
+  {
+   "label": "A 20 mm square hole on the arm: length in the top view",
+   "formula": "a' = 20 cos θ",
+   "subst": "= 20 × cos 60°",
+   "value": "10.00",
+   "raw": 10.000000000000002,
+   "unit": "mm"
+  }
+ ],
+ "answers": [
+  {
+   "name": "Foreshortened length of arm in top view",
+   "value": "30.00",
+   "raw": 30.000000000000007,
+   "unit": "mm"
+  },
+  {
+   "name": "Height of arm end in F.V.",
+   "value": "51.96",
+   "raw": 51.96152422706631,
+   "unit": "mm"
+  },
+  {
+   "name": "20 mm square hole appears as 20 × a'",
+   "value": "10.00",
+   "raw": 10.000000000000002,
+   "unit": "mm"
+  }
+ ],
+ "checks": [
+  {
+   "method": "l² + h² = L²",
+   "a": "3600.0000",
+   "b": "3600.0000",
+   "a_raw": 3600.0,
+   "b_raw": 3600.0,
+   "rtol": 1e-12,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

@@ -1,0 +1,491 @@
+{
+ "paper": "SOM-S23",
+ "subject": "313308",
+ "session": "S23",
+ "scheme": "I-scheme (paper code 22306)",
+ "total_marks": 70,
+ "printed_id": "22306 / 22223",
+ "source_file": "2023_summer_SOM.pdf",
+ "groups": [
+  {
+   "no": "1",
+   "text": "Attempt any FIVE of the following:",
+   "marks": 10,
+   "attempt": 5
+  },
+  {
+   "no": "2",
+   "text": "Attempt any THREE of the following:",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "3",
+   "text": "Attempt any THREE of the following:",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "4",
+   "text": "Attempt any THREE of the following:",
+   "marks": 12,
+   "attempt": 3
+  },
+  {
+   "no": "5",
+   "text": "Attempt any TWO of the following:",
+   "marks": 12,
+   "attempt": 2
+  },
+  {
+   "no": "6",
+   "text": "Attempt any TWO of the following:",
+   "marks": 12,
+   "attempt": 2
+  }
+ ],
+ "questions": [
+  {
+   "id": "SOM-S23-Q1a",
+   "label": "1(a)",
+   "text": "Define radius of gyration. State its S.I. unit.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Moment of inertia",
+   "chapter_source": "inferred",
+   "concept": "som-radius-gyration",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q1b",
+   "label": "1(b)",
+   "text": "Define shear strain and modulus of rigidity.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Elastic constants and strain energy",
+   "chapter_source": "inferred",
+   "concept": "som-shear-strain",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q1c",
+   "label": "1(c)",
+   "text": "Define strain energy. State its S.I. unit.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Elastic constants and strain energy",
+   "chapter_source": "inferred",
+   "concept": "som-strain-energy",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q1d",
+   "label": "1(d)",
+   "text": "State point of contra-shear with suitable sketch.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Shear force and bending moment",
+   "chapter_source": "inferred",
+   "concept": "som-contraflexure",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The printed term \"point of contra-shear\" is not a standard term in Strength of Materials.",
+    "assumption": "It is taken to mean the <b>point of contraflexure</b> (bending moment changes sign). Note: the point where shear force is zero is the point of maximum bending moment, which is a different thing."
+   }
+  },
+  {
+   "id": "SOM-S23-Q1e",
+   "label": "1(e)",
+   "text": "Write the flexural formula and state the meaning of each term used in it.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Bending and shear stresses in beams",
+   "chapter_source": "inferred",
+   "concept": "som-flexure-formula",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q1f",
+   "label": "1(f)",
+   "text": "Draw a neat sketch to show core of rectangular section of (B × D) dimensions.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Direct and bending stresses (core, eccentric loads)",
+   "chapter_source": "inferred",
+   "concept": "som-core-rect",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q1g",
+   "label": "1(g)",
+   "text": "Draw shear stress and bending stress distribution diagram for hollow rectangular beam section.",
+   "marks": 2,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Bending and shear stresses in beams",
+   "chapter_source": "inferred",
+   "concept": "som-hollow-dist",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q2a",
+   "label": "2(a)",
+   "text": "A hollow circular section having 200 mm external diameter and 100 mm internal diameter. Calculate the moment of inertia of the section about any of the tangent. Also find polar moment of inertia.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Moment of inertia",
+   "chapter_source": "inferred",
+   "concept": "som-mi-hollow",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q2b",
+   "label": "2(b)",
+   "text": "A member ABCD is subjected to point loads of P_{1}, P_{2}, P_{3} and P_{4} as shown in Figure No. 1. Calculate the force P_{2} necessary for equilibrium, if P_{1} = 45 kN, P_{3} = 450 kN and P_{4} = 130 kN. Determine the total elongation of the member, assuming the modulus of elasticity to be 2.1 × 10^{5} N/mm².\n[Figure No. 1: member ABCD – AB 625 mm², 120 cm; BC 2500 mm², 60 cm; CD 1250 mm², 90 cm]",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Simple stresses and strains",
+   "chapter_source": "inferred",
+   "concept": "som-stepped-bar",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The figure gives lengths in cm (120, 60, 90) but areas in mm².",
+    "assumption": "Lengths are converted to mm (1200, 600, 900). P_{1} and P_{3} act to the left and P_{2}, P_{4} to the right, as shown in the figure."
+   }
+  },
+  {
+   "id": "SOM-S23-Q2c",
+   "label": "2(c)",
+   "text": "In a tri-axial stress system, the stresses along the three directions are σ_{x} = 100 N/mm² (tensile), σ_{y} = 60 N/mm² (tensile) and σ_{z} = 30 N/mm² (compressive). Find the strains in each direction. Take E = 2 × 10^{5} N/mm² and μ = 0.25. If X = 400 mm, Y = 150 mm and Z = 300 mm. Also calculate the change in volume.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Elastic constants and strain energy",
+   "chapter_source": "inferred",
+   "concept": "som-triaxial",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q2d",
+   "label": "2(d)",
+   "text": "A simply supported beam of span ‘L’ is subjected to downward point load of ‘W’ at a distance ‘a’ from left support and ‘b’ from right support. Draw SF and BM diagrams. Take a &gt; b.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Shear force and bending moment",
+   "chapter_source": "inferred",
+   "concept": "som-sfbm-point",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q3a",
+   "label": "3(a)",
+   "text": "Calculate the moment of inertia about the axis A-A, for the lamina shown in the Figure No. 2.\n[Figure No. 2: rectangle 700 mm × 300 mm with a semicircular cut-out of R 150 mm on the bottom edge; axis A-A is 250 mm from the right edge]",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Moment of inertia",
+   "chapter_source": "inferred",
+   "concept": "som-mi-lamina",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The figure does not give the position of the semicircular cut-out explicitly.",
+    "assumption": "As drawn, the diameter lies on the bottom edge and starts at the left edge, so the centre is 150 mm from the left edge and 800 mm from A-A."
+   }
+  },
+  {
+   "id": "SOM-S23-Q3b",
+   "label": "3(b)",
+   "text": "A metal bar 20 mm in diameter and 1000 mm long is hung vertically and a collar is attached at the lower end. A weight of 1000 N falls through a height of 250 mm on the collar. Calculate the maximum instantaneous stress, elongation and strain energy stored in a bar. Take E = 2 × 10^{5} N/mm².",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Elastic constants and strain energy",
+   "chapter_source": "inferred",
+   "concept": "som-impact",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q3c",
+   "label": "3(c)",
+   "text": "Simply supported beam having span 7 m carries two point loads 3 kN at distance of 3 m from left hand support and 5 kN at distance of 2 m from right hand support. In addition to this an udl of 2 kN/m over a span of 3 m from left hand support. Draw SF and BM diagrams.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Shear force and bending moment",
+   "chapter_source": "inferred",
+   "concept": "som-sfbm-ss",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q3d",
+   "label": "3(d)",
+   "text": "A short column of external diameter 40 cm and internal diameter 20 cm carries an eccentric load of 80 kN. Find the greatest eccentricity which the load can have without producing tension in the column section.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Direct and bending stresses (core, eccentric loads)",
+   "chapter_source": "inferred",
+   "concept": "som-core-hollow",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q4a",
+   "label": "4(a)",
+   "text": "Define shear force and bending moment. Explain sign conventions for shear force and bending moment with neat sketches.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Shear force and bending moment",
+   "chapter_source": "inferred",
+   "concept": "som-sf-bm-define",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q4b",
+   "label": "4(b)",
+   "text": "A cast iron pipe having 800 mm external diameter and 700 mm internal diameter is used to pass the hydraulic oil. The pipe is simply supported at both the ends having length 7.5 m. Calculate the intensity of uniformly distributed load that pipe can carry. Assuming bending stress in pipe material is 140 N/mm².",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Bending and shear stresses in beams",
+   "chapter_source": "inferred",
+   "concept": "som-pipe-udl",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q4c",
+   "label": "4(c)",
+   "text": "Write the equation of polar modulus for hollow shaft. State assumptions made in theory of pure torsion.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "theory",
+   "chapter": "Torsion of shafts",
+   "chapter_source": "inferred",
+   "concept": "som-polar-modulus",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q4d",
+   "label": "4(d)",
+   "text": "A metal bar of 50 mm × 50 mm in cross section, is subjected to axial compressive load of 500 kN. The contraction of a 200 mm gauge length is found to be 0.5 mm and increase in thickness is 0.04 mm. Find the values of Young’s modulus and Poisson’s ratio.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Simple stresses and strains",
+   "chapter_source": "inferred",
+   "concept": "som-e-and-mu",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q4e",
+   "label": "4(e)",
+   "text": "A hollow shaft of diameter ratio 3/5 is required to transmit maximum torque of 61.5 kNm. The shear stress is not to exceed 63 MPa and twist in a length of 3 m is not to exceed 1.4°. Calculate the minimum external diameter satisfying these conditions. Take G = 84 GPa.",
+   "marks": 4,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Torsion of shafts",
+   "chapter_source": "inferred",
+   "concept": "som-hollow-shaft-1",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q5a",
+   "label": "5(a)",
+   "text": "A compound tube consists of steel and brass, steel tube having 140 mm internal diameter and 160 mm external diameter, an outer side brass tube having 160 mm internal diameter and 180 mm external diameter. Two tubes having same length of 140 mm. The compound tube carries an axial load of 900 kN. Calculate the stresses in the tube materials and load carrying capacity of each material. Also calculate the amount the tubes gets shortens. Take E_{s} = 2 × 10^{5} N/mm² and E_{BR} = 1 × 10^{5} N/mm².",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Simple stresses and strains",
+   "chapter_source": "inferred",
+   "concept": "som-compound-tube",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The length of the tubes is printed as 140 mm, which equals the steel inside diameter (a typing slip is possible).",
+    "assumption": "It is used as printed. The stresses and loads do not depend on the length; only the shortening (0.0853 mm) does."
+   }
+  },
+  {
+   "id": "SOM-S23-Q5b",
+   "label": "5(b)",
+   "text": "Draw shear force and bending moment diagram for an overhanging beam as shown in the Figure No. 3. Also find point of contra-flexure if any.\n[Figure No. 3: beam A–D–B–C; A to D 2 m, D to B 3 m, B to C 2 m; 5 kN at D; 8 kN/m over the whole length; 5 kN at C; supports at A and B]",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Shear force and bending moment",
+   "chapter_source": "inferred",
+   "concept": "som-overhang",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The figure shows the 8 kN/m load as a continuous wavy line along the whole beam A to C, and supports at A and B.",
+    "assumption": "The UDL is taken over the full length of 7 m and the supports at A and B (5 m apart), with the beam overhanging 2 m beyond B."
+   }
+  },
+  {
+   "id": "SOM-S23-Q5c",
+   "label": "5(c)",
+   "text": "A hollow square section 100 mm × 100 mm outside dimensions and 20 mm thick is subjected to a shear force of 75 kN. Calculate the ratio of maximum shear stress to the average shear stress. Draw the shear stress distribution diagram showing all the values on it.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Bending and shear stresses in beams",
+   "chapter_source": "inferred",
+   "concept": "som-shear-hollow-sq",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q6a",
+   "label": "6(a)",
+   "text": "A ‘T’ section having dimensions 110 × 110 × 10 mm is used as a simply supported beam with a flange at top. It carries udl of 10 kN/m. If the maximum stress is not to exceed 150 N/mm², calculate the maximum span of beam. Also draw the bending stress distribution diagram.",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Bending and shear stresses in beams",
+   "chapter_source": "inferred",
+   "concept": "som-t-beam",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q6b",
+   "label": "6(b)",
+   "text": "A hollow shaft, having an internal diameter 40% of its external diameter, transmits 562.5 kW power at 100 r.p.m. Determine the external diameter of the shaft if the shear stress is not to exceed 60 N/mm² and the twist in a length of 2.5 m should not exceed 1.3°. Assume maximum torque = 1.25 times the mean torque and modulus of rigidity = 9 × 10^{4} N/mm².",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Torsion of shafts",
+   "chapter_source": "inferred",
+   "concept": "som-hollow-shaft-2",
+   "read_status": "ok",
+   "misprint": {
+    "flag": false,
+    "doubt": "",
+    "assumption": ""
+   }
+  },
+  {
+   "id": "SOM-S23-Q6c",
+   "label": "6(c)",
+   "text": "Figure No. 4. shows a C - clamp carries a load P = 27 kN. Section of clamp is rectangular having width equal to twice the thickness. Assuming that the clamp is made up of steel casting with an allowable stress of 100 N/mm². Find the dimensions of the clamp section.\n[Figure No. 4: C-clamp; load line 144 mm from the centroidal axis of the vertical member]",
+   "marks": 6,
+   "marks_basis": "group marks / number to attempt (not printed per sub-question)",
+   "type": "numerical",
+   "chapter": "Direct and bending stresses (core, eccentric loads)",
+   "chapter_source": "inferred",
+   "concept": "som-c-clamp",
+   "read_status": "ok",
+   "misprint": {
+    "flag": true,
+    "doubt": "The figure shows a 144 mm dimension but does not say clearly which line it is measured to.",
+    "assumption": "It is taken as the distance e from the load line to the centroidal axis of the vertical member of the clamp."
+   }
+  }
+ ]
+}

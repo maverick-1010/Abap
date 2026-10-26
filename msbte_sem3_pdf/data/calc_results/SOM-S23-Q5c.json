@@ -1,0 +1,122 @@
+{
+ "id": "SOM-S23-Q5c",
+ "title": "Hollow square section: shear stress ratio",
+ "given": [
+  {
+   "sym": "Outer square",
+   "val": "100 × 100",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Thickness t",
+   "val": "20",
+   "unit": "mm",
+   "note": "inner square 60 × 60 mm"
+  },
+  {
+   "sym": "Shear force F",
+   "val": "75",
+   "unit": "kN",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "MI about NA",
+   "formula": "I = (B⁴ − b⁴) / 12",
+   "subst": "= (100⁴ − 60⁴) / 12",
+   "value": "7 253 333",
+   "raw": 7253333.333333333,
+   "unit": "mm⁴"
+  },
+  {
+   "label": "Area",
+   "formula": "A = B² − b²",
+   "subst": "= 100² − 60²",
+   "value": "6400",
+   "raw": 6400.0,
+   "unit": "mm²"
+  },
+  {
+   "label": "Average shear stress",
+   "formula": "τ_{avg} = F / A",
+   "subst": "= 75000 / 6400",
+   "value": "11.719",
+   "raw": 11.71875,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "First moment of area above NA",
+   "formula": "A ȳ = 100×50×25 − 60×30×15",
+   "subst": "= 125 000 − 27 000",
+   "value": "98000",
+   "raw": 98000.0,
+   "unit": "mm³"
+  },
+  {
+   "label": "Maximum shear stress (at NA, width 2t = 40 mm)",
+   "formula": "τ_{max} = F A ȳ / (I × 2t)",
+   "subst": "= 75000 × 98000 / (7253333 × 40)",
+   "value": "25.333",
+   "raw": 25.333180147058826,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "Ratio",
+   "formula": "τ_{max} / τ_{avg}",
+   "subst": "= 25.333 / 11.719",
+   "value": "2.162",
+   "raw": 2.1617647058823533,
+   "unit": ""
+  },
+  {
+   "label": "τ at the level where flange meets web, width 100 mm",
+   "formula": "τ = F Q / (I b),  Q = 100×20×40 = 80 000",
+   "subst": "= 75000 × 80000 / (7253333 × 100)",
+   "value": "8.272",
+   "raw": 8.272058823529413,
+   "unit": "N/mm²"
+  },
+  {
+   "label": "τ just inside the web, width 40 mm",
+   "formula": "τ = F Q / (I b)",
+   "subst": "= 75000 × 80000 / (7253333 × 40)",
+   "value": "20.680",
+   "raw": 20.680147058823533,
+   "unit": "N/mm²"
+  }
+ ],
+ "answers": [
+  {
+   "name": "τ_{max} (at NA)",
+   "value": "25.333",
+   "raw": 25.333180147058826,
+   "unit": "N/mm²"
+  },
+  {
+   "name": "τ_{avg}",
+   "value": "11.719",
+   "raw": 11.71875,
+   "unit": "N/mm²"
+  },
+  {
+   "name": "Ratio τ_{max} / τ_{avg}",
+   "value": "2.162",
+   "raw": 2.1617647058823533,
+   "unit": ""
+  }
+ ],
+ "checks": [
+  {
+   "method": "Integral of τ over the section area equals F (numerical)",
+   "a": "75000.0001",
+   "b": "75000.0000",
+   "a_raw": 75000.00006893426,
+   "b_raw": 75000.0,
+   "rtol": 0.0001,
+   "passed": true
+  }
+ ],
+ "notes": []
+}

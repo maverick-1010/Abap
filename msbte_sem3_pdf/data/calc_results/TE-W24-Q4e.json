@@ -1,0 +1,102 @@
+{
+ "id": "TE-W24-Q4e",
+ "title": "State of steam at 9 bar, v = 0.30 m³/kg",
+ "given": [
+  {
+   "sym": "Pressure p",
+   "val": "9",
+   "unit": "bar",
+   "note": ""
+  },
+  {
+   "sym": "Specific volume v",
+   "val": "0.3",
+   "unit": "m³/kg",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "",
+   "formula": "From steam tables at 9 bar:  t_{s} = 175.4 °C,   v_{g} = 0.2149 m³/kg",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Compare v with v_{g}",
+   "formula": "v > v_{g} ?",
+   "subst": "0.3 > 0.2149",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "",
+   "formula": "Since v is greater than v_{g}, the steam is SUPERHEATED.",
+   "subst": "",
+   "value": null,
+   "raw": null,
+   "unit": ""
+  },
+  {
+   "label": "Superheat table at 9 bar, 300 °C",
+   "formula": "v₃₀₀",
+   "subst": "",
+   "value": "0.2874",
+   "raw": 0.28739112829114827,
+   "unit": "m³/kg"
+  },
+  {
+   "label": "Superheat table at 9 bar, 350 °C",
+   "formula": "v₃₅₀",
+   "subst": "",
+   "value": "0.3145",
+   "raw": 0.31445703633563604,
+   "unit": "m³/kg"
+  },
+  {
+   "label": "Interpolate for v = 0.30",
+   "formula": "t = 300 + 50 × (v − v₃₀₀)/(v₃₅₀ − v₃₀₀)",
+   "subst": "= 300 + 50 × (0.3 − 0.2874) / (0.3145 − 0.2874)",
+   "value": "323.3",
+   "raw": 323.292903545166,
+   "unit": "°C"
+  }
+ ],
+ "answers": [
+  {
+   "name": "State of steam",
+   "value": "Superheated",
+   "raw": "Superheated",
+   "unit": ""
+  },
+  {
+   "name": "Temperature of superheated steam",
+   "value": "323.3",
+   "raw": 323.292903545166,
+   "unit": "°C"
+  },
+  {
+   "name": "Degree of superheat",
+   "value": "147.9",
+   "raw": 147.93508142815318,
+   "unit": "K"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Exact solution of v(t) = 0.30 (IAPWS-IF97) vs interpolation, within 1 °C",
+   "a": "323.2929",
+   "b": "323.1743",
+   "a_raw": 323.292903545166,
+   "b_raw": 323.1742548252457,
+   "rtol": 0,
+   "passed": true
+  }
+ ],
+ "notes": [
+  "Exact IF97 value: 323.2 °C. Table interpolation can differ by about 1 °C from your steam table."
+ ]
+}

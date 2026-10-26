@@ -1,0 +1,70 @@
+{
+ "id": "SOM-S23-Q3a",
+ "title": "MI of lamina about axis A-A",
+ "given": [
+  {
+   "sym": "Rectangle B × H",
+   "val": "700 × 300",
+   "unit": "mm",
+   "note": ""
+  },
+  {
+   "sym": "Semicircular cut-out radius R",
+   "val": "150",
+   "unit": "mm",
+   "note": "diameter on the bottom edge, touching the left edge (as drawn)"
+  },
+  {
+   "sym": "Distance of A-A from right edge",
+   "val": "250",
+   "unit": "mm",
+   "note": ""
+  }
+ ],
+ "steps": [
+  {
+   "label": "Rectangle: I about A-A",
+   "formula": "I₁ = H B³/12 + A₁ d₁²,  d₁ = 950 − 350 = 600",
+   "subst": "= 8.5750 × 10^{9} + 210000 × 600²",
+   "value": "8.418 × 10^{10}",
+   "raw": 84175000000.0,
+   "unit": "mm⁴"
+  },
+  {
+   "label": "Semicircle: I about A-A",
+   "formula": "I₂ = π R⁴/8 + A₂ d₂²,  d₂ = 950 − 150 = 800",
+   "subst": "= 1.9880 × 10^{8} + 35342.92 × 800²",
+   "value": "2.282 × 10^{10}",
+   "raw": 22818271015.95649,
+   "unit": "mm⁴"
+  },
+  {
+   "label": "Lamina = rectangle − semicircle",
+   "formula": "I_{AA} = I₁ − I₂",
+   "subst": "= 8.4175 × 10^{10} − 2.2818 × 10^{10}",
+   "value": "6.136 × 10^{10}",
+   "raw": 61356728984.04351,
+   "unit": "mm⁴"
+  }
+ ],
+ "answers": [
+  {
+   "name": "I about A-A",
+   "value": "6.136 × 10^{10}",
+   "raw": 61356728984.04351,
+   "unit": "mm⁴"
+  }
+ ],
+ "checks": [
+  {
+   "method": "Numerical integration of ∫ x² dA over the lamina (0.5 mm grid, 0.05 %)",
+   "a": "6.135 × 10^{10}",
+   "b": "6.136 × 10^{10}",
+   "a_raw": 61352763300.9375,
+   "b_raw": 61356728984.04351,
+   "rtol": 0.0005,
+   "passed": true
+  }
+ ],
+ "notes": []
+}
